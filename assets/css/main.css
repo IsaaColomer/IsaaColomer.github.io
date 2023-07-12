@@ -3138,6 +3138,26 @@ input, select, textarea {
 			line-height: inherit;
 			padding: 0 1.5em;
 		}
+			#header .uppercasem
+			{
+				border: 0;
+				display: inline-block;
+				font-size: 0.8em;
+				height: inherit;
+				line-height: inherit;
+				padding: 0 1.5em;
+				text-transform: uppercase;
+			}
+			#header .lowercasem
+			{
+				border: 0;
+				display: inline-block;
+				font-size: 0.8em;
+				height: inherit;
+				line-height: inherit;
+				padding: 0 1.5em;
+				text-transform: lowercase;
+		}
 
 			#header .logo strong {
 				-moz-transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
