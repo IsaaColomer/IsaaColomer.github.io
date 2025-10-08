@@ -12,7 +12,7 @@
 
 // Size.
 	$size: (
-		border-radius:		4px,
+		border-radius:		2px,
 		element-height:		2.75em,
 		element-margin:		2em,
 		inner:				65em
@@ -20,28 +20,28 @@
 
 // Font.
 	$font: (
-		family:				('Source Sans Pro', Helvetica, sans-serif),
+		family:				('Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif),
 		family-fixed:		('Courier New', monospace),
-		weight:				300,
+		weight:				400,
 		weight-bold:		600,
-		letter-spacing:		0.025em,
-		letter-spacing-alt:	0.25em
+		letter-spacing:		-0.01em,
+		letter-spacing-alt:	0.1em
 	);
 
-// Palette.
+// Palette - Minimalist Design
 	$palette: (
-		bg:					#242943,
-		bg-alt:				#2a2f4a,
-		fg:					#ffffff,
-		fg-bold:			#ffffff,
-		fg-light:			rgba(244,244,255,0.2),
-		border:				rgba(212,212,255,0.1),
-		border-bg:			rgba(212,212,255,0.035),
-		highlight:			#9bf1ff,
-		accent1:			#6fc3df,
-		accent2:			#8d82c4,
-		accent3:			#ec8d81,
-		accent4:			#e7b788,
-		accent5:			#8ea9e8,
-		accent6:			#87c5a4
+		bg:					#EBEBEB,
+		bg-alt:				#ffffff,
+		fg:					#2d2d2d,
+		fg-bold:			#1a1a1a,
+		fg-light:			rgba(45,45,45,0.6),
+		border:				rgba(0,0,0,0.1),
+		border-bg:			rgba(0,0,0,0.03),
+		highlight:			#FF6700,
+		accent1:			#004E98,
+		accent2:			#3A6EA5,
+		accent3:			#C0C0C0,
+		accent4:			#3A6EA5,
+		accent5:			#004E98,
+		accent6:			#FF6700
 	);

@@ -16,7 +16,11 @@
 		> section {
 			@include vendor('display', 'flex');
 			@include vendor('flex-direction', 'row');
-			background-color: desaturate(lighten(_palette(bg-alt), 2), 1);
+			background-color: _palette(bg-alt);
+			border-radius: 0;
+			margin: 0 0 2px 0;
+			overflow: hidden;
+			border: 1px solid _palette(border);
 
 			> .image {
 				background-position: center center;
@@ -25,6 +29,7 @@
 				display: block;
 				position: relative;
 				width: 30%;
+				overflow: hidden;
 
 				img {
 					border-radius: 0;
@@ -62,7 +67,7 @@
 
 			&:nth-child(2n) {
 				@include vendor('flex-direction', 'row-reverse');
-				background-color: desaturate(lighten(_palette(bg-alt), 4), 2);
+				background-color: _palette(bg-alt);
 
 				> .content {
 					@include vendor('align-items', 'flex-end');

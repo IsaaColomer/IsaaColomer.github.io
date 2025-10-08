@@ -6,21 +6,32 @@
 
 /* Banner */
 
+	@include keyframes('fadeInUp') {
+		0% {
+			opacity: 0;
+			@include vendor('transform', 'translateY(30px)');
+		}
+		100% {
+			opacity: 1;
+			@include vendor('transform', 'translateY(0)');
+		}
+	}
+
 	#banner {
 		@include vendor('align-items', 'center');
 		@include vendor('background-image', 'url("../../images/banner.jpg")');
 		@include vendor('display', 'flex');
-		@include padding(4em, 0, (2em, 0, 0, 0));
+		@include padding(2em, 0, (1em, 0, 0, 0));
 		background-attachment: fixed;
 		background-position: center;
 		background-repeat: no-repeat;
 		background-size: cover;
 		border-bottom: 0 !important;
 		cursor: default;
-		height: 60vh;
+		height: 25vh;
 		margin-bottom: -3.25em;
-		max-height: 32em;
-		min-height: 22em;
+		max-height: 15em;
+		min-height: 12em;
 		position: relative;
 		top: -3.25em;
 
@@ -28,12 +39,12 @@
 			@include vendor('transition', 'opacity #{_duration(banner)} ease');
 			@include vendor('transition-delay', '0.75s');
 			@include vendor('pointer-events', 'none');
-			background-color: _palette(bg);
+			background-color: rgba(255, 255, 255, 0.85);
 			content: '';
 			display: block;
 			height: 100%;
 			left: 0;
-			opacity: 0.85;
+			opacity: 0.95;
 			position: absolute;
 			top: 0;
 			width: 100%;
@@ -41,7 +52,16 @@
 		}
 
 		h1 {
-			font-size: 3.25em;
+			font-size: 2.5em;
+			font-weight: 600;
+			color: _palette(fg-bold);
+			@include vendor('animation', 'fadeInUp 0.8s ease-out');
+		}
+		
+		.content {
+			p {
+				@include vendor('animation', 'fadeInUp 1s ease-out 0.2s both');
+			}
 		}
 
 		> .inner {
@@ -95,9 +115,9 @@
 		}
 
 		&.major {
-			height: 75vh;
-			min-height: 30em;
-			max-height: 50em;
+			height: 30vh;
+			min-height: 14em;
+			max-height: 18em;
 
 			&.alt {
 				opacity: 0.75;
@@ -128,7 +148,7 @@
 		}
 
 		@include breakpoint('<=small') {
-			@include padding(3em, 0, (2em, 0, 0, 0));
+			@include padding(1.5em, 0, (1em, 0, 0, 0));
 			height: auto;
 			margin-bottom: -2.75em;
 			max-height: none;
@@ -136,7 +156,7 @@
 			top: -2.75em;
 
 			h1 {
-				font-size: 2em;
+				font-size: 1.6em;
 			}
 
 			> .inner {

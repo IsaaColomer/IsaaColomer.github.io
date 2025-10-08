@@ -13,37 +13,35 @@
 	.button {
 		@include vendor('appearance', 'none');
 		@include vendor('transition', (
-			'background-color #{_duration(transition)} ease-in-out',
-			'box-shadow #{_duration(transition)} ease-in-out',
-			'color #{_duration(transition)} ease-in-out'
+			'background-color 0.2s ease',
+			'color 0.2s ease'
 		));
 		background-color: transparent;
-		border: 0;
+		border: 2px solid _palette(fg-bold);
 		border-radius: 0;
-		box-shadow: inset 0 0 0 2px _palette(fg-bold);
 		color: _palette(fg-bold);
 		cursor: pointer;
 		display: inline-block;
-		font-size: 0.8em;
+		font-size: 0.75em;
 		font-weight: _font(weight-bold);
 		height: 3.5em;
 		letter-spacing: _font(letter-spacing-alt);
 		line-height: 3.5em;
-		padding: 0 1.75em;
+		padding: 0 2.5em;
 		text-align: center;
 		text-decoration: none;
 		text-transform: uppercase;
 		white-space: nowrap;
 
-		&:hover, &:active {
-			box-shadow: inset 0 0 0 2px _palette(highlight);
-			color: _palette(highlight);
+		&:hover {
+			background-color: _palette(fg-bold);
+			color: _palette(bg-alt);
 		}
 
 		&:active {
-			background-color: transparentize(_palette(highlight), 0.9);
-			box-shadow: inset 0 0 0 2px desaturate(darken(_palette(highlight), 15), 5);
-			color: desaturate(darken(_palette(highlight), 15), 5);
+			background-color: _palette(fg);
+			border-color: _palette(fg);
+			color: _palette(bg-alt);
 		}
 
 		&.icon {
@@ -107,17 +105,19 @@
 		}
 
 		&.primary {
-			background-color: _palette(fg-bold);
-			box-shadow: none;
-			color: _palette(bg);
+			background-color: _palette(highlight);
+			border-color: _palette(highlight);
+			color: #ffffff;
 
-			&:hover, &:active {
-				background-color: _palette(highlight);
-				color: _palette(bg) !important;
+			&:hover {
+				background-color: darken(_palette(highlight), 10%);
+				border-color: darken(_palette(highlight), 10%);
+				color: #ffffff;
 			}
 
 			&:active {
-				background-color: desaturate(darken(_palette(highlight), 15), 5);
+				background-color: darken(_palette(highlight), 15%);
+				border-color: darken(_palette(highlight), 15%);
 			}
 		}
 

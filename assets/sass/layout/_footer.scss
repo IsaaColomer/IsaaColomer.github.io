@@ -7,6 +7,19 @@
 /* Footer */
 
 	#footer {
+		background: _palette(bg-alt);
+		border-top: 2px solid _palette(border);
+		
+		.icons {
+			a {
+				@include vendor('transition', 'color 0.2s ease');
+				
+				&:hover {
+					color: _palette(highlight);
+				}
+			}
+		}
+		
 		.copyright {
 			font-size: 0.8em;
 			list-style: none;
@@ -24,6 +37,14 @@
 					border-left: 0;
 					margin-left: 0;
 					padding-left: 0;
+				}
+				
+				a {
+					@include vendor('transition', 'color 0.2s ease');
+					
+					&:hover {
+						color: _palette(highlight);
+					}
 				}
 			}
 		}
