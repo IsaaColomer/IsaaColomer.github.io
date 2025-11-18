@@ -34,7 +34,7 @@
 		}
 
 	body {
-		background: _palette(bg);
+		background: linear-gradient(135deg, #f8f7f4 0%, #fefefe 50%, #f5f3f0 100%);
 
 		// Stops initial animations until page loads.
 			&.is-preload {

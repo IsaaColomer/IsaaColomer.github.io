@@ -18,32 +18,37 @@
 	}
 
 	.tiles {
-		@include vendor('display', 'flex');
-		@include vendor('flex-wrap', 'wrap');
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 1.5rem;
 		border-top: 0 !important;
+		padding: 3rem 0;
 
 		& + * {
 			border-top: 0 !important;
 		}
 
 		article {
-			@include vendor('align-items', 'center');
+			@include vendor('align-items', 'flex-start');
 			@include vendor('display', 'flex');
+			@include vendor('flex-direction', 'column');
 			@include vendor('transition', (
-				'border-color 0.3s ease',
-				'background-color 0.3s ease'
+				'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+				'border-color 0.5s ease',
+				'box-shadow 0.5s ease'
 			));
 			@include vendor('animation', 'fadeInTile 0.6s ease-out both');
-			@include padding(3em, 4em);
-			background-color: _palette(bg-alt);
-			border-radius: 0;
+			@include padding(2rem, 2rem);
+			background-color: rgba(255, 255, 255, 0.6);
+			backdrop-filter: blur(8px);
+			-webkit-backdrop-filter: blur(8px);
+			border-radius: _size(border-radius);
 			cursor: pointer;
-			height: 25vh;
-			max-height: 20em;
-			min-height: 14em;
-			overflow: hidden;
+			height: auto;
+			min-height: 18em;
+			overflow: visible;
 			position: relative;
-			width: 40%;
+			width: 100%;
 			margin: 0;
 			border: 1px solid _palette(border);
 			
@@ -60,11 +65,34 @@
 			.image {
 				display: none;
 			}
+			
+			.card-icon {
+				width: 2.5rem;
+				height: 2.5rem;
+				background-color: rgba(209, 122, 92, 0.1);
+				border-radius: 1rem;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin-bottom: 0.75rem;
+				
+				.icon {
+					color: _palette(highlight);
+					font-size: 1.25rem;
+				}
+			}
+			
+			.card-divider {
+				width: 3.5rem;
+				height: 0.25rem;
+				background-color: _palette(highlight);
+				margin: 0.75rem 0 1rem 0;
+			}
 
 			header {
 				position: relative;
 				z-index: 3;
-				@include vendor('transition', 'transform 0.3s ease');
+				width: 100%;
 			}
 
 			h3 {
@@ -80,7 +108,12 @@
 			
 			p {
 				@include vendor('transition', 'opacity 0.3s ease');
-				opacity: 0.7;
+				opacity: 0.8;
+				color: _palette(fg-light);
+				line-height: 1.5;
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+				font-size: 0.75em;
 			}
 
 			.link.primary {
@@ -94,12 +127,9 @@
 			}
 
 			&:hover {
-				border-color: _palette(highlight);
-				background-color: lighten(_palette(bg-alt), 2%);
-				
-				header {
-					@include vendor('transform', 'translateY(-5px)');
-				}
+				@include vendor('transform', 'scale(1.02)');
+				border-color: rgba(209, 122, 92, 0.4);
+				box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
 				
 				h3 {
 					color: _palette(highlight);
@@ -116,48 +146,29 @@
 				opacity: 0;
 			}
 
-			&:nth-child(4n - 1),
-			&:nth-child(4n - 2) {
-				width: 60%;
-			}
-
-			// No color overlays for minimalist design
 		}
 
 		@include breakpoint('<=large') {
+			gap: 1.25rem;
+			
 			article {
-				@include padding(3em, 3em);
-				height: 22vh;
-				max-height: 18em;
-				min-height: 14em;
+				@include padding(1.75rem, 1.75rem);
 			}
 		}
 
 		@include breakpoint('<=medium') {
-			article {
-				width: 50% !important;
-			}
+			grid-template-columns: 1fr;
+			gap: 1rem;
 		}
 
 		@include breakpoint('<=small') {
 			article {
-				@include padding(2.5em, 1.5em);
-				height: 12em;
-				max-height: none;
-				min-height: 0;
+				@include padding(1.5rem, 1.5rem);
+				min-height: 14em;
 
 				h3 {
 					font-size: 1.4em;
 				}
-			}
-		}
-
-		@include breakpoint('<=xsmall') {
-			display: block;
-
-			article {
-				height: 14em;
-				width: 100% !important;
 			}
 		}
 	}

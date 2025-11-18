@@ -13,21 +13,23 @@
 
 	#header {
 		@include vendor('display', 'flex');
-		background: _palette(bg-alt);
+		background: rgba(255, 255, 255, 0.8);
+		backdrop-filter: blur(24px);
+		-webkit-backdrop-filter: blur(24px);
 		box-shadow: none;
 		cursor: default;
-		font-weight: _font(weight-bold);
+		font-weight: 600;
 		height: 3.5em;
 		left: 0;
-		letter-spacing: _font(letter-spacing-alt);
+		letter-spacing: 0.05em;
 		line-height: 3.5em;
 		margin: 0;
 		position: fixed;
-		text-transform: uppercase;
+		text-transform: none;
 		top: 0;
 		width: 100%;
 		z-index: _misc(z-index-base);
-		border-bottom: 0;
+		border-bottom: 1px solid _palette(border);
 
 		.logo {
 			border: 0;

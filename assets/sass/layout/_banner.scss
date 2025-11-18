@@ -28,10 +28,10 @@
 		background-size: cover;
 		border-bottom: 0 !important;
 		cursor: default;
-		height: 25vh;
+		height: 50vh;
 		margin-bottom: -3.25em;
-		max-height: 15em;
-		min-height: 12em;
+		max-height: 32em;
+		min-height: 22em;
 		position: relative;
 		top: -3.25em;
 
@@ -39,7 +39,7 @@
 			@include vendor('transition', 'opacity #{_duration(banner)} ease');
 			@include vendor('transition-delay', '0.75s');
 			@include vendor('pointer-events', 'none');
-			background-color: rgba(255, 255, 255, 0.85);
+			background: linear-gradient(135deg, rgba(248, 247, 244, 0.95) 0%, rgba(254, 254, 254, 0.90) 50%, rgba(245, 243, 240, 0.95) 100%);
 			content: '';
 			display: block;
 			height: 100%;
@@ -52,10 +52,23 @@
 		}
 
 		h1 {
-			font-size: 2.5em;
-			font-weight: 600;
+			font-size: clamp(2.5rem, 7vw, 5rem);
+			font-weight: 700;
 			color: _palette(fg-bold);
+			letter-spacing: -0.02em;
+			line-height: 1.1;
 			@include vendor('animation', 'fadeInUp 0.8s ease-out');
+			
+			.hero-accent {
+				color: _palette(highlight);
+			}
+		}
+		
+		.hero-divider {
+			width: 5rem;
+			height: 0.25rem;
+			background-color: _palette(highlight);
+			margin: 1rem 0 1.5rem 0;
 		}
 		
 		.content {
@@ -115,9 +128,9 @@
 		}
 
 		&.major {
-			height: 30vh;
-			min-height: 14em;
-			max-height: 18em;
+			height: 45vh;
+			min-height: 20em;
+			max-height: 28em;
 
 			&.alt {
 				opacity: 0.75;
