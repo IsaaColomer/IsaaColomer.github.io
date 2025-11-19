@@ -13,75 +13,94 @@
 
 	#header {
 		@include vendor('display', 'flex');
-		background: rgba(255, 255, 255, 0.8);
-		backdrop-filter: blur(24px);
-		-webkit-backdrop-filter: blur(24px);
+		background: rgba(250, 250, 249, 0.8);
+		backdrop-filter: blur(20px);
+		-webkit-backdrop-filter: blur(20px);
 		box-shadow: none;
 		cursor: default;
-		font-weight: 600;
-		height: 3.5em;
+		font-weight: 500;
+		height: auto;
 		left: 0;
-		letter-spacing: 0.05em;
-		line-height: 3.5em;
+		letter-spacing: -0.01em;
+		line-height: normal;
 		margin: 0;
+		padding: 1.25rem 2rem;
 		position: fixed;
 		text-transform: none;
 		top: 0;
 		width: 100%;
-		z-index: _misc(z-index-base);
+		z-index: 100;
 		border-bottom: 1px solid _palette(border);
+		max-width: 100%;
+		justify-content: center;
 
+		> .inner {
+			max-width: 1200px;
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		
 		.logo {
 			border: 0;
 			display: inline-block;
-			font-size: 0.8em;
-			height: inherit;
-			line-height: inherit;
-			padding: 0 1.5em;
+			font-size: 0.875rem;
+			font-weight: 500;
+			color: _palette(fg-bold);
+			padding: 0;
+			height: auto;
+			line-height: normal;
 
 			strong {
 				@include vendor('transition', (
 					'color #{_duration(transition)} ease-in-out'
 				));
-				color: _palette(highlight);
+				color: _palette(fg-bold);
 				display: inline-block;
-				line-height: 1.65em;
-				margin-right: 0.325em;
-				padding: 0 0.125em 0 (_font(letter-spacing-alt) + 0.125em);
+				line-height: normal;
+				margin-right: 0;
+				padding: 0;
 			}
 
 			&:hover {
 				strong {
-					color: darken(_palette(highlight), 10%);
+					color: _palette(highlight);
 				}
 			}
 
 			&:active {
 				strong {
-					color: darken(_palette(highlight), 15%);
+					color: _palette(highlight);
 				}
 			}
 		}
 
 		nav {
 			@include vendor('display', 'flex');
-			@include vendor('justify-content', 'flex-end');
-			@include vendor('flex-grow', '1');
-			height: inherit;
-			line-height: inherit;
+			@include vendor('align-items', 'center');
+			gap: 2rem;
+			height: auto;
+			line-height: normal;
 
 			a {
 				border: 0;
 				display: block;
-				font-size: 0.8em;
-				height: inherit;
-				line-height: inherit;
-				padding: 0 0.75em;
+				font-size: 0.875rem;
+				color: _palette(fg);
+				height: auto;
+				line-height: normal;
+				padding: 0;
 				position: relative;
 				vertical-align: middle;
+				@include vendor('transition', 'color 0.2s ease');
+				
+				&:hover {
+					color: _palette(fg-bold);
+				}
 
 				&:last-child {
-					padding-right: 1.5em;
+					padding-right: 0;
 				}
 
 				&[href="#menu"] {

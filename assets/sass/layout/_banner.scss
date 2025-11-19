@@ -18,62 +18,84 @@
 	}
 
 	#banner {
-		@include vendor('align-items', 'center');
-		@include vendor('background-image', 'url("../../images/banner.jpg")');
-		@include vendor('display', 'flex');
-		@include padding(2em, 0, (1em, 0, 0, 0));
-		background-attachment: fixed;
-		background-position: center;
-		background-repeat: no-repeat;
-		background-size: cover;
+		@include vendor('display', 'grid');
+		grid-template-columns: 1.5fr 1fr;
+		gap: 4rem;
+		align-items: start;
+		padding: 10rem 2rem 5rem;
+		background: none;
 		border-bottom: 0 !important;
 		cursor: default;
-		height: 50vh;
-		margin-bottom: -3.25em;
-		max-height: 32em;
-		min-height: 22em;
+		height: auto;
+		margin-bottom: 0;
+		max-width: 1200px;
+		margin-left: auto;
+		margin-right: auto;
 		position: relative;
-		top: -3.25em;
+		top: 0;
 
 		&:after {
-			@include vendor('transition', 'opacity #{_duration(banner)} ease');
-			@include vendor('transition-delay', '0.75s');
-			@include vendor('pointer-events', 'none');
-			background: linear-gradient(135deg, rgba(248, 247, 244, 0.95) 0%, rgba(254, 254, 254, 0.90) 50%, rgba(245, 243, 240, 0.95) 100%);
-			content: '';
-			display: block;
-			height: 100%;
-			left: 0;
-			opacity: 0.95;
-			position: absolute;
-			top: 0;
-			width: 100%;
-			z-index: 1;
+			display: none;
 		}
 
+		.hero-left {
+			padding-right: 2rem;
+		}
+		
+		.hero-greeting {
+			font-size: 0.8125rem;
+			color: _palette(fg-light);
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			margin-bottom: 2rem;
+		}
+		
 		h1 {
-			font-size: clamp(2.5rem, 7vw, 5rem);
-			font-weight: 700;
+			font-size: clamp(2.5rem, 5vw, 3.75rem);
+			font-weight: 400;
 			color: _palette(fg-bold);
 			letter-spacing: -0.02em;
 			line-height: 1.1;
-			@include vendor('animation', 'fadeInUp 0.8s ease-out');
-			
-			.hero-accent {
-				color: _palette(highlight);
-			}
+			margin-bottom: 2rem;
 		}
 		
-		.hero-divider {
-			width: 5rem;
-			height: 0.25rem;
-			background-color: _palette(highlight);
-			margin: 1rem 0 1.5rem 0;
+		.hero-bio {
+			font-size: 1.0625rem;
+			line-height: 1.7;
+			color: _palette(fg);
+			font-weight: 300;
+		}
+		
+		.hero-right {
+			padding: 2rem;
+			background-color: _palette(bg-alt);
+			border: 1px solid _palette(border);
+			border-radius: _size(border-radius);
+		}
+		
+		.hero-label {
+			font-size: 0.75rem;
+			color: _palette(fg-light);
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			margin-bottom: 0.5rem;
+		}
+		
+		.hero-status {
+			font-size: 1.125rem;
+			font-weight: 500;
+			color: _palette(fg-bold);
+			margin-bottom: 1.5rem;
+		}
+		
+		.hero-location {
+			font-size: 0.9375rem;
+			color: _palette(fg);
 		}
 		
 		.content {
 			p {
-				@include vendor('animation', 'fadeInUp 1s ease-out 0.2s both');
+				line-height: 1.7;
 			}
 		}
 
@@ -128,13 +150,21 @@
 		}
 
 		&.major {
-			height: 45vh;
-			min-height: 20em;
-			max-height: 28em;
-
-			&.alt {
-				opacity: 0.75;
+			// No special major styles for editorial layout
+		}
+		
+		@include breakpoint('<=medium') {
+			grid-template-columns: 1fr;
+			gap: 3rem;
+			padding: 8rem 2rem 4rem;
+			
+			.hero-left {
+				padding-right: 0;
 			}
+		}
+		
+		@include breakpoint('<=small') {
+			padding: 7rem 1.25rem 3rem;
 		}
 
 		&.style1 { &:after { background-color: _palette(accent1); } }

@@ -19,74 +19,88 @@
 
 	.tiles {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		grid-template-columns: repeat(2, 1fr);
 		gap: 1.5rem;
 		border-top: 0 !important;
-		padding: 3rem 0;
+		padding: 5rem 2rem;
+		max-width: 1200px;
+		margin: 0 auto;
 
 		& + * {
 			border-top: 0 !important;
 		}
 
 		article {
-			@include vendor('align-items', 'flex-start');
 			@include vendor('display', 'flex');
 			@include vendor('flex-direction', 'column');
 			@include vendor('transition', (
-				'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-				'border-color 0.5s ease',
-				'box-shadow 0.5s ease'
+				'transform 0.3s ease',
+				'box-shadow 0.3s ease'
 			));
-			@include vendor('animation', 'fadeInTile 0.6s ease-out both');
-			@include padding(2rem, 2rem);
-			background-color: rgba(255, 255, 255, 0.6);
-			backdrop-filter: blur(8px);
-			-webkit-backdrop-filter: blur(8px);
+			background-color: _palette(bg-alt);
 			border-radius: _size(border-radius);
 			cursor: pointer;
-			height: auto;
-			min-height: 18em;
-			overflow: visible;
+			overflow: hidden;
 			position: relative;
 			width: 100%;
 			margin: 0;
 			border: 1px solid _palette(border);
 			
-			&.tile-no-image {
-				background-image: none !important;
-			}
-			
-			// Stagger animation delays for each tile
-			&:nth-child(1) { @include vendor('animation-delay', '0.1s'); }
-			&:nth-child(2) { @include vendor('animation-delay', '0.2s'); }
-			&:nth-child(3) { @include vendor('animation-delay', '0.3s'); }
-			&:nth-child(4) { @include vendor('animation-delay', '0.4s'); }
-
-			.image {
-				display: none;
-			}
-			
-			.card-icon {
-				width: 2.5rem;
-				height: 2.5rem;
-				background-color: rgba(209, 122, 92, 0.1);
-				border-radius: 1rem;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				margin-bottom: 0.75rem;
+			&.work-item-large {
+				grid-column: span 2;
 				
-				.icon {
-					color: _palette(highlight);
-					font-size: 1.25rem;
+				.work-image {
+					height: 20rem;
 				}
 			}
 			
-			.card-divider {
-				width: 3.5rem;
-				height: 0.25rem;
-				background-color: _palette(highlight);
-				margin: 0.75rem 0 1rem 0;
+			.work-image {
+				width: 100%;
+				height: 16rem;
+				background: linear-gradient(135deg, #f0ebe5 0%, #e8e1d8 100%);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: relative;
+			}
+			
+			.work-placeholder {
+				font-size: 1.25rem;
+				font-weight: 500;
+				color: _palette(fg-light);
+				opacity: 0.4;
+			}
+			
+			.work-info {
+				padding: 2rem;
+			}
+			
+			.work-title {
+				font-size: 1.5rem;
+				font-weight: 500;
+				color: _palette(fg-bold);
+				margin-bottom: 0.5rem;
+			}
+			
+			.work-description {
+				font-size: 0.9375rem;
+				color: _palette(fg);
+				line-height: 1.6;
+				margin-bottom: 1rem;
+			}
+			
+			.work-tags {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.5rem;
+			}
+			
+			.tag {
+				padding: 0.375rem 0.875rem;
+				background-color: _palette(border-bg);
+				color: _palette(fg);
+				font-size: 0.8125rem;
+				border-radius: 9999px;
 			}
 
 			header {
@@ -127,17 +141,8 @@
 			}
 
 			&:hover {
-				@include vendor('transform', 'scale(1.02)');
-				border-color: rgba(209, 122, 92, 0.4);
-				box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-				
-				h3 {
-					color: _palette(highlight);
-				}
-				
-				p {
-					opacity: 1;
-				}
+				@include vendor('transform', 'translateY(-4px)');
+				box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
 			}
 
 			&.is-transitioning {
@@ -148,26 +153,22 @@
 
 		}
 
-		@include breakpoint('<=large') {
-			gap: 1.25rem;
+		@include breakpoint('<=medium') {
+			grid-template-columns: 1fr;
 			
 			article {
-				@include padding(1.75rem, 1.75rem);
+				&.work-item-large {
+					grid-column: span 1;
+				}
 			}
 		}
 
-		@include breakpoint('<=medium') {
-			grid-template-columns: 1fr;
-			gap: 1rem;
-		}
-
 		@include breakpoint('<=small') {
+			padding: 3rem 1.25rem;
+			
 			article {
-				@include padding(1.5rem, 1.5rem);
-				min-height: 14em;
-
-				h3 {
-					font-size: 1.4em;
+				.work-info {
+					padding: 1.5rem;
 				}
 			}
 		}

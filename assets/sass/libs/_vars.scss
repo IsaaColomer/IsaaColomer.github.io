@@ -12,7 +12,7 @@
 
 // Size.
 	$size: (
-		border-radius:		1.5rem,
+		border-radius:		0.75rem,
 		element-height:		2.75em,
 		element-margin:		2em,
 		inner:				65em
@@ -20,28 +20,28 @@
 
 // Font.
 	$font: (
-		family:				('Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif),
+		family:				('Inter', -apple-system, BlinkMacSystemFont, sans-serif),
 		family-fixed:		('Courier New', monospace),
 		weight:				400,
-		weight-bold:		600,
+		weight-bold:		500,
 		letter-spacing:		-0.01em,
 		letter-spacing-alt:	0.1em
 	);
 
-// Palette - Soft Warm Design
+// Palette - Editorial Design
 	$palette: (
-		bg:					#f8f7f4,
-		bg-alt:				#fefefe,
-		fg:					#2d2a26,
-		fg-bold:			#2d2a26,
-		fg-light:			#6b6560,
-		border:				#e8e5df,
-		border-bg:			rgba(209, 122, 92, 0.1),
-		highlight:			#d17a5c,
-		accent1:			#d17a5c,
-		accent2:			#c16b4f,
-		accent3:			#f5f3f0,
-		accent4:			#5a5550,
-		accent5:			#d17a5c,
-		accent6:			#c16b4f
+		bg:					#fafaf9,
+		bg-alt:				#ffffff,
+		fg:					#525048,
+		fg-bold:			#1a1816,
+		fg-light:			#78766f,
+		border:				#e8e5e0,
+		border-bg:			rgba(124, 106, 94, 0.08),
+		highlight:			#7c6a5e,
+		accent1:			#7c6a5e,
+		accent2:			#a89585,
+		accent3:			#f0ebe5,
+		accent4:			#525048,
+		accent5:			#7c6a5e,
+		accent6:			#a89585
 	);
