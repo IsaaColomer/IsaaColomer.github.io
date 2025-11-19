@@ -9,26 +9,11 @@
 	.experience {
 		max-width: 1200px;
 		margin: 0 auto;
-		padding: 2rem 2rem 5rem;
-		
-		.section-header {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 3rem;
-		}
-		
-		.section-title {
-			font-size: 0.8125rem;
-			font-weight: 500;
-			text-transform: uppercase;
-			letter-spacing: 0.1em;
-			color: _palette(fg-light);
-		}
+		padding: 0 2rem 5rem;
 		
 		.timeline {
 			max-width: 800px;
-			margin-top: 3rem;
+			margin-top: 0;
 		}
 		
 		.timeline-item {
