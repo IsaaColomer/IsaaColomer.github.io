@@ -1,0 +1,77 @@
+///
+/// Forty by HTML5 UP
+/// html5up.net | @ajlkn
+/// Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+///
+
+/* Experience Timeline */
+
+	.experience {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 5rem 2rem;
+		
+		.section-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 3rem;
+		}
+		
+		.section-title {
+			font-size: 0.8125rem;
+			font-weight: 500;
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			color: _palette(fg-light);
+		}
+		
+		.timeline {
+			max-width: 800px;
+			margin-top: 3rem;
+		}
+		
+		.timeline-item {
+			display: grid;
+			grid-template-columns: 200px 1fr;
+			gap: 3rem;
+			margin-bottom: 3rem;
+			padding-bottom: 3rem;
+			border-bottom: 1px solid _palette(border);
+			
+			&:last-child {
+				border-bottom: none;
+			}
+		}
+		
+		.timeline-date {
+			font-size: 0.9375rem;
+			color: _palette(fg-light);
+			font-weight: 500;
+		}
+		
+		.timeline-title {
+			font-size: 1.25rem;
+			font-weight: 500;
+			color: _palette(fg-bold);
+			margin-bottom: 0.75rem;
+		}
+		
+		.timeline-description {
+			font-size: 0.9375rem;
+			line-height: 1.7;
+			color: _palette(fg);
+		}
+		
+		@include breakpoint('<=medium') {
+			.timeline-item {
+				grid-template-columns: 1fr;
+				gap: 1rem;
+			}
+		}
+		
+		@include breakpoint('<=small') {
+			padding: 3rem 1.25rem;
+		}
+	}
+

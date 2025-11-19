@@ -18,10 +18,7 @@
 	}
 
 	#banner {
-		@include vendor('display', 'grid');
-		grid-template-columns: 1.5fr 1fr;
-		gap: 4rem;
-		align-items: start;
+		@include vendor('display', 'block');
 		padding: 10rem 2rem 5rem;
 		background: none;
 		border-bottom: 0 !important;
@@ -39,7 +36,7 @@
 		}
 
 		.hero-left {
-			padding-right: 2rem;
+			max-width: 100%;
 		}
 		
 		.hero-greeting {
@@ -56,41 +53,7 @@
 			color: _palette(fg-bold);
 			letter-spacing: -0.02em;
 			line-height: 1.1;
-			margin-bottom: 2rem;
-		}
-		
-		.hero-bio {
-			font-size: 1.0625rem;
-			line-height: 1.7;
-			color: _palette(fg);
-			font-weight: 300;
-		}
-		
-		.hero-right {
-			padding: 2rem;
-			background-color: _palette(bg-alt);
-			border: 1px solid _palette(border);
-			border-radius: _size(border-radius);
-		}
-		
-		.hero-label {
-			font-size: 0.75rem;
-			color: _palette(fg-light);
-			text-transform: uppercase;
-			letter-spacing: 0.1em;
-			margin-bottom: 0.5rem;
-		}
-		
-		.hero-status {
-			font-size: 1.125rem;
-			font-weight: 500;
-			color: _palette(fg-bold);
-			margin-bottom: 1.5rem;
-		}
-		
-		.hero-location {
-			font-size: 0.9375rem;
-			color: _palette(fg);
+			margin-bottom: 0;
 		}
 		
 		.content {
@@ -154,13 +117,7 @@
 		}
 		
 		@include breakpoint('<=medium') {
-			grid-template-columns: 1fr;
-			gap: 3rem;
 			padding: 8rem 2rem 4rem;
-			
-			.hero-left {
-				padding-right: 0;
-			}
 		}
 		
 		@include breakpoint('<=small') {
