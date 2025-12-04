@@ -1,110 +1,302 @@
-<!DOCTYPE HTML>
-<!--
-	Forty by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-	<head>
-		<title></title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Isaac Colomer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
 
-		<!-- Wrapper -->
-			<div id="wrapper">
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #fafaf9;
+      color: #1a1816;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-				<!-- Header -->
-				<header id="header" class="alt">
-					<a href="index.html" class="logo"><strong>Home</strong> <span class="lowercasem">by isaac colomer</span></a>
-					<nav>
-						<a href="#menu"></a>
-					</nav>
-				</header>
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(250, 250, 249, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid #e8e5e0;
+    }
 
-				<!-- Menu -->
-					<nav id="menu">
-						<ul class="links">
-							<li><a href="index.html">Home</a></li>
-							<li><a href="landing.html">Programming Projects</a></li>							
-							<li><a href="generic.html">Design Projects</a></li>
-							<li><a href="experience.html">Experience</a></li>
-							<li><a href="contact.html">Contact</a></li>
-							<!-- <li><a href="elements.html">Elements</a></li> -->
-						</ul>
-						<!-- <ul class="actions stacked">
-							<li><a href="#" class="button primary fit">Get Started</a></li>
-							<li><a href="#" class="button fit">Log In</a></li>
-						</ul> -->
-					</nav>
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-				<!-- Banner -->
-				<!-- Note: The "styleN" class below should match that of the header element. -->
-					<section id="banner" class="style7">
-						<div class="inner">
-							<div class="content">
-								<header class="major">
-									<h1>Contact</h1>
-								</header>
-							</div>
-							<div class="image">
-								<img src="images/some.png" alt="" data-position="100% 100%"/>
-							</div>
-						
-						<div class="content">
-							<article>
-								<header class="title">
-									<h4><a href="" class="link"></a></h4>
-									<div class="content">
+    .nav-logo {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #1a1816;
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
 
-										<div class="inner">
-											<p>I have a wide knowledge in languages like C, C++, C# and engines like Unity and Unreal Engine.</p>
-											<p>I am characterized by being a person who is easy to work with and easy to discuss with.</p>
-											<p>I am tidy, responsible and punctual.
-												Do not hesitate to contact me!</p>
-										</div>
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
 
-									</div>
-									
-									<ul class="icons">
-										<li><a href="https://twitter.com/IsaacColomerC1" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
-										<li><a href="mailto:isaacolomer@gmail.com" class="icon brands alt fa-google"><span class="label">Gmail</span></a></li>
-										<li><a href="https://github.com/IsaaColomer" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
-										<li><a href="https://www.linkedin.com/in/isaac-colomer-casas-4a8a41206/" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
-									</ul>
-								</header>
-							</article>
-						</div>
-					
-					</section>
+    .nav-links a {
+      font-size: 0.875rem;
+      color: #525048;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
 
-				<!-- Footer -->
-				<footer id="footer">
-					<div class="inner">
-						<ul class="icons">
-							<li><a href="https://twitter.com/IsaacColomerC1" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
-							<li><a href="https://github.com/IsaaColomer" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
-							<li><a href="https://www.linkedin.com/in/isaac-colomer-casas-4a8a41206/" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
-						</ul>
-						<ul class="copyright">
-							<li>&copy; isaac colomer</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
-						</ul>
-					</div>
-				</footer>
+    .nav-links a:hover {
+      color: #1a1816;
+    }
 
-			</div>
+    /* Main Content */
+    main {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10rem 2rem 6rem;
+      width: 100%;
+    }
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+    .contact-header {
+      margin-bottom: 4rem;
+    }
 
-	</body>
+    .contact-header .label {
+      font-size: 0.8125rem;
+      color: #78766f;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 2rem;
+    }
+
+    .contact-header h1 {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 400;
+      line-height: 1.4;
+      color: #1a1816;
+      max-width: 700px;
+      letter-spacing: -0.02em;
+    }
+
+    /* About Text */
+    .about-text {
+      max-width: 600px;
+      margin-bottom: 3rem;
+    }
+
+    .about-text p {
+      font-size: 0.9375rem;
+      line-height: 1.8;
+      color: #525048;
+      margin-bottom: 1rem;
+    }
+
+    .about-text p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* CTA Button */
+    .cta-button {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      background-color: #1a1816;
+      color: #fafaf9;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      text-decoration: none;
+      border-radius: 50px;
+      transition: all 0.2s ease;
+      margin-bottom: 4rem;
+    }
+
+    .cta-button:hover {
+      background-color: #7c6a5e;
+      transform: translateY(-2px);
+    }
+
+    /* Contact Grid */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3rem;
+      max-width: 600px;
+    }
+
+    .contact-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .contact-item .label {
+      font-size: 0.75rem;
+      color: #78766f;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .contact-item a {
+      font-size: 0.9375rem;
+      color: #1a1816;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .contact-item a:hover {
+      color: #7c6a5e;
+    }
+
+    .social-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid #e8e5e0;
+      padding: 2rem;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    footer p {
+      font-size: 0.875rem;
+      color: #78766f;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      font-size: 0.875rem;
+      color: #78766f;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: #1a1816;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-inner {
+        padding: 1rem 1.5rem;
+      }
+
+      .nav-links {
+        gap: 1.25rem;
+      }
+
+      main {
+        padding: 8rem 1.5rem 4rem;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Isaac Colomer</a>
+      <div class="nav-links">
+        <a href="index.html#work">Work</a>
+        <a href="experience.html">Experience</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <div class="contact-header">
+      <div class="label">Get in touch</div>
+      <h1>If you'd like to discuss a project or just say hi, I'm always down to chat.</h1>
+    </div>
+
+    <div class="about-text">
+      <p>I have a wide knowledge in languages like C, C++, C# and engines like Unity and Unreal Engine.</p>
+      <p>I am characterized by being a person who is easy to work with and easy to discuss with. I am tidy, responsible and punctual.</p>
+      <p>Do not hesitate to contact me!</p>
+    </div>
+
+    <a href="mailto:isaacolomer@gmail.com" class="cta-button">Send me an email</a>
+
+    <div class="contact-grid">
+      <div class="contact-item">
+        <div class="label">Email</div>
+        <a href="mailto:isaacolomer@gmail.com">isaacolomer@gmail.com</a>
+      </div>
+
+      <div class="contact-item">
+        <div class="label">Social</div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/isaac-colomer-casas-4a8a41206/">LinkedIn</a>
+          <a href="https://github.com/IsaaColomer">GitHub</a>
+          <a href="https://twitter.com/IsaacColomerC1">Twitter</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <p>© 2025. Crafted by Isaac Colomer</p>
+      <div class="footer-links">
+        <a href="https://twitter.com/IsaacColomerC1">Twitter</a>
+        <a href="https://github.com/IsaaColomer">GitHub</a>
+        <a href="https://www.linkedin.com/in/isaac-colomer-casas-4a8a41206/">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
 </html>
