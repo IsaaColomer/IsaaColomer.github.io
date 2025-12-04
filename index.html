@@ -66,7 +66,7 @@
 				</div>
 
 				<div class="timeline-item">
-					<div class="timeline-date">2021 — 2023</div>
+					<div class="timeline-date">2021</div>
 					<div class="timeline-content">
 						<h3 class="timeline-title">Teacher & Mentor · Innvideogames</h3>
 						<p class="timeline-description">
@@ -84,25 +84,55 @@
 			</div>
 			
 			<div class="work-grid">
-				<a href="landing.html" class="work-item">
-					<div class="work-image">
-						<div class="work-placeholder">Programming Projects</div>
+				<a href="landing.html" class="work-item work-item-code">
+					<div class="work-image code-background">
+						<pre class="code-snippet"><code>class GameSystem {
+  void Update(float deltaTime) {
+    for (auto& entity : entities) {
+      entity.position += 
+        entity.velocity * deltaTime;
+      
+      if (CheckCollision(entity)) {
+        HandlePhysics(entity);
+      }
+    }
+    
+    RenderWorld();
+  }
+}</code></pre>
 					</div>
 					<div class="work-info">
 						<span class="work-category">Development</span>
 						<h3 class="work-title">Code & Development</h3>
 						<p class="work-description">Technical implementations across game engines, tools, and systems</p>
 						<div class="work-tags">
+							<span class="tag">C</span>
 							<span class="tag">C++</span>
+							<span class="tag">C#</span>
+							<span class="tag">React</span>
 							<span class="tag">Unity</span>
 							<span class="tag">Unreal</span>
 						</div>
 					</div>
 				</a>
 				
-				<a href="generic.html" class="work-item">
-					<div class="work-image">
-						<div class="work-placeholder">Design Work</div>
+				<a href="generic.html" class="work-item work-item-design">
+					<div class="work-image design-background">
+						<div class="design-grid">
+							<div class="grid-item"></div>
+							<div class="grid-item"></div>
+							<div class="grid-item"></div>
+							<div class="grid-item"></div>
+							<div class="grid-item accent"></div>
+							<div class="grid-item"></div>
+							<div class="grid-item"></div>
+							<div class="grid-item accent"></div>
+							<div class="grid-item"></div>
+							<div class="grid-item"></div>
+							<div class="grid-item accent"></div>
+							<div class="grid-item"></div>
+							<div class="grid-circle"></div>
+						</div>
 					</div>
 					<div class="work-info">
 						<span class="work-category">Design</span>
