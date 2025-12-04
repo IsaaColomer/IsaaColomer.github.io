@@ -1,289 +1,347 @@
-<!DOCTYPE HTML>
-<!--
-	Forty by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-	<head>
-		<title></title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programming Projects — Isaac Colomer</title>
+  <meta name="description" content="Programming projects by Isaac Colomer - Videogame Designer and Programmer">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
 
-		<!-- Wrapper -->
-			<div id="wrapper">
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #fafaf9;
+      color: #1a1816;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.6;
+    }
 
-				<!-- Header -->
-				<header id="header" class="alt">
-					<a href="index.html" class="logo"><strong>Home</strong> <span class="lowercasem">by isaac colomer casas</span></a>
-					<nav>
-						<a href="#menu"></a>
-					</nav>
-				</header>
+    /* Navigation */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(250, 250, 249, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid #e8e5e0;
+    }
 
-				<!-- Menu -->
-					<nav id="menu">
-						<ul class="links">
-							<li><a href="index.html">Home</a></li>
-							<li><a href="landing.html">Programming Projects</a></li>							
-							<li><a href="generic.html">Design Projects</a></li>
-							<li><a href="experience.html">Experience</a></li>
-							<li><a href="contact.html">Contact</a></li>
-							<!-- <li><a href="elements.html">Elements</a></li> -->
-						</ul>
-						<!-- <ul class="actions stacked">
-							<li><a href="#" class="button primary fit">Get Started</a></li>
-							<li><a href="#" class="button fit">Log In</a></li>
-						</ul> -->
-					</nav>
+    .nav-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-				<!-- Banner -->
-				<!-- Note: The "styleN" class below should match that of the header element. -->
-					<section id="banner" class="style7">
-						<div class="inner">
-							<span class="image">
-								<img src="images/pic07.jpg" alt="" />
-							</span>
-							<header class="major">
-								<h1>Programming Projects</h1>
-							</header>
-							<div class="content">
-								<p>I have worked or elaborated by myself all the projects on this page</p>
-							</div>
-						</div>
-					</section>
+    .nav-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #1a1816;
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
 
-				<!-- Main -->
-					<div id="main">
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
 
-						<!-- One
-							<section id="one" class="spotlights">
-								<section>
-									<a class="image">
-										<img src="images/tfgc.png" alt="" data-position="right center" />
-									</a>
-									<div class="content">
-										<div class="inner">
-											<header class="major">
-												<h3>Final degree work</h3>
-											</header>
-											<p>I developed this game as a final project for my university degree. The theme of the work was the environmental narrative in first person video games. I developed this game in Unreal Engine 5.1</p>
-											<ul class="actions">
-												<li><a href="https://lnkd.in/d6d6N2ZC" class="button">Link to the project</a></li>
-											</ul>
-										</div>
-									</div>
-								</section>
-							
-						Two -->
-							<!-- <section id="two" class="spotlights">
-								<section>
-									<a class="image">
-										<img src="images/griavolt.png" alt="" data-position="center center" />
-									</a>
-									<div class="content">
-										<div class="inner">
-											<header class="major">
-												<h3>Màscares & Marquessos</h3>
-											</header>
-											<p>This online virtual reality game was developed in the fourth year of my career for the Generalitat de Catalunya</p>
-											<ul class="actions">
-												<li><a href="https://github.com/Makinilla-maker/Giravolt2023" class="button">Link to the project</a></li>
-											</ul>
-										</div>
-									</div>
-								</section>
-							</section> -->
-						<!-- Two -->
-							<!-- <section id ="three" class="spotlights">
-								<a  class="image">
-									<img src="images/caronte.png" alt="" data-position="center center" />
-								</a>
-									<div class="content">
-										<div class="inner">
-											<header class="major">
-												<h3>Caronte Mandate</h3>
-											</header>
-											<p>This project was created in the second year of university. It is a classic rpg made in an engine that we made on our own</p>
-											<ul class="actions">
-												<li><a href="https://github.com/KuronoaScarlet/ProjectII/releases/tag/1.0" class="button">Link to the project</a></li>
-											</ul>
-										</div>
-									</div>
-							</section>
-						</section> -->
-						<div id="main">
+    .nav-links a {
+      font-size: 0.875rem;
+      color: #525048;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
 
-							<!-- One -->
-							
-								<section id="two" class="spotlights">
-									<section>
-										<a href="generic.html" class="image">
-											<img src="images/legif.gif" alt="" data-position="top center" />
-										</a>
-										<div class="content">
-											<div class="inner">
-												<header class="major">
-													<h3>Lights Out</h3>
-												</header>
-												<p>In this game that we presented to the Indie Dev Game Jam I was in charge of programming the game, fixing bugs and play testing.</p>
-												<ul class="actions">
-													<li><a href="https://osvak.itch.io/lights-out" class="button">Play the Game</a></li>
-												</ul>
-											</div>
-										</div>
-									</section>
-									<section>
-										<a href="generic.html" class="image">
-											<img src="images/tfgc_gif.gif" alt="" data-position="center center" />
-										</a>
-										<div class="content">
-											<div class="inner">
-												<header class="major">
-													<h3>Final degree work</h3>
-												</header>
-												<p>This videogame is a university final project. It is a first person walking simulator created in Unreal Engine 5.1</p>
-												<ul class="actions">
-													<li><a href="https://www.youtube.com/watch?v=aa2Q2_MgMjY" class="button">Watch the trailer</a></li>
-												</ul>
-											</div>
-										</div>
-									</section>
-									<!-- Two (Summer Game) -->
-									<section>
-										<a href="generic.html" class="image">
-											<img src="images/summer.gif" alt="" data-position="top center" />
-										</a>
-										<div class="content">
-											<div class="inner">
-												<header class="major">
-													<h3>Summer Game</h3>
-												</header>
-												<p>I developed this small and quiet videogame during a week in the summer vacation</p>
-												<ul class="actions">
-													<li><a href="https://isaacolomer.itch.io/summer-game" class="button">Download the game</a></li>
-												</ul>
-											</div>
-										</div>
-									</section>
-								<!-- Three -->
-									<section>
-										<a href="generic.html" class="image">
-											<img src="images/griavolt.png" alt="" data-position="top center" />
-										</a>
-										<div class="content">
-											<div class="inner">
-												<header class="major">
-													<h3>Màscares & Marquesos</h3>
-												</header>
-												<p>This online virtual reality game was developed for the Generalitat de Catalunya. The development took 4 months and was prepared to run on Quest 2</p>
-												<ul class="actions">
-													<li><a href="https://github.com/Makinilla-maker/Giravolt2023" class="button">Visit the Github</a></li>
-												</ul>
-											</div>
-										</div>
-									</section>
-								<!-- Four -->
-									<section>
-										<a href="generic.html" class="image">
-											<img src="images/caronte_gif.gif" alt="" data-position="25% 25%" />
-										</a>
-										<div class="content">
-											<div class="inner">
-												<header class="major">
-													<h3>Caronte Mandate</h3>
-												</header>
-												<p>This video game was created for a second year course. It is a classic RPG created in a proprietary engine</p>
-												<ul class="actions">
-													<li><a href="https://github.com/KuronoaScarlet/ProjectII/releases/tag/1.0" class="button">Test the game</a></li>
-												</ul>
-											</div>
-										</div>
-									</section>
-								</section>
-					</div>
+    .nav-links a:hover {
+      color: #1a1816;
+    }
 
-				<!-- Contact
-					<section id="contact">
-						<div class="inner">
-							<section>
-								<form method="post" action="#">
-									<div class="fields">
-										<div class="field half">
-											<label for="name">Name</label>
-											<input type="text" name="name" id="name" />
-										</div>
-										<div class="field half">
-											<label for="email">Email</label>
-											<input type="text" name="email" id="email" />
-										</div>
-										<div class="field">
-											<label for="message">Message</label>
-											<textarea name="message" id="message" rows="6"></textarea>
-										</div>
-									</div>
-									<ul class="actions">
-										<li><input type="submit" value="Send Message" class="primary" /></li>
-										<li><input type="reset" value="Clear" /></li>
-									</ul>
-								</form>
-							</section>
-							<section class="split">
-								<section>
-									<div class="contact-method">
-										<span class="icon solid alt fa-envelope"></span>
-										<h3>Email</h3>
-										<a href="#">information@untitled.tld</a>
-									</div>
-								</section>
-								<section>
-									<div class="contact-method">
-										<span class="icon solid alt fa-phone"></span>
-										<h3>Phone</h3>
-										<span>(000) 000-0000 x12387</span>
-									</div>
-								</section>
-								<section>
-									<div class="contact-method">
-										<span class="icon solid alt fa-home"></span>
-										<h3>Address</h3>
-										<span>1234 Somewhere Road #5432<br />
-										Nashville, TN 00000<br />
-										United States of America</span>
-									</div>
-								</section>
-							</section>
-						</div>
-					</section> -->
+    /* Page Hero */
+    .page-hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10rem 2rem 5rem;
+    }
 
-				<!-- Footer -->
-				<footer id="footer">
-					<div class="inner">
-						<ul class="icons">
-							<li><a href="https://twitter.com/IsaacColomerC1" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
-							<li><a href="https://github.com/IsaaColomer" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
-							<li><a href="https://www.linkedin.com/in/isaac-colomer-casas-4a8a41206/" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
-						</ul>
-						<ul class="copyright">
-							<li>&copy; isaac colomer</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
-						</ul>
-					</div>
-				</footer>
+    .page-title {
+      font-size: clamp(2.5rem, 5vw, 3.75rem);
+      font-weight: 400;
+      line-height: 1.1;
+      color: #1a1816;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
 
-			</div>
+    .page-subtitle {
+      font-size: 1.125rem;
+      color: #525048;
+      font-weight: 300;
+    }
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+    /* Projects */
+    .projects {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4rem;
+    }
 
-	</body>
+    .project-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .project-card:nth-child(even) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .project-card:nth-child(even) .project-image {
+      order: 2;
+    }
+
+    .project-card:nth-child(even) .project-content {
+      order: 1;
+    }
+
+    .project-image {
+      width: 100%;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      border: 1px solid #e8e5e0;
+    }
+
+    .project-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .project-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding-top: 1rem;
+    }
+
+    .project-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #78766f;
+      font-weight: 500;
+    }
+
+    .project-title {
+      font-size: 1.75rem;
+      font-weight: 500;
+      color: #1a1816;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .project-description {
+      font-size: 0.9375rem;
+      line-height: 1.7;
+      color: #525048;
+    }
+
+    .project-link {
+      font-size: 0.9375rem;
+      color: #7c6a5e;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+      margin-top: 0.5rem;
+    }
+
+    .project-link:hover {
+      color: #1a1816;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid #e8e5e0;
+      padding: 2rem;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer p {
+      font-size: 0.875rem;
+      color: #78766f;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      font-size: 0.875rem;
+      color: #78766f;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: #1a1816;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-content {
+        padding: 1rem 1.5rem;
+      }
+
+      .nav-links {
+        gap: 1.25rem;
+        font-size: 0.8125rem;
+      }
+
+      .page-hero {
+        padding: 8rem 1.5rem 4rem;
+      }
+
+      .projects {
+        padding: 0 1.5rem 4rem;
+        gap: 3rem;
+      }
+
+      .project-card {
+        grid-template-columns: 1fr !important;
+      }
+
+      .project-card:nth-child(even) .project-image {
+        order: 1;
+      }
+
+      .project-card:nth-child(even) .project-content {
+        order: 2;
+      }
+
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-content">
+      <a href="index.html" class="nav-name">Isaac Colomer</a>
+      <div class="nav-links">
+        <a href="landing.html">Programming</a>
+        <a href="generic.html">Design</a>
+        <a href="experience.html">Experience</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="page-hero">
+    <h1 class="page-title">Programming Projects</h1>
+    <p class="page-subtitle">Technical implementations and code-focused work</p>
+  </section>
+
+  <section class="projects">
+    <div class="project-card">
+      <div class="project-image">
+        <img src="images/legif.gif" alt="Lights Out game">
+      </div>
+      <div class="project-content">
+        <span class="project-tag">Game Jam</span>
+        <h2 class="project-title">Lights Out</h2>
+        <p class="project-description">In this game presented to the Indie Dev Game Jam, I was in charge of programming the game, fixing bugs and play testing.</p>
+        <a href="https://osvak.itch.io/lights-out" class="project-link">Play the Game →</a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-image">
+        <img src="images/tfgc_gif.gif" alt="Final degree work">
+      </div>
+      <div class="project-content">
+        <span class="project-tag">University Project</span>
+        <h2 class="project-title">Final Degree Work</h2>
+        <p class="project-description">A first person walking simulator created in Unreal Engine 5.1 as my university final project, exploring environmental narrative in videogames.</p>
+        <a href="https://www.youtube.com/watch?v=aa2Q2_MgMjY" class="project-link">Watch the Trailer →</a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-image">
+        <img src="images/summer.gif" alt="Summer Game">
+      </div>
+      <div class="project-content">
+        <span class="project-tag">Personal Project</span>
+        <h2 class="project-title">Summer Game</h2>
+        <p class="project-description">A small and quiet videogame developed during a week in summer vacation.</p>
+        <a href="https://isaacolomer.itch.io/summer-game" class="project-link">Download the Game →</a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-image">
+        <img src="images/griavolt.png" alt="Màscares & Marquesos">
+      </div>
+      <div class="project-content">
+        <span class="project-tag">VR Development</span>
+        <h2 class="project-title">Màscares & Marquesos</h2>
+        <p class="project-description">An online virtual reality game developed for the Generalitat de Catalunya. 4 months of development, optimized for Quest 2.</p>
+        <a href="https://github.com/Makinilla-maker/Giravolt2023" class="project-link">Visit GitHub →</a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-image">
+        <img src="images/caronte_gif.gif" alt="Caronte Mandate">
+      </div>
+      <div class="project-content">
+        <span class="project-tag">Custom Engine</span>
+        <h2 class="project-title">Caronte Mandate</h2>
+        <p class="project-description">A classic RPG created for a second year course using a proprietary engine built by students.</p>
+        <a href="https://github.com/KuronoaScarlet/ProjectII/releases/tag/1.0" class="project-link">Test the Game →</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>© 2025. Isaac Colomer</p>
+      <div class="footer-links">
+        <a href="https://twitter.com/IsaacColomerC1">Twitter</a>
+        <a href="https://github.com/IsaaColomer">GitHub</a>
+        <a href="https://www.linkedin.com/in/isaac-colomer-casas-4a8a41206/">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+</body>
 </html>
