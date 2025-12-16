@@ -101,6 +101,86 @@ body {
   letter-spacing: -0.02em;
 }
 
+/* Page Hero (for sub-pages) */
+.page-hero {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10rem 2rem 5rem;
+}
+
+.page-title {
+  font-size: clamp(2.5rem, 5vw, 3.75rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+.page-subtitle {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  font-weight: 300;
+}
+
+/* Projects Text-Only Layout */
+.projects-text-only {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem 6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.project-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.project-text:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.project-text-tag {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.project-text-title {
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.project-text-description {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+.project-text-link {
+  font-size: 0.9375rem;
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  margin-top: 0.25rem;
+}
+
+.project-text-link:hover {
+  color: var(--color-text-primary);
+}
+
 /* Experience Section */
 .experience {
   max-width: 1200px;
@@ -330,8 +410,17 @@ body {
   }
 
   .work,
-  .experience {
-    padding: 3rem 1.25rem;
+  .experience,
+  .projects-text-only {
+    padding: 0 1.25rem 4rem;
+  }
+
+  .page-hero {
+    padding: 8rem 1.5rem 4rem;
+  }
+
+  .projects-text-only {
+    gap: 2.5rem;
   }
 
   .work-info {
