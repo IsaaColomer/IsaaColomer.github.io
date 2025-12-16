@@ -25,6 +25,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
 
     /* Navigation */
@@ -67,6 +68,10 @@
       color: #525048;
       text-decoration: none;
       transition: color 0.2s ease;
+      padding: 0.5rem 0;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
     }
 
     .nav-links a:hover {
@@ -95,7 +100,7 @@
     }
 
     .contact-header h1 {
-      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-size: clamp(1.5rem, 6vw, 2.5rem);
       font-weight: 400;
       line-height: 1.4;
       color: #1a1816;
@@ -110,7 +115,7 @@
     }
 
     .about-text p {
-      font-size: 0.9375rem;
+      font-size: clamp(0.875rem, 2vw, 0.9375rem);
       line-height: 1.8;
       color: #525048;
       margin-bottom: 1rem;
@@ -126,12 +131,14 @@
       padding: 1rem 2.5rem;
       background-color: #1a1816;
       color: #fafaf9;
-      font-size: 0.9375rem;
+      font-size: clamp(0.875rem, 2vw, 0.9375rem);
       font-weight: 500;
       text-decoration: none;
       border-radius: 50px;
       transition: all 0.2s ease;
       margin-bottom: 4rem;
+      min-height: 44px;
+      text-align: center;
     }
 
     .cta-button:hover {
@@ -161,10 +168,14 @@
     }
 
     .contact-item a {
-      font-size: 0.9375rem;
+      font-size: clamp(0.875rem, 2vw, 0.9375rem);
       color: #1a1816;
       text-decoration: none;
       transition: color 0.2s ease;
+      padding: 0.5rem 0;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
     }
 
     .contact-item a:hover {
@@ -221,11 +232,20 @@
       }
 
       .nav-links {
-        gap: 1.25rem;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-links a {
+        font-size: 0.8125rem;
       }
 
       main {
         padding: 8rem 1.5rem 4rem;
+      }
+
+      .contact-header {
+        margin-bottom: 3rem;
       }
 
       .contact-grid {
@@ -233,9 +253,87 @@
         gap: 2rem;
       }
 
+      .cta-button {
+        padding: 0.875rem 2rem;
+        margin-bottom: 3rem;
+      }
+
       .footer-inner {
         flex-direction: column;
         text-align: center;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav-inner {
+        padding: 1rem 1.25rem;
+      }
+
+      .nav-links {
+        gap: 0.875rem;
+      }
+
+      .nav-links a {
+        font-size: 0.8125rem;
+        min-height: 40px;
+      }
+
+      main {
+        padding: 7rem 1.25rem 3rem;
+      }
+
+      .contact-header {
+        margin-bottom: 2.5rem;
+      }
+
+      .contact-header .label {
+        font-size: 0.75rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .about-text {
+        margin-bottom: 2.5rem;
+      }
+
+      .cta-button {
+        width: 100%;
+        padding: 1rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .contact-grid {
+        gap: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-inner {
+        padding: 0.875rem 1rem;
+      }
+
+      .nav-links {
+        gap: 0.75rem;
+      }
+
+      .nav-links a {
+        font-size: 0.75rem;
+        padding: 0.375rem 0;
+      }
+
+      .nav-logo {
+        font-size: 0.8125rem;
+      }
+
+      main {
+        padding: 6rem 1rem 2.5rem;
+      }
+
+      .contact-header .label {
+        font-size: 0.6875rem;
+      }
+
+      .contact-item .label {
+        font-size: 0.6875rem;
       }
     }
   </style>
