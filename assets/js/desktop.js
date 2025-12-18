@@ -19,10 +19,16 @@ function updateClock() {
 setInterval(updateClock, 60000);
 updateClock();
 
+// Helper to detect mobile/touch
+const isMobile = () => window.innerWidth <= 768 || ('ontouchstart' in window);
+
 // Window Functions
 window.openWindow = function(id) {
     const win = document.getElementById(id);
     if (!win) return;
+    
+    // Clear selections when opening a window
+    document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
     
     win.style.display = 'flex';
     win.classList.add('active');
@@ -45,64 +51,93 @@ function focusWindow(win) {
 
 // Global Mouse Down Handler
 document.addEventListener('mousedown', function(e) {
+    handleStart(e.clientX, e.clientY, e.target);
+});
+
+// Touch Support
+document.addEventListener('touchstart', function(e) {
+    const touch = e.touches[0];
+    handleStart(touch.clientX, touch.clientY, e.target);
+}, { passive: false });
+
+function handleStart(clientX, clientY, target) {
     // 1. Resize Check
-    const resizeHandle = e.target.closest('.win-resize');
+    const resizeHandle = target.closest('.win-resize');
     if (resizeHandle) {
+        if (window.innerWidth <= 768) return; // Disable on mobile
         resizingElement = resizeHandle.closest('.window');
         focusWindow(resizingElement);
         startWidth = resizingElement.offsetWidth;
         startHeight = resizingElement.offsetHeight;
-        offsetX = e.clientX;
-        offsetY = e.clientY;
-        e.preventDefault();
+        offsetX = clientX;
+        offsetY = clientY;
         return;
     }
 
     // 2. Window Drag Check
-    const header = e.target.closest('.window-header');
+    const header = target.closest('.window-header');
     if (header) {
+        if (window.innerWidth <= 768) return; // Disable on mobile
         const win = header.closest('.window');
         draggedElement = win;
         focusWindow(win);
         const rect = win.getBoundingClientRect();
-        offsetX = e.clientX - rect.left;
-        offsetY = e.clientY - rect.top;
+        offsetX = clientX - rect.left;
+        offsetY = clientY - rect.top;
         draggedElement.style.transition = 'none';
-        e.preventDefault();
         return;
     }
 
     // 3. Icon Drag Check
-    const icon = e.target.closest('.desktop-icon');
+    const icon = target.closest('.desktop-icon');
     if (icon) {
+        const isAlreadySelected = icon.classList.contains('selected');
+        
         // Handle selection
         document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
         icon.classList.add('selected');
 
+        // On mobile, if already selected, open on single tap
+        if (isMobile() && isAlreadySelected) {
+            const windowId = icon.getAttribute('ondblclick').match(/'([^']+)'/)[1];
+            window.openWindow(windowId);
+            return;
+        }
+
         draggedIcon = icon;
         const rect = icon.getBoundingClientRect();
-        offsetX = e.clientX - rect.left;
-        offsetY = e.clientY - rect.top;
+        offsetX = clientX - rect.left;
+        offsetY = clientY - rect.top;
         icon.style.transition = 'none';
         icon.style.zIndex = highestZ + 1;
-        e.preventDefault();
         return;
     } else {
         // Clear selection if clicking elsewhere
-        document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+        if (!target.closest('.window')) {
+            document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+        }
     }
 
     // 4. Focus window on click
-    const win = e.target.closest('.window');
+    const win = target.closest('.window');
     if (win) focusWindow(win);
-});
+}
 
 // Global Mouse Move Handler
 document.addEventListener('mousemove', function(e) {
+    handleMove(e.clientX, e.clientY);
+});
+
+document.addEventListener('touchmove', function(e) {
+    const touch = e.touches[0];
+    handleMove(touch.clientX, touch.clientY);
+}, { passive: false });
+
+function handleMove(clientX, clientY) {
     // 1. Handle Window Resizing
     if (resizingElement) {
-        const newWidth = startWidth + (e.clientX - offsetX);
-        const newHeight = startHeight + (e.clientY - offsetY);
+        const newWidth = startWidth + (clientX - offsetX);
+        const newHeight = startHeight + (clientY - offsetY);
         
         if (newWidth > 200) resizingElement.style.width = newWidth + 'px';
         if (newHeight > 150) resizingElement.style.height = newHeight + 'px';
@@ -111,8 +146,8 @@ document.addEventListener('mousemove', function(e) {
 
     // 2. Handle Window Dragging
     if (draggedElement) {
-        let x = e.clientX - offsetX;
-        let y = e.clientY - offsetY;
+        let x = clientX - offsetX;
+        let y = clientY - offsetY;
 
         const desktop = document.getElementById('desktop');
         const dRect = desktop.getBoundingClientRect();
@@ -129,17 +164,20 @@ document.addEventListener('mousemove', function(e) {
 
     // 3. Handle Icon Dragging
     if (draggedIcon) {
-        let x = e.clientX - offsetX;
-        let y = e.clientY - offsetY;
+        let x = clientX - offsetX;
+        let y = clientY - offsetY;
 
         draggedIcon.style.position = 'absolute';
         draggedIcon.style.left = x + 'px';
         draggedIcon.style.top = y + 'px';
     }
-});
+}
 
 // Global Mouse Up Handler
-document.addEventListener('mouseup', function() {
+document.addEventListener('mouseup', handleEnd);
+document.addEventListener('touchend', handleEnd);
+
+function handleEnd() {
     if (draggedElement) {
         draggedElement.style.transition = '';
         draggedElement = null;
@@ -149,14 +187,14 @@ document.addEventListener('mouseup', function() {
     }
     if (draggedIcon) {
         draggedIcon.style.transition = '';
-        // Save position optionally
+        // Save position
         localStorage.setItem(`pos-${draggedIcon.id}`, JSON.stringify({
             left: draggedIcon.style.left,
             top: draggedIcon.style.top
         }));
         draggedIcon = null;
     }
-});
+}
 
 // Initialize
 window.onload = () => {
