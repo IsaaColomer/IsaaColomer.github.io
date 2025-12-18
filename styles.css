@@ -378,10 +378,41 @@ body.desktop-os {
 }
 
 .trash-content {
+  padding: 1rem;
+}
+
+.folder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 1.5rem;
+}
+
+.folder-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+  cursor: default;
+  padding: 0.5rem;
+  border: 1px solid transparent;
+}
+
+.folder-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 1px dashed var(--color-border);
+}
+
+.folder-item i {
+  font-size: 2rem;
   color: var(--color-text-muted);
+}
+
+.folder-item span {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  word-break: break-all;
+  max-width: 90px;
 }
 
 /* Animations */
