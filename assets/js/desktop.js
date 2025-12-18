@@ -75,6 +75,10 @@ document.addEventListener('mousedown', function(e) {
     // 3. Icon Drag Check
     const icon = e.target.closest('.desktop-icon');
     if (icon) {
+        // Handle selection
+        document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+        icon.classList.add('selected');
+
         draggedIcon = icon;
         const rect = icon.getBoundingClientRect();
         offsetX = e.clientX - rect.left;
@@ -83,6 +87,9 @@ document.addEventListener('mousedown', function(e) {
         icon.style.zIndex = highestZ + 1;
         e.preventDefault();
         return;
+    } else {
+        // Clear selection if clicking elsewhere
+        document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
     }
 
     // 4. Focus window on click

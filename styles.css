@@ -139,6 +139,11 @@ body.desktop-os {
   border: 2px dashed var(--color-text-primary);
 }
 
+.desktop-icon.selected {
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--color-text-primary);
+}
+
 .icon-wrapper {
   font-size: 2.5rem;
   color: var(--color-accent);
