@@ -1,163 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>Isaac Colomer — Videogame Designer & Programmer</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="description" content="Portfolio and CV of Isaac Colomer, experienced videogame designer and programmer" />
-		<link rel="stylesheet" href="styles.css" />
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-	</head>
-	<body>
-		<!-- Navigation -->
-		<nav class="nav">
-			<div class="nav-content">
-				<a href="index.html" class="nav-name">Isaac Colomer</a>
-				<div class="nav-links">
-					<a href="#work">Work</a>
-					<a href="#experience">Experience</a>
-					<a href="contact.html">Contact</a>
-				</div>
-			</div>
-		</nav>
-
-		<!-- Hero Section -->
-		<section class="hero">
-			<div class="hero-greeting">Good afternoon</div>
-			<h1 class="hero-title">Videogame Designer<br>& Programmer</h1>
-		</section>
-		<!-- Experience Timeline -->
-		<section id="experience" class="experience">
-			<div class="section-header">
-				<h2 class="section-title">Experience</h2>
-			</div>
-			
-			<div class="timeline">
-				<div class="timeline-item">
-					<div class="timeline-date">2025 — Present</div>
-					<div class="timeline-content">
-						<h3 class="timeline-title">Junior AI Developer · Mindsight Ventures</h3>
-						<p class="timeline-description">
-							Designing and implementing AI-powered features and automation tools across internal products. Working with Python, containerized environments, and LLM-driven workflows to enhance test automation, data processing, and product prototyping. Collaborating with cross-functional teams to integrate AI systems into production pipelines.
-						</p>
-					</div>
-				</div>
-
-				<div class="timeline-item">
-					<div class="timeline-date">Aug 2025 — Oct 2025</div>
-					<div class="timeline-content">
-						<h3 class="timeline-title">AI Development Intern · Mindsight Ventures</h3>
-						<p class="timeline-description">
-							Supported AI research and prototyping efforts, assisting in building internal tools and improving automation workflows. Contributed to early-stage models, data handling scripts, and test environments while learning production-level AI engineering practices.
-						</p>
-					</div>
-				</div>
-
-				<div class="timeline-item">
-					<div class="timeline-date">2023 — 2024</div>
-					<div class="timeline-content">
-						<h3 class="timeline-title">Test Engineer · GLI</h3>
-						<p class="timeline-description">
-							Executed comprehensive software validation to ensure regulatory compliance and correct functionality. Coordinated with global teams to accredit software performance, maintained validation documentation, and optimized testing processes to improve reliability and throughput.
-						</p>
-					</div>
-				</div>
-
-				<div class="timeline-item">
-					<div class="timeline-date">2021</div>
-					<div class="timeline-content">
-						<h3 class="timeline-title">Teacher & Mentor · Innvideogames</h3>
-						<p class="timeline-description">
-							Taught programming, Unity development, and game design fundamentals. Mentored students on gameplay systems, level design, and code architecture, guiding them through full project pipelines from concept to polished prototypes.
-						</p>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<!-- Work Section -->
-		<section id="work" class="work">
-			<div class="section-header">
-				<h2 class="section-title">Selected work</h2>
-			</div>
-			
-			<div class="work-grid">
-				<a href="landing.html" class="work-item work-item-code">
-					<div class="work-image code-background">
-						<pre class="code-snippet"><code>class GameSystem {
-  void Update(float deltaTime) {
-    for (auto& entity : entities) {
-      entity.position += 
-        entity.velocity * deltaTime;
-      
-      if (CheckCollision(entity)) {
-        HandlePhysics(entity);
-      }
-    }
+<head>
+    <title>Isaac Colomer — Portfolio OS</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Interactive desktop portfolio of Isaac Colomer, videogame designer and programmer" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome for standard icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="desktop-os">
+    <div class="grain-overlay"></div>
     
-    RenderWorld();
-  }
-}</code></pre>
-					</div>
-					<div class="work-info">
-						<span class="work-category">Development</span>
-						<h3 class="work-title">Code & Development</h3>
-						<p class="work-description">Technical implementations across game engines, tools, and systems</p>
-						<div class="work-tags">
-							<span class="tag">C</span>
-							<span class="tag">C++</span>
-							<span class="tag">C#</span>
-							<span class="tag">React</span>
-							<span class="tag">Unity</span>
-							<span class="tag">Unreal</span>
-						</div>
-					</div>
-				</a>
-				
-				<a href="generic.html" class="work-item work-item-design">
-					<div class="work-image design-background">
-						<div class="design-grid">
-							<div class="grid-item"></div>
-							<div class="grid-item"></div>
-							<div class="grid-item"></div>
-							<div class="grid-item"></div>
-							<div class="grid-item accent"></div>
-							<div class="grid-item"></div>
-							<div class="grid-item"></div>
-							<div class="grid-item accent"></div>
-							<div class="grid-item"></div>
-							<div class="grid-item"></div>
-							<div class="grid-item accent"></div>
-							<div class="grid-item"></div>
-							<div class="grid-circle"></div>
-						</div>
-					</div>
-					<div class="work-info">
-						<span class="work-category">Design</span>
-						<h3 class="work-title">Game Design</h3>
-						<p class="work-description">Level design, mechanics, and player experience</p>
-						<div class="work-tags">
-							<span class="tag">Design</span>
-							<span class="tag">UX</span>
-						</div>
-					</div>
-				</a>
-			</div>
-		</section>
+    <!-- Top Bar -->
+    <nav class="top-bar">
+        <div class="top-bar-left">
+            <span class="system-name"><i class="fa-solid fa-house"></i> IsaacOS</span>
+            <div class="top-bar-menu">
+                <a href="#" onclick="openWindow('win-about')">About</a>
+                <a href="#" onclick="openWindow('win-experience')">Experience</a>
+                <a href="#" onclick="openWindow('win-projects')">Work</a>
+                <a href="#" onclick="openWindow('win-contact')">Contact</a>
+            </div>
+        </div>
+        <div class="top-bar-right">
+            <span id="clock">12:00 PM</span>
+        </div>
+    </nav>
 
-		<!-- Footer -->
-		<footer class="footer">
-			<div class="footer-content">
-				<p>© 2025. Crafted by Isaac Colomer</p>
-				<div class="footer-links">
-					<a href="https://twitter.com/IsaacColomerC1">Twitter</a>
-					<a href="https://github.com/IsaaColomer">GitHub</a>
-					<a href="https://www.linkedin.com/in/isaac-colomer-casas-4a8a41206/">LinkedIn</a>
-				</div>
-			</div>
-		</footer>
+    <!-- Desktop Area -->
+    <main id="desktop">
+        <div class="desktop-grid">
+            <div class="desktop-icon" onclick="openWindow('win-experience')">
+                <div class="icon-wrapper"><i class="fa-solid fa-file-lines"></i></div>
+                <span>experience.mdx</span>
+            </div>
+            <div class="desktop-icon" onclick="openWindow('win-projects')">
+                <div class="icon-wrapper"><i class="fa-solid fa-folder-open"></i></div>
+                <span>projects.zip</span>
+            </div>
+            <div class="desktop-icon" onclick="openWindow('win-contact')">
+                <div class="icon-wrapper"><i class="fa-solid fa-address-book"></i></div>
+                <span>contact.txt</span>
+            </div>
+            <div class="desktop-icon" onclick="openWindow('win-about')">
+                <div class="icon-wrapper"><i class="fa-solid fa-circle-info"></i></div>
+                <span>readme.txt</span>
+            </div>
+            <div class="desktop-icon trash" onclick="openWindow('win-trash')">
+                <div class="icon-wrapper"><i class="fa-solid fa-trash-can"></i></div>
+                <span>Trash</span>
+            </div>
+        </div>
 
-	</body>
+        <!-- Window Templates -->
+        
+        <!-- Experience Window -->
+        <div class="window" id="win-experience" style="display: none; top: 100px; left: 100px;">
+            <div class="window-header">
+                <div class="window-title"><i class="fa-solid fa-file-lines"></i> experience.mdx</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-experience')"><i class="fa-solid fa-minus"></i></button>
+                    <button class="win-btn maximize"><i class="fa-regular fa-square"></i></button>
+                    <button class="win-btn close" onclick="closeWindow('win-experience')"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div class="window-content">
+                <section class="experience-section">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-date">2025 — Present</div>
+                            <div class="timeline-content">
+                                <h3>Junior AI Developer · Mindsight Ventures</h3>
+                                <p>Designing and implementing AI-powered features and automation tools across internal products. Working with Python, containerized environments, and LLM-driven workflows to enhance test automation, data processing, and product prototyping. Collaborating with cross-functional teams to integrate AI systems into production pipelines.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">Aug 2025 — Oct 2025</div>
+                            <div class="timeline-content">
+                                <h3>AI Development Intern · Mindsight Ventures</h3>
+                                <p>Supported AI research and prototyping efforts, assisting in building internal tools and improving automation workflows. Contributed to early-stage models, data handling scripts, and test environments while learning production-level AI engineering practices.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">2023 — 2024</div>
+                            <div class="timeline-content">
+                                <h3>Test Engineer · GLI</h3>
+                                <p>Executed comprehensive software validation to ensure regulatory compliance and correct functionality. Coordinated with global teams to accredit software performance, maintained validation documentation, and optimized testing processes to improve reliability and throughput.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">2021</div>
+                            <div class="timeline-content">
+                                <h3>Teacher & Mentor · Innvideogames</h3>
+                                <p>Taught programming, Unity development, and game design fundamentals. Mentored students on gameplay systems, level design, and code architecture, guiding them through full project pipelines from concept to polished prototypes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Projects Window -->
+        <div class="window" id="win-projects" style="display: none; top: 120px; left: 120px;">
+            <div class="window-header">
+                <div class="window-title"><i class="fa-solid fa-folder-open"></i> projects.zip</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-projects')"><i class="fa-solid fa-minus"></i></button>
+                    <button class="win-btn maximize"><i class="fa-regular fa-square"></i></button>
+                    <button class="win-btn close" onclick="closeWindow('win-projects')"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="projects-container">
+                    <h3>Programming</h3>
+                    <div class="projects-list">
+                        <div class="project-mini">
+                            <strong>Lights Out</strong>
+                            <p>Indie Dev Game Jam - Programming & Bug Fixing.</p>
+                            <a href="https://osvak.itch.io/lights-out" target="_blank">View →</a>
+                        </div>
+                        <div class="project-mini">
+                            <strong>Final Degree Work</strong>
+                            <p>UE 5.1 First Person Walking Simulator.</p>
+                            <a href="https://www.youtube.com/watch?v=aa2Q2_MgMjY" target="_blank">Watch →</a>
+                        </div>
+                        <div class="project-mini">
+                            <strong>Màscares & Marquesos</strong>
+                            <p>VR optimized for Quest 2 - Generalitat de Catalunya.</p>
+                            <a href="https://github.com/Makinilla-maker/Giravolt2023" target="_blank">GitHub →</a>
+                        </div>
+                    </div>
+                    <hr>
+                    <h3>Design</h3>
+                    <div class="projects-list">
+                        <div class="project-mini">
+                            <strong>Dune Fremen's Rising</strong>
+                            <p>Level design & creative direction.</p>
+                            <a href="https://shorturl.at/hqtAC" target="_blank">Info →</a>
+                        </div>
+                        <div class="project-mini">
+                            <strong>Summer Game</strong>
+                            <p>Atmospheric experience design.</p>
+                            <a href="https://isaacolomer.itch.io/summer-game" target="_blank">Play →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Window -->
+        <div class="window" id="win-contact" style="display: none; top: 140px; left: 140px;">
+            <div class="window-header">
+                <div class="window-title"><i class="fa-solid fa-address-book"></i> contact.txt</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-contact')"><i class="fa-solid fa-minus"></i></button>
+                    <button class="win-btn maximize"><i class="fa-regular fa-square"></i></button>
+                    <button class="win-btn close" onclick="closeWindow('win-contact')"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="contact-win-body">
+                    <h2>Get in touch</h2>
+                    <p>I'm always down to chat about projects or opportunities.</p>
+                    <div class="contact-links">
+                        <a href="mailto:isaacolomer@gmail.com" class="win-cta"><i class="fa-solid fa-envelope"></i> Email Me</a>
+                        <div class="social-grid">
+                            <a href="https://www.linkedin.com/in/isaac-colomer-casas-4a8a41206/" target="_blank"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+                            <a href="https://github.com/IsaaColomer" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>
+                            <a href="https://twitter.com/IsaacColomerC1" target="_blank"><i class="fa-brands fa-twitter"></i> Twitter</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Window -->
+        <div class="window" id="win-about" style="display: none; top: 80px; left: 80px;">
+            <div class="window-header">
+                <div class="window-title"><i class="fa-solid fa-circle-info"></i> readme.txt</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-about')"><i class="fa-solid fa-minus"></i></button>
+                    <button class="win-btn maximize"><i class="fa-regular fa-square"></i></button>
+                    <button class="win-btn close" onclick="closeWindow('win-about')"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="about-win-body">
+                    <h1>Isaac Colomer</h1>
+                    <p class="subtitle">Videogame Designer & Programmer</p>
+                    <p>I have a wide knowledge in languages like C, C++, C# and engines like Unity and Unreal Engine. I'm characterized by being easy to work with, tidy, responsible, and punctual.</p>
+                    <p>Currently focusing on AI Development at Mindsight Ventures.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trash Window -->
+        <div class="window" id="win-trash" style="display: none; top: 160px; left: 160px;">
+            <div class="window-header">
+                <div class="window-title"><i class="fa-solid fa-trash-can"></i> Trash</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-trash')"><i class="fa-solid fa-minus"></i></button>
+                    <button class="win-btn maximize"><i class="fa-regular fa-square"></i></button>
+                    <button class="win-btn close" onclick="closeWindow('win-trash')"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div class="window-content trash-content">
+                <p>The trash is empty.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="assets/js/desktop.js"></script>
+</body>
 </html>
