@@ -3,8 +3,13 @@ let highestZ = 100;
 let draggedElement = null;
 let resizingElement = null;
 let draggedIcon = null;
-let offsetX = 0;
-let offsetY = 0;
+
+// Initial positions for dragging
+let startMouseX = 0;
+let startMouseY = 0;
+let startElemX = 0;
+let startElemY = 0;
+
 let startWidth = 0;
 let startHeight = 0;
 
@@ -18,9 +23,6 @@ function updateClock() {
 }
 setInterval(updateClock, 60000);
 updateClock();
-
-// Helper to detect mobile/touch
-const isMobile = () => window.innerWidth <= 768 || ('ontouchstart' in window);
 
 // Window Functions
 window.openWindow = function(id) {
@@ -49,6 +51,9 @@ function focusWindow(win) {
     win.style.zIndex = highestZ;
 }
 
+// Helper to detect mobile/touch
+const isMobile = () => window.innerWidth <= 768 || ('ontouchstart' in window);
+
 // Global Mouse Down Handler
 document.addEventListener('mousedown', function(e) {
     handleStart(e.clientX, e.clientY, e.target);
@@ -69,8 +74,8 @@ function handleStart(clientX, clientY, target) {
         focusWindow(resizingElement);
         startWidth = resizingElement.offsetWidth;
         startHeight = resizingElement.offsetHeight;
-        offsetX = clientX;
-        offsetY = clientY;
+        startMouseX = clientX;
+        startMouseY = clientY;
         return;
     }
 
@@ -81,9 +86,13 @@ function handleStart(clientX, clientY, target) {
         const win = header.closest('.window');
         draggedElement = win;
         focusWindow(win);
-        const rect = win.getBoundingClientRect();
-        offsetX = clientX - rect.left;
-        offsetY = clientY - rect.top;
+        
+        // Use offsetLeft/Top which are relative to the offsetParent (#desktop)
+        startElemX = win.offsetLeft;
+        startElemY = win.offsetTop;
+        startMouseX = clientX;
+        startMouseY = clientY;
+        
         draggedElement.style.transition = 'none';
         return;
     }
@@ -105,9 +114,11 @@ function handleStart(clientX, clientY, target) {
         }
 
         draggedIcon = icon;
-        const rect = icon.getBoundingClientRect();
-        offsetX = clientX - rect.left;
-        offsetY = clientY - rect.top;
+        startElemX = icon.offsetLeft;
+        startElemY = icon.offsetTop;
+        startMouseX = clientX;
+        startMouseY = clientY;
+        
         icon.style.transition = 'none';
         icon.style.zIndex = highestZ + 1;
         return;
@@ -134,10 +145,13 @@ document.addEventListener('touchmove', function(e) {
 }, { passive: false });
 
 function handleMove(clientX, clientY) {
+    const deltaX = clientX - startMouseX;
+    const deltaY = clientY - startMouseY;
+
     // 1. Handle Window Resizing
     if (resizingElement) {
-        const newWidth = startWidth + (clientX - offsetX);
-        const newHeight = startHeight + (clientY - offsetY);
+        const newWidth = startWidth + deltaX;
+        const newHeight = startHeight + deltaY;
         
         if (newWidth > 200) resizingElement.style.width = newWidth + 'px';
         if (newHeight > 150) resizingElement.style.height = newHeight + 'px';
@@ -146,16 +160,18 @@ function handleMove(clientX, clientY) {
 
     // 2. Handle Window Dragging
     if (draggedElement) {
-        let x = clientX - offsetX;
-        let y = clientY - offsetY;
+        let x = startElemX + deltaX;
+        let y = startElemY + deltaY;
 
         const desktop = document.getElementById('desktop');
         const dRect = desktop.getBoundingClientRect();
         const wRect = draggedElement.getBoundingClientRect();
 
+        // Boundaries
         if (x < 0) x = 0;
-        if (y < 32) y = 32;
-        if (x + wRect.width > dRect.width + dRect.left) x = dRect.width + dRect.left - wRect.width;
+        if (y < 0) y = 0;
+        if (x + wRect.width > dRect.width) x = dRect.width - wRect.width;
+        if (y + wRect.height > dRect.height) y = dRect.height - wRect.height;
 
         draggedElement.style.left = x + 'px';
         draggedElement.style.top = y + 'px';
@@ -164,8 +180,8 @@ function handleMove(clientX, clientY) {
 
     // 3. Handle Icon Dragging
     if (draggedIcon) {
-        let x = clientX - offsetX;
-        let y = clientY - offsetY;
+        let x = startElemX + deltaX;
+        let y = startElemY + deltaY;
 
         draggedIcon.style.position = 'absolute';
         draggedIcon.style.left = x + 'px';
