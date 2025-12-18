@@ -30,7 +30,7 @@ body.desktop-os {
   text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
-/* Scanline Effect - Balanced, behind windows */
+/* Scanline Effect - Very subtle, behind windows */
 .desktop-os::after {
   content: "";
   position: fixed;
@@ -40,20 +40,20 @@ body.desktop-os {
   height: 100%;
   background: linear-gradient(
     rgba(18, 16, 16, 0) 50%,
-    rgba(0, 0, 0, 0.12) 50%
+    rgba(0, 0, 0, 0.07) 50%
   ), linear-gradient(
     90deg,
-    rgba(255, 0, 0, 0.04),
+    rgba(255, 0, 0, 0.02),
     rgba(0, 255, 0, 0.01),
-    rgba(0, 0, 255, 0.04)
+    rgba(0, 0, 255, 0.02)
   );
   background-size: 100% 3px, 3px 100%;
   pointer-events: none;
-  z-index: 5; /* Behind windows (10+) but over desktop background */
-  animation: crt-flicker 0.15s infinite;
+  z-index: 5; /* Behind windows */
+  animation: crt-flicker 0.2s infinite;
 }
 
-/* CRT Screen Effects - Balanced vignette */
+/* CRT Screen Effects - Very subtle vignette */
 .crt-overlay {
   position: fixed;
   top: 0;
@@ -63,18 +63,18 @@ body.desktop-os {
   background: radial-gradient(
     circle,
     rgba(18, 16, 16, 0) 0%,
-    rgba(0, 0, 0, 0.08) 60%,
-    rgba(0, 0, 0, 0.25) 100%
+    rgba(0, 0, 0, 0.04) 60%,
+    rgba(0, 0, 0, 0.15) 100%
   );
   pointer-events: none;
   z-index: 4; /* Behind windows */
-  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes crt-flicker {
-  0% { opacity: 0.98; }
+  0% { opacity: 0.99; }
   50% { opacity: 1; }
-  100% { opacity: 0.99; }
+  100% { opacity: 0.995; }
 }
 
 /* Grainy Background Effect */
@@ -223,14 +223,14 @@ body.desktop-os {
   height: 100%;
   background: repeating-linear-gradient(
     0deg,
-    rgba(0, 0, 0, 0.02),
-    rgba(0, 0, 0, 0.02) 1px,
+    rgba(0, 0, 0, 0.01),
+    rgba(0, 0, 0, 0.01) 1px,
     transparent 1px,
     transparent 2px
   );
   pointer-events: none;
   z-index: 100;
-  opacity: 0.3;
+  opacity: 0.15;
 }
 
 .window-header {
