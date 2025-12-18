@@ -20,13 +20,32 @@
 }
 
 body.desktop-os {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Courier New', Courier, monospace;
   background-color: var(--color-bg);
   color: var(--color-text-primary);
   height: 100vh;
   width: 100vw;
   overflow: hidden;
   position: relative;
+}
+
+/* Scanline Effect */
+.desktop-os::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.03),
+    rgba(0, 0, 0, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 10000;
 }
 
 /* Grainy Background Effect */
@@ -38,22 +57,21 @@ body.desktop-os {
   height: 100%;
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.04;
+  opacity: 0.05;
   background-image: url("https://grainy-gradients.vercel.app/noise.svg");
 }
 
 /* Top Bar */
 .top-bar {
   height: 32px;
-  background-color: rgba(229, 226, 217, 0.8);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-window-header);
+  border-bottom: 3px solid var(--color-text-primary);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 1rem;
-  font-size: 0.8125rem;
-  font-weight: 500;
+  font-size: 0.875rem;
+  font-weight: 600;
   position: fixed;
   top: 0;
   left: 0;
@@ -68,25 +86,22 @@ body.desktop-os {
 }
 
 .system-name {
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  font-weight: 700;
 }
 
 .top-bar-menu {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .top-bar-menu a {
   text-decoration: none;
   color: var(--color-text-primary);
-  transition: opacity 0.2s;
+  border-bottom: 1px dashed transparent;
 }
 
 .top-bar-menu a:hover {
-  opacity: 0.6;
+  border-bottom: 1px dashed var(--color-text-primary);
 }
 
 /* Desktop Area */
@@ -100,43 +115,48 @@ body.desktop-os {
 
 .desktop-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 100px);
-  grid-auto-rows: 100px;
-  gap: 1.5rem;
-  pointer-events: none; /* Icons should be clickable but grid shouldn't block windows */
+  grid-template-columns: repeat(auto-fill, 120px);
+  grid-auto-rows: 120px;
+  gap: 2rem;
+  pointer-events: none;
 }
 
 .desktop-icon {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
   cursor: pointer;
   pointer-events: auto;
   padding: 0.5rem;
-  border-radius: 0.5rem;
-  transition: background-color 0.2s;
+  border: 2px solid transparent;
+  transition: all 0.1s;
+  user-select: none;
 }
 
 .desktop-icon:hover {
-  background-color: rgba(124, 106, 94, 0.08);
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 2px dashed var(--color-text-primary);
 }
 
 .icon-wrapper {
   font-size: 2.5rem;
   color: var(--color-accent);
+  margin-bottom: 0.25rem;
+  pointer-events: none;
 }
 
 .desktop-icon span {
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
   color: var(--color-text-primary);
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+  word-break: break-all;
+  max-width: 100px;
 }
 
 .desktop-icon.trash {
-  position: fixed;
+  position: absolute;
   bottom: 2rem;
   right: 2rem;
 }
@@ -147,24 +167,22 @@ body.desktop-os {
   min-width: 400px;
   min-height: 300px;
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-  box-shadow: var(--shadow-window);
+  border: 3px solid var(--color-text-primary);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   z-index: 10;
-  transition: box-shadow 0.2s, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 8px 8px 0px var(--color-text-primary);
 }
 
 .window.focused {
-  box-shadow: var(--shadow-window-focus);
+  box-shadow: 12px 12px 0px var(--color-accent);
 }
 
 .window-header {
   height: 36px;
-  background-color: var(--color-window-header);
-  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-text-primary);
+  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -178,56 +196,58 @@ body.desktop-os {
 }
 
 .window-title {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
 }
 
 .window-controls {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .win-btn {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 1px solid var(--color-border);
-  background-color: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.625rem;
+  background: none;
+  border: none;
+  color: white;
+  font-family: monospace;
+  font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-  color: var(--color-text-muted);
+  padding: 0 4px;
 }
 
-.win-btn.close:hover {
-  background-color: #ff5f57;
-  color: white;
-  border-color: #e33e32;
-}
-
-.win-btn.minimize:hover {
-  background-color: #febc2e;
-  color: white;
-  border-color: #d8a009;
-}
-
-.win-btn.maximize:hover {
-  background-color: #28c840;
-  color: white;
-  border-color: #12a02b;
+.win-btn:hover {
+  background-color: var(--color-accent);
 }
 
 .window-content {
   flex: 1;
   overflow-y: auto;
   padding: 1.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-text-primary) var(--color-bg);
+}
+
+.win-resize {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  cursor: nwse-resize;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0 2px 2px 0;
+  color: var(--color-text-primary);
+  user-select: none;
+  z-index: 20;
+}
+
+.win-resize:hover {
+  color: var(--color-accent);
 }
 
 /* Specific Window Content Styles */
@@ -357,7 +377,6 @@ body.desktop-os {
   align-items: center;
   justify-content: center;
   color: var(--color-text-muted);
-  font-style: italic;
 }
 
 /* Animations */
@@ -384,10 +403,11 @@ body.desktop-os {
     top: 3.5rem !important;
     left: 0.5rem !important;
     min-width: 0;
+    box-shadow: 4px 4px 0px var(--color-text-primary);
   }
   
   .desktop-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     padding: 1rem;
   }
@@ -405,11 +425,14 @@ body.desktop-os {
   }
 
   .top-bar-menu {
-    display: none; /* Hide top bar menu on small screens to save space */
+    display: none;
   }
 
   .desktop-icon.trash {
-    bottom: 1rem;
-    right: 1rem;
+    position: static;
+  }
+
+  .win-resize {
+    display: none;
   }
 }

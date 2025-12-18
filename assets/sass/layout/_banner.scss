@@ -115,10 +115,10 @@
 		&.major {
 			// No special major styles for editorial layout
 		}
-		
+
 		@include breakpoint('<=medium') {
 			padding: 8rem 2rem 4rem;
-		}
+			}
 		
 		@include breakpoint('<=small') {
 			padding: 7rem 1.25rem 3rem;
