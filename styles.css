@@ -109,23 +109,60 @@ body.desktop-os {
   gap: 1.5rem;
 }
 
+.system-dropdown {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
 .system-name {
   font-weight: 700;
-}
-
-.top-bar-menu {
+  cursor: pointer;
+  padding: 0 0.5rem;
+  height: 100%;
   display: flex;
-  gap: 1.5rem;
+  align-items: center;
+  transition: background-color 0.1s;
 }
 
-.top-bar-menu a {
-  text-decoration: none;
+.system-name:hover, .system-name.active {
+  background-color: var(--color-text-primary);
+  color: white;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 32px;
+  left: 0;
+  background-color: var(--color-window-header);
+  border: 3px solid var(--color-text-primary);
+  box-shadow: 6px 6px 0px var(--color-text-primary);
+  min-width: 180px;
+  z-index: 2000;
+}
+
+.dropdown-content.show {
+  display: block;
+}
+
+.dropdown-content a {
   color: var(--color-text-primary);
-  border-bottom: 1px dashed transparent;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  display: block;
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
 }
 
-.top-bar-menu a:hover {
-  border-bottom: 1px dashed var(--color-text-primary);
+.dropdown-content a:last-child {
+  border-bottom: none;
+}
+
+.dropdown-content a:hover {
+  background-color: var(--color-text-primary);
+  color: white;
 }
 
 /* Desktop Area */

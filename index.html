@@ -19,12 +19,14 @@
     <!-- Top Bar -->
     <nav class="top-bar">
         <div class="top-bar-left">
-            <span class="system-name">[+] IsaacOS</span>
-            <div class="top-bar-menu">
-                <a href="#" onclick="openWindow('win-about')">About</a>
-                <a href="#" onclick="openWindow('win-experience')">Experience</a>
-                <a href="#" onclick="openWindow('win-projects')">Work</a>
-                <a href="#" onclick="openWindow('win-contact')">Contact</a>
+            <div class="system-dropdown">
+                <span class="system-name" id="system-trigger" onclick="toggleDropdown()">[+] IsaacOS</span>
+                <div class="dropdown-content" id="system-menu">
+                    <a href="#" onclick="openWindow('win-about'); closeDropdown();">About</a>
+                    <a href="#" onclick="openWindow('win-experience'); closeDropdown();">Experience</a>
+                    <a href="#" onclick="openWindow('win-projects'); closeDropdown();">Work</a>
+                    <a href="#" onclick="openWindow('win-contact'); closeDropdown();">Contact</a>
+                </div>
             </div>
         </div>
         <div class="top-bar-right">

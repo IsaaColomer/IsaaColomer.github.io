@@ -44,6 +44,31 @@ window.closeWindow = function(id) {
     win.classList.remove('active');
 };
 
+// Dropdown Logic
+window.toggleDropdown = function() {
+    const menu = document.getElementById('system-menu');
+    const trigger = document.getElementById('system-trigger');
+    if (menu && trigger) {
+        const isShown = menu.classList.contains('show');
+        if (isShown) {
+            menu.classList.remove('show');
+            trigger.classList.remove('active');
+        } else {
+            menu.classList.add('show');
+            trigger.classList.add('active');
+        }
+    }
+};
+
+window.closeDropdown = function() {
+    const menu = document.getElementById('system-menu');
+    const trigger = document.getElementById('system-trigger');
+    if (menu && trigger) {
+        menu.classList.remove('show');
+        trigger.classList.remove('active');
+    }
+};
+
 function focusWindow(win) {
     document.querySelectorAll('.window').forEach(w => w.classList.remove('focused'));
     win.classList.add('focused');
@@ -231,3 +256,12 @@ window.onload = () => {
         }
     });
 };
+
+// Close dropdown when clicking outside
+document.addEventListener('mousedown', function(e) {
+    const menu = document.getElementById('system-menu');
+    const trigger = document.getElementById('system-trigger');
+    if (menu && trigger && !menu.contains(e.target) && !trigger.contains(e.target)) {
+        closeDropdown();
+    }
+});
