@@ -34,6 +34,15 @@ window.openWindow = function(id) {
     
     win.style.display = 'flex';
     win.classList.add('active');
+
+    // Special handling for Racer game: restart/reload iframe if it's empty
+    if (id === 'win-racer') {
+        const iframe = win.querySelector('iframe');
+        if (iframe && (!iframe.src || iframe.src === 'about:blank' || iframe.src === window.location.href)) {
+            iframe.src = './racer/index.html';
+        }
+    }
+    
     focusWindow(win);
 };
 
@@ -42,6 +51,14 @@ window.closeWindow = function(id) {
     if (!win) return;
     win.style.display = 'none';
     win.classList.remove('active');
+
+    // Special handling for Racer game: clear iframe to stop audio
+    if (id === 'win-racer') {
+        const iframe = win.querySelector('iframe');
+        if (iframe) {
+            iframe.src = 'about:blank';
+        }
+    }
 };
 
 // Dropdown Logic
