@@ -1,16 +1,23 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
 
 :root {
-  --color-bg: #f0ede6; /* PostHog-inspired beige */
-  --color-surface: #ffffff;
-  --color-accent: #7c6a5e;
-  --color-text-primary: #1a1816;
-  --color-text-secondary: #525048;
-  --color-text-muted: #78766f;
-  --color-border: #dcd9d2;
-  --color-window-header: #e5e2d9;
-  --shadow-window: 0 10px 30px rgba(0, 0, 0, 0.12);
-  --shadow-window-focus: 0 15px 45px rgba(0, 0, 0, 0.18);
+  /* Updated to vibrant retro Windows 95/98 inspired color palette */
+  --color-bg: #008080; /* Classic teal desktop background */
+  --color-surface: #c0c0c0; /* Windows 95 window gray */
+  --color-accent: #000080; /* Navy blue accent */
+  --color-accent-secondary: #ff00ff; /* Magenta for highlights */
+  --color-text-primary: #000000;
+  --color-text-secondary: #000000;
+  --color-text-muted: #404040;
+  --color-border: #808080;
+  --color-window-header: #000080; /* Classic Windows blue */
+  --color-window-header-active: #0000ff; /* Brighter blue when focused */
+  --shadow-window: 2px 2px 0 #000000;
+  --shadow-window-focus: 4px 4px 0 #000000;
+  --color-desktop-icon: #ffff00; /* Yellow for icon folder color */
+  --color-button-face: #c0c0c0;
+  --color-button-highlight: #ffffff;
+  --color-button-shadow: #808080;
 }
 
 * {
@@ -20,14 +27,14 @@
 }
 
 body.desktop-os {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   background-color: var(--color-bg);
   color: var(--color-text-primary);
   height: 100vh;
   width: 100vw;
   overflow: hidden;
   position: relative;
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+  /* Removed text-shadow for crisper retro look */
 }
 
 /* Scanline Effect - More visible lines, but no dark edges */
@@ -38,15 +45,8 @@ body.desktop-os {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%,
-    rgba(0, 0, 0, 0.1) 50%
-  ), linear-gradient(
-    90deg,
-    rgba(255, 0, 0, 0.03),
-    rgba(0, 255, 0, 0.01),
-    rgba(0, 0, 255, 0.03)
-  );
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
   background-size: 100% 4px, 4px 100%;
   pointer-events: none;
   z-index: 5; /* Behind windows */
@@ -67,9 +67,15 @@ body.desktop-os {
 }
 
 @keyframes crt-flicker {
-  0% { opacity: 0.98; }
-  50% { opacity: 1; }
-  100% { opacity: 0.99; }
+  0% {
+    opacity: 0.98;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.99;
+  }
 }
 
 /* Grainy Background Effect */
@@ -88,8 +94,10 @@ body.desktop-os {
 /* Top Bar */
 .top-bar {
   height: 32px;
-  background-color: var(--color-window-header);
-  border-bottom: 3px solid var(--color-text-primary);
+  /* Updated to gray with 3D button effect */
+  background-color: var(--color-button-face);
+  border-bottom: 2px solid var(--color-button-shadow);
+  border-top: 1px solid var(--color-button-highlight);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -101,6 +109,7 @@ body.desktop-os {
   left: 0;
   right: 0;
   z-index: 1000;
+  box-shadow: inset 1px 1px 0 var(--color-button-highlight), inset -1px -1px 0 var(--color-button-shadow);
 }
 
 .top-bar-left {
@@ -124,11 +133,18 @@ body.desktop-os {
   display: flex;
   align-items: center;
   transition: background-color 0.1s;
+  /* Added 3D button styling */
+  background-color: var(--color-button-face);
+  border: 1px solid var(--color-border);
+  box-shadow: inset 1px 1px 0 var(--color-button-highlight), inset -1px -1px 0 var(--color-button-shadow);
 }
 
-.system-name:hover, .system-name.active {
-  background-color: var(--color-text-primary);
-  color: white;
+.system-name:hover,
+.system-name.active {
+  /* Updated to classic Windows pressed button look */
+  background-color: var(--color-button-face);
+  color: var(--color-text-primary);
+  box-shadow: inset -1px -1px 0 var(--color-button-highlight), inset 1px 1px 0 var(--color-button-shadow);
 }
 
 .dropdown-content {
@@ -136,9 +152,12 @@ body.desktop-os {
   position: absolute;
   top: 32px;
   left: 0;
-  background-color: var(--color-window-header);
-  border: 3px solid var(--color-text-primary);
-  box-shadow: 6px 6px 0px var(--color-text-primary);
+  /* Updated to gray window style */
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-top: 1px solid var(--color-button-highlight);
+  border-left: 1px solid var(--color-button-highlight);
+  box-shadow: 2px 2px 0px var(--color-button-shadow);
   min-width: 180px;
   z-index: 2000;
 }
@@ -161,7 +180,8 @@ body.desktop-os {
 }
 
 .dropdown-content a:hover {
-  background-color: var(--color-text-primary);
+  /* Classic Windows navy blue highlight */
+  background-color: var(--color-window-header);
   color: white;
 }
 
@@ -196,27 +216,33 @@ body.desktop-os {
 }
 
 .desktop-icon:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  border: 2px dashed var(--color-text-primary);
+  /* Subtle teal highlight on hover */
+  background-color: rgba(0, 128, 128, 0.3);
+  border: 2px dotted white;
 }
 
 .desktop-icon.selected {
-  background-color: rgba(0, 0, 0, 0.1);
-  border: 2px solid var(--color-text-primary);
+  /* Navy blue selection like Windows */
+  background-color: var(--color-window-header);
+  border: 2px dotted white;
 }
 
 .icon-wrapper {
   font-size: 2.5rem;
-  color: var(--color-accent);
+  /* Yellow icon color like classic Windows folders */
+  color: var(--color-desktop-icon);
   margin-bottom: 0.25rem;
   pointer-events: none;
+  filter: drop-shadow(1px 1px 0 #000);
 }
 
 .desktop-icon span {
   font-size: 0.75rem;
   font-weight: 600;
   text-align: center;
-  color: var(--color-text-primary);
+  /* White text with black outline for visibility on teal */
+  color: white;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
   word-break: break-all;
   max-width: 100px;
 }
@@ -234,17 +260,19 @@ body.desktop-os {
   min-height: 200px;
   max-width: 90vw;
   max-height: 85vh;
+  /* Classic gray window background */
   background-color: var(--color-surface);
-  border: 3px solid var(--color-text-primary);
+  border: 2px outset var(--color-border);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   z-index: 10;
-  box-shadow: 8px 8px 0px var(--color-text-primary);
+  box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.5);
 }
 
 .window.focused {
-  box-shadow: 12px 12px 0px var(--color-accent);
+  /* Brighter shadow when focused */
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.7);
 }
 
 /* Subtler CRT effect inside windows for better readability */
@@ -269,7 +297,8 @@ body.desktop-os {
 
 .window-header {
   height: 36px;
-  background-color: var(--color-text-primary);
+  /* Classic Windows blue gradient header */
+  background: linear-gradient(to right, var(--color-window-header), #1084d0);
   color: white;
   display: flex;
   justify-content: space-between;
@@ -277,6 +306,7 @@ body.desktop-os {
   padding: 0 0.75rem;
   cursor: grab;
   user-select: none;
+  border-bottom: 2px solid var(--color-border);
 }
 
 .window-header:active {
@@ -286,6 +316,8 @@ body.desktop-os {
 .window-title {
   font-size: 0.875rem;
   font-weight: 700;
+  /* Added text shadow for depth */
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
 
 .window-controls {
@@ -302,10 +334,24 @@ body.desktop-os {
   font-weight: 700;
   cursor: pointer;
   padding: 0 4px;
+  /* Added subtle button styling */
+  background-color: var(--color-button-face);
+  color: var(--color-text-primary);
+  border: 1px outset var(--color-border);
+  min-width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .win-btn:hover {
-  background-color: var(--color-accent);
+  /* Highlight color on hover */
+  background-color: #d4d0c8;
+}
+
+.win-btn:active {
+  border-style: inset;
 }
 
 .window-content {
@@ -313,29 +359,8 @@ body.desktop-os {
   overflow-y: auto;
   padding: 1.5rem;
   scrollbar-width: thin;
-  scrollbar-color: var(--color-text-primary) var(--color-bg);
-}
-
-.win-resize {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 20px;
-  height: 20px;
-  cursor: nwse-resize;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  font-size: 1rem;
-  line-height: 1;
-  padding: 0 2px 2px 0;
-  color: var(--color-text-primary);
-  user-select: none;
-  z-index: 20;
-}
-
-.win-resize:hover {
-  color: var(--color-accent);
+  /* Updated scrollbar colors to match theme */
+  scrollbar-color: var(--color-button-shadow) var(--color-button-face);
 }
 
 /* Specific Window Content Styles */
@@ -345,7 +370,8 @@ body.desktop-os {
 }
 
 .about-win-body .subtitle {
-  color: var(--color-accent);
+  /* Navy blue accent for subtitle */
+  color: var(--color-window-header);
   font-weight: 500;
   margin-bottom: 1rem;
 }
@@ -358,7 +384,8 @@ body.desktop-os {
 .experience-section .timeline-item {
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-border);
+  /* Updated border color */
+  border-bottom: 2px solid var(--color-border);
 }
 
 .experience-section .timeline-item:last-child {
@@ -378,9 +405,11 @@ body.desktop-os {
 .projects-container h3 {
   font-size: 1.125rem;
   margin: 1rem 0;
-  color: var(--color-text-muted);
+  /* Navy blue for section headers */
+  color: var(--color-window-header);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  font-weight: 700;
 }
 
 .projects-list {
@@ -391,9 +420,10 @@ body.desktop-os {
 
 .project-mini {
   padding: 0.75rem;
-  border-radius: 0.4rem;
-  border: 1px solid var(--color-border);
-  background-color: #fafafa;
+  border-radius: 0;
+  /* 3D inset border effect */
+  border: 2px inset var(--color-border);
+  background-color: white;
 }
 
 .project-mini strong {
@@ -409,9 +439,14 @@ body.desktop-os {
 
 .project-mini a {
   font-size: 0.8125rem;
-  color: var(--color-accent);
-  text-decoration: none;
+  /* Classic blue hyperlink color */
+  color: #0000ee;
+  text-decoration: underline;
   font-weight: 600;
+}
+
+.project-mini a:hover {
+  color: var(--color-accent-secondary);
 }
 
 .contact-win-body h2 {
@@ -427,18 +462,23 @@ body.desktop-os {
 
 .win-cta {
   display: inline-block;
-  background-color: var(--color-text-primary);
-  color: white;
+  /* 3D button styling */
+  background-color: var(--color-button-face);
+  color: var(--color-text-primary);
   padding: 0.75rem 1.5rem;
-  border-radius: 9999px;
+  border-radius: 0;
+  border: 2px outset var(--color-border);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 700;
   text-align: center;
-  transition: transform 0.2s;
+  transition: all 0.1s;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
 .win-cta:hover {
-  transform: scale(1.02);
+  transform: none;
+  border-style: inset;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .social-grid {
@@ -457,10 +497,12 @@ body.desktop-os {
 }
 
 .social-grid a:hover {
-  color: var(--color-accent);
+  /* Magenta hover color */
+  color: var(--color-accent-secondary);
 }
 
-.trash-content, .folder-content {
+.trash-content,
+.folder-content {
   padding: 1rem;
 }
 
@@ -481,15 +523,8 @@ body.desktop-os {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%,
-    rgba(0, 0, 0, 0.15) 50%
-  ), linear-gradient(
-    90deg,
-    rgba(255, 0, 0, 0.05),
-    rgba(0, 255, 0, 0.02),
-    rgba(0, 0, 255, 0.05)
-  );
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
   background-size: 100% 4px, 4px 100%;
   pointer-events: none;
   z-index: 10;
@@ -499,7 +534,7 @@ body.desktop-os {
 
 .image-viewer-content img {
   border: none !important;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .folder-grid {
@@ -520,13 +555,21 @@ body.desktop-os {
 }
 
 .folder-item:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  border: 1px dashed var(--color-border);
+  /* Navy blue selection */
+  background-color: var(--color-window-header);
+  color: white;
+  border: 1px solid var(--color-window-header);
 }
 
 .folder-item i {
   font-size: 2rem;
-  color: var(--color-text-muted);
+  /* Yellow folder icons */
+  color: var(--color-desktop-icon);
+  filter: drop-shadow(1px 1px 0 #666);
+}
+
+.folder-item:hover i {
+  color: white;
 }
 
 .folder-item span {
@@ -579,7 +622,7 @@ body.desktop-os {
   .dropdown-content a {
     padding: 1rem 1.5rem;
     font-size: 1.1rem;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   }
 
   .window {
@@ -593,7 +636,7 @@ body.desktop-os {
     border-right: none;
     border-bottom: none;
   }
-  
+
   .desktop-grid {
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     gap: 1.5rem;
@@ -609,7 +652,7 @@ body.desktop-os {
   .icon-wrapper {
     font-size: 1.8rem;
   }
-  
+
   .social-grid {
     grid-template-columns: 1fr;
   }
