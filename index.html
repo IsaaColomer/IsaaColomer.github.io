@@ -27,6 +27,7 @@
                     <a href="#" onclick="openWindow('win-projects'); closeDropdown();">Work</a>
                     <a href="#" onclick="openWindow('win-contact'); closeDropdown();">Contact</a>
                     <a href="#" onclick="openWindow('win-racer'); closeDropdown();">Play Racer</a>
+                    <a href="#" onclick="openWindow('win-pacman'); closeDropdown();">Play Pacman</a>
                 </div>
             </div>
         </div>
@@ -65,6 +66,10 @@
             <div class="desktop-icon" id="icon-racer" ondblclick="openWindow('win-racer')">
                 <div class="icon-wrapper"><i class="fa-solid fa-gamepad"></i></div>
                 <span>Racer.exe</span>
+            </div>
+            <div class="desktop-icon" id="icon-pacman" ondblclick="openWindow('win-pacman')">
+                <div class="icon-wrapper"><i class="fa-solid fa-ghost"></i></div>
+                <span>Pacman.exe</span>
             </div>
         </div>
 
@@ -303,6 +308,26 @@
                 <div style="padding: 4px 8px; background: var(--color-button-face); border-top: 1px solid var(--color-button-shadow); font-size: 10px; color: var(--color-text-secondary); display: flex; justify-content: space-between; align-items: center; user-select: none;">
                     <span>Open Source Retro Racer</span>
                     <span>Credits: Keith Clark (js13k)</span>
+                </div>
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
+
+        <!-- Pacman Game Window -->
+        <div class="window" id="win-pacman" style="display: none; top: 40px; left: 40px; width: 600px; height: 720px;">
+            <div class="window-header">
+                <div class="window-title">[#] Pacman.exe</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-pacman')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-pacman')">x</button>
+                </div>
+            </div>
+            <div class="window-content" style="padding: 0; overflow: hidden; background: #000; display: flex; flex-direction: column;">
+                <iframe src="./Pacman/index.html" style="width: 100%; flex: 1; border: none;"></iframe>
+                <div style="padding: 4px 8px; background: var(--color-button-face); border-top: 1px solid var(--color-button-shadow); font-size: 10px; color: var(--color-text-secondary); display: flex; justify-content: space-between; align-items: center; user-select: none;">
+                    <span>Retro Pacman JS</span>
+                    <span>Credits: Rishabh Devbanshi</span>
                 </div>
             </div>
             <div class="win-resize">◢</div>

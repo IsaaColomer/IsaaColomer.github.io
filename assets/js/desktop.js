@@ -42,6 +42,14 @@ window.openWindow = function(id) {
             iframe.src = './racer/index.html';
         }
     }
+
+    // Special handling for Pacman game
+    if (id === 'win-pacman') {
+        const iframe = win.querySelector('iframe');
+        if (iframe && (!iframe.src || iframe.src === 'about:blank' || iframe.src === window.location.href)) {
+            iframe.src = './Pacman/index.html';
+        }
+    }
     
     focusWindow(win);
 };
@@ -54,6 +62,14 @@ window.closeWindow = function(id) {
 
     // Special handling for Racer game: clear iframe to stop audio
     if (id === 'win-racer') {
+        const iframe = win.querySelector('iframe');
+        if (iframe) {
+            iframe.src = 'about:blank';
+        }
+    }
+
+    // Special handling for Pacman game: clear iframe to stop audio
+    if (id === 'win-pacman') {
         const iframe = win.querySelector('iframe');
         if (iframe) {
             iframe.src = 'about:blank';
