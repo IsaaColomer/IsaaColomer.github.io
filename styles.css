@@ -364,21 +364,22 @@ body.desktop-os {
 }
 
 .win-resize {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 20px;
-  height: 20px;
+  position: absolute !important;
+  bottom: 2px !important;
+  right: 2px !important;
+  left: auto !important;
+  width: 16px;
+  height: 16px;
   cursor: nwse-resize;
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
-  font-size: 1rem;
+  font-size: 14px;
   line-height: 1;
-  padding: 0 2px 2px 0;
   color: var(--color-text-primary);
   user-select: none;
   z-index: 20;
+  pointer-events: auto;
 }
 
 .win-resize:hover {
