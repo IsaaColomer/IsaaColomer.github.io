@@ -87,9 +87,13 @@ function handleStart(clientX, clientY, target) {
         draggedElement = win;
         focusWindow(win);
         
-        // Use offsetLeft/Top which are relative to the offsetParent (#desktop)
-        startElemX = win.offsetLeft;
-        startElemY = win.offsetTop;
+        const rect = win.getBoundingClientRect();
+        const desktopRect = document.getElementById('desktop').getBoundingClientRect();
+        
+        // Calculate initial offset relative to the desktop container
+        startElemX = rect.left - desktopRect.left;
+        startElemY = rect.top - desktopRect.top;
+        
         startMouseX = clientX;
         startMouseY = clientY;
         
