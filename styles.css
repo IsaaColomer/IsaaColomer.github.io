@@ -434,6 +434,30 @@ body.desktop-os {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  position: relative;
+}
+
+.image-viewer-content::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.15) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.05),
+    rgba(0, 255, 0, 0.02),
+    rgba(0, 0, 255, 0.05)
+  );
+  background-size: 100% 4px, 4px 100%;
+  pointer-events: none;
+  z-index: 10;
+  animation: crt-flicker 0.15s infinite;
+  opacity: 0.6;
 }
 
 .image-viewer-content img {
