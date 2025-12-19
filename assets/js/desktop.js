@@ -300,7 +300,10 @@ window.onload = () => {
         if (pos) {
             try {
                 const parsed = JSON.parse(pos);
-                if (parsed && parsed.left && parsed.top) {
+                // Safety check: Don't load (0,0) positions as they are likely from a previous bug
+                // and would cause icons to stack at the top-left.
+                if (parsed && parsed.left && parsed.top && 
+                    (parseInt(parsed.left) > 10 || parseInt(parsed.top) > 10)) {
                     icon.style.position = 'absolute';
                     icon.style.left = parsed.left;
                     icon.style.top = parsed.top;
@@ -313,19 +316,30 @@ window.onload = () => {
         }
     });
 
-    // CRITICAL FIX: After loading saved positions, freeze any icons still in the grid flow
-    // This prevents the "layout collapse" that causes icons to stack at the same position
+    // CRITICAL FIX: To prevent icons stacking at (0,0) when switching to absolute,
+    // we must capture ALL their grid positions FIRST, then apply them in a second pass.
     setTimeout(() => {
+        const positions = [];
         icons.forEach(icon => {
-            if (window.getComputedStyle(icon).position !== 'absolute') {
-                const curLeft = icon.offsetLeft;
-                const curTop = icon.offsetTop;
-                icon.style.position = 'absolute';
-                icon.style.left = curLeft + 'px';
-                icon.style.top = curTop + 'px';
+            // Only capture if not already absolutely positioned by localStorage
+            if (icon.style.position !== 'absolute') {
+                const rect = icon.getBoundingClientRect();
+                const desktopRect = document.getElementById('desktop').getBoundingClientRect();
+                positions.push({
+                    el: icon,
+                    left: rect.left - desktopRect.left,
+                    top: rect.top - desktopRect.top
+                });
             }
         });
-    }, 100); // Small delay to ensure grid has rendered
+
+        // Apply absolute positions after all measurements are done
+        positions.forEach(pos => {
+            pos.el.style.position = 'absolute';
+            pos.el.style.left = pos.left + 'px';
+            pos.el.style.top = pos.top + 'px';
+        });
+    }, 500); // 500ms delay to ensure browser has finished layout/rendering
 };
 
 // Close dropdown when clicking outside
