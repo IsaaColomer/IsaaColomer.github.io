@@ -363,27 +363,8 @@ body.desktop-os {
   scrollbar-color: var(--color-button-shadow) var(--color-button-face);
 }
 
-.win-resize {
-  position: absolute !important;
-  bottom: 2px !important;
-  right: 2px !important;
-  left: auto !important;
-  width: 16px;
-  height: 16px;
-  cursor: nwse-resize;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  font-size: 14px;
-  line-height: 1;
-  color: var(--color-text-primary);
-  user-select: none;
-  z-index: 20;
-  pointer-events: auto;
-}
-
 .win-resize:hover {
-  color: var(--color-accent);
+  color: var(--color-accent-secondary);
 }
 
 /* Specific Window Content Styles */
@@ -691,7 +672,7 @@ body.desktop-os {
   }
 
   .win-resize {
-    display: none;
+    display: none !important;
   }
 
   .window-header {
@@ -702,4 +683,22 @@ body.desktop-os {
   .window-content {
     padding: 1rem;
   }
+}
+
+/* Force Resize Handle to Bottom Right */
+.window .win-resize {
+  position: absolute !important;
+  bottom: 2px !important;
+  right: 2px !important;
+  left: auto !important;
+  top: auto !important;
+  width: 16px !important;
+  height: 16px !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: flex-end !important;
+  cursor: nwse-resize !important;
+  z-index: 999 !important;
+  background: transparent !important;
+  color: var(--color-text-primary) !important;
 }
