@@ -438,9 +438,48 @@ body.desktop-os {
   body.desktop-os { overflow: auto; }
   .top-bar { height: 44px; }
   .system-name { padding: 0 1rem; font-size: 1rem; }
-  .dropdown-content { top: 44px; width: 100%; }
-  .window { width: 100% !important; height: calc(100vh - 44px) !important; top: 44px !important; left: 0 !important; border: none; box-shadow: none; }
-  .desktop-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); padding-top: 5rem; }
+  
+  .dropdown-content { 
+    top: 44px; 
+    width: 100%; 
+    min-width: 0;
+    box-shadow: none;
+    border-left: none;
+    border-right: none;
+  }
+  
+  .dropdown-content a {
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .window { 
+    width: 100% !important; 
+    height: calc(100vh - 44px) !important; 
+    top: 44px !important; 
+    left: 0 !important; 
+    border: none; 
+    box-shadow: none; 
+  }
+  
+  .desktop-grid { 
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); 
+    padding-top: 5rem; 
+  }
+  
   .win-resize { display: none !important; }
-  .window-header { height: 44px; cursor: default !important; }
+  
+  .window-header { 
+    height: 44px; 
+    cursor: default !important; 
+  }
+  
+  .window-content {
+    padding: 1rem;
+  }
+
+  .social-grid {
+    grid-template-columns: 1fr;
+  }
 }
