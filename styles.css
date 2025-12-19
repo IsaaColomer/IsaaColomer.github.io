@@ -125,6 +125,7 @@ body.desktop-os {
   background-color: var(--color-button-face);
   border: 1px solid var(--color-border);
   box-shadow: inset 1px 1px 0 var(--color-button-highlight), inset -1px -1px 0 var(--color-button-shadow);
+  user-select: none;
 }
 
 .system-name:hover,
@@ -146,6 +147,7 @@ body.desktop-os {
   box-shadow: 2px 2px 0px var(--color-button-shadow);
   min-width: 180px;
   z-index: 2000;
+  user-select: none;
 }
 
 .dropdown-content.show {
@@ -181,6 +183,7 @@ body.desktop-os {
   grid-auto-rows: 120px;
   gap: 2rem;
   pointer-events: none;
+  user-select: none;
 }
 
 .desktop-icon {
@@ -428,7 +431,16 @@ body.desktop-os {
 }
 
 .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1.5rem; }
-.folder-item { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; text-align: center; padding: 0.5rem; border: 1px solid transparent; }
+.folder-item { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  gap: 0.5rem; 
+  text-align: center; 
+  padding: 0.5rem; 
+  border: 1px solid transparent; 
+  user-select: none;
+}
 .folder-item:hover { background-color: var(--color-window-header); color: white; }
 .folder-item i { font-size: 2rem; color: var(--color-desktop-icon); filter: drop-shadow(1px 1px 0 #666); }
 .folder-item:hover i { color: white; }
