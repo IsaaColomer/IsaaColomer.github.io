@@ -232,11 +232,13 @@ function handleEnd() {
     }
     if (draggedIcon) {
         draggedIcon.style.transition = '';
-        // Save position
-        localStorage.setItem(`pos-${draggedIcon.id}`, JSON.stringify({
-            left: draggedIcon.style.left,
-            top: draggedIcon.style.top
-        }));
+        // Save position only if it was actually moved (has absolute position and coordinates)
+        if (draggedIcon.style.position === 'absolute' && draggedIcon.style.left && draggedIcon.style.top) {
+            localStorage.setItem(`pos-${draggedIcon.id}`, JSON.stringify({
+                left: draggedIcon.style.left,
+                top: draggedIcon.style.top
+            }));
+        }
         draggedIcon = null;
     }
 }
@@ -249,10 +251,16 @@ window.onload = () => {
     document.querySelectorAll('.desktop-icon').forEach(icon => {
         const pos = localStorage.getItem(`pos-${icon.id}`);
         if (pos) {
-            const { left, top } = JSON.parse(pos);
-            icon.style.position = 'absolute';
-            icon.style.left = left;
-            icon.style.top = top;
+            try {
+                const parsed = JSON.parse(pos);
+                if (parsed && parsed.left && parsed.top) {
+                    icon.style.position = 'absolute';
+                    icon.style.left = parsed.left;
+                    icon.style.top = parsed.top;
+                }
+            } catch (e) {
+                console.error("Error parsing icon position", e);
+            }
         }
     });
 };
