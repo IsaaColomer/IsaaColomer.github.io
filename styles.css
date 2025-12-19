@@ -34,10 +34,9 @@ body.desktop-os {
   width: 100vw;
   overflow: hidden;
   position: relative;
-  /* Removed text-shadow for crisper retro look */
 }
 
-/* Scanline Effect - More visible lines, but no dark edges */
+/* Scanline Effect */
 .desktop-os::after {
   content: "";
   position: fixed;
@@ -49,11 +48,10 @@ body.desktop-os {
     linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
   background-size: 100% 4px, 4px 100%;
   pointer-events: none;
-  z-index: 5; /* Behind windows */
+  z-index: 5;
   animation: crt-flicker 0.2s infinite;
 }
 
-/* CRT Screen Effects - Removed dark edges (vignette) */
 .crt-overlay {
   position: fixed;
   top: 0;
@@ -62,23 +60,15 @@ body.desktop-os {
   height: 100%;
   background: transparent;
   pointer-events: none;
-  z-index: 4; /* Behind windows */
-  box-shadow: none;
+  z-index: 4;
 }
 
 @keyframes crt-flicker {
-  0% {
-    opacity: 0.98;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.99;
-  }
+  0% { opacity: 0.98; }
+  50% { opacity: 1; }
+  100% { opacity: 0.99; }
 }
 
-/* Grainy Background Effect */
 .grain-overlay {
   position: fixed;
   top: 0;
@@ -86,7 +76,7 @@ body.desktop-os {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 9999; /* Keep grain on top of everything for texture */
+  z-index: 9999;
   opacity: 0.05;
   background-image: url("https://grainy-gradients.vercel.app/noise.svg");
 }
@@ -94,7 +84,6 @@ body.desktop-os {
 /* Top Bar */
 .top-bar {
   height: 32px;
-  /* Updated to gray with 3D button effect */
   background-color: var(--color-button-face);
   border-bottom: 2px solid var(--color-button-shadow);
   border-top: 1px solid var(--color-button-highlight);
@@ -133,7 +122,6 @@ body.desktop-os {
   display: flex;
   align-items: center;
   transition: background-color 0.1s;
-  /* Added 3D button styling */
   background-color: var(--color-button-face);
   border: 1px solid var(--color-border);
   box-shadow: inset 1px 1px 0 var(--color-button-highlight), inset -1px -1px 0 var(--color-button-shadow);
@@ -141,7 +129,6 @@ body.desktop-os {
 
 .system-name:hover,
 .system-name.active {
-  /* Updated to classic Windows pressed button look */
   background-color: var(--color-button-face);
   color: var(--color-text-primary);
   box-shadow: inset -1px -1px 0 var(--color-button-highlight), inset 1px 1px 0 var(--color-button-shadow);
@@ -152,7 +139,6 @@ body.desktop-os {
   position: absolute;
   top: 32px;
   left: 0;
-  /* Updated to gray window style */
   background-color: var(--color-surface);
   border: 2px solid var(--color-border);
   border-top: 1px solid var(--color-button-highlight);
@@ -175,12 +161,7 @@ body.desktop-os {
   border-bottom: 2px solid transparent;
 }
 
-.dropdown-content a:last-child {
-  border-bottom: none;
-}
-
 .dropdown-content a:hover {
-  /* Classic Windows navy blue highlight */
   background-color: var(--color-window-header);
   color: white;
 }
@@ -216,20 +197,17 @@ body.desktop-os {
 }
 
 .desktop-icon:hover {
-  /* Subtle teal highlight on hover */
   background-color: rgba(0, 128, 128, 0.3);
   border: 2px dotted white;
 }
 
 .desktop-icon.selected {
-  /* Navy blue selection like Windows */
   background-color: var(--color-window-header);
   border: 2px dotted white;
 }
 
 .icon-wrapper {
   font-size: 2.5rem;
-  /* Yellow icon color like classic Windows folders */
   color: var(--color-desktop-icon);
   margin-bottom: 0.25rem;
   pointer-events: none;
@@ -240,7 +218,6 @@ body.desktop-os {
   font-size: 0.75rem;
   font-weight: 600;
   text-align: center;
-  /* White text with black outline for visibility on teal */
   color: white;
   text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
   word-break: break-all;
@@ -260,7 +237,6 @@ body.desktop-os {
   min-height: 200px;
   max-width: 90vw;
   max-height: 85vh;
-  /* Classic gray window background */
   background-color: var(--color-surface);
   border: 2px outset var(--color-border);
   display: flex;
@@ -271,11 +247,9 @@ body.desktop-os {
 }
 
 .window.focused {
-  /* Brighter shadow when focused */
   box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.7);
 }
 
-/* Subtler CRT effect inside windows for better readability */
 .window::before {
   content: "";
   position: absolute;
@@ -295,9 +269,33 @@ body.desktop-os {
   opacity: 0.15;
 }
 
+/* RESIZE HANDLE - FIXED TO BOTTOM RIGHT */
+.win-resize {
+  position: absolute !important;
+  bottom: 2px !important;
+  right: 2px !important;
+  left: auto !important;
+  top: auto !important;
+  width: 16px !important;
+  height: 16px !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: flex-end !important;
+  cursor: nwse-resize !important;
+  z-index: 150 !important;
+  background: transparent !important;
+  color: var(--color-text-primary) !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  pointer-events: auto !important;
+}
+
+.win-resize:hover {
+  color: var(--color-accent-secondary) !important;
+}
+
 .window-header {
   height: 36px;
-  /* Classic Windows blue gradient header */
   background: linear-gradient(to right, var(--color-window-header), #1084d0);
   color: white;
   display: flex;
@@ -309,14 +307,9 @@ body.desktop-os {
   border-bottom: 2px solid var(--color-border);
 }
 
-.window-header:active {
-  cursor: grabbing;
-}
-
 .window-title {
   font-size: 0.875rem;
   font-weight: 700;
-  /* Added text shadow for depth */
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
 
@@ -326,15 +319,6 @@ body.desktop-os {
 }
 
 .win-btn {
-  background: none;
-  border: none;
-  color: white;
-  font-family: monospace;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  padding: 0 4px;
-  /* Added subtle button styling */
   background-color: var(--color-button-face);
   color: var(--color-text-primary);
   border: 1px outset var(--color-border);
@@ -343,10 +327,13 @@ body.desktop-os {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .win-btn:hover {
-  /* Highlight color on hover */
   background-color: #d4d0c8;
 }
 
@@ -359,156 +346,60 @@ body.desktop-os {
   overflow-y: auto;
   padding: 1.5rem;
   scrollbar-width: thin;
-  /* Updated scrollbar colors to match theme */
   scrollbar-color: var(--color-button-shadow) var(--color-button-face);
+  position: relative; /* Context for content */
 }
 
-.win-resize:hover {
-  color: var(--color-accent-secondary);
-}
-
-/* Specific Window Content Styles */
-.about-win-body h1 {
-  font-size: 1.5rem;
-  margin-bottom: 0.25rem;
-}
-
-.about-win-body .subtitle {
-  /* Navy blue accent for subtitle */
-  color: var(--color-window-header);
-  font-weight: 500;
-  margin-bottom: 1rem;
-}
-
-.about-win-body p {
-  line-height: 1.6;
-  margin-bottom: 1rem;
-}
+/* Content Styles */
+.about-win-body h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+.about-win-body .subtitle { color: var(--color-window-header); font-weight: 500; margin-bottom: 1rem; }
+.about-win-body p { line-height: 1.6; margin-bottom: 1rem; }
 
 .experience-section .timeline-item {
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  /* Updated border color */
   border-bottom: 2px solid var(--color-border);
 }
 
-.experience-section .timeline-item:last-child {
-  border-bottom: none;
-}
-
-.experience-section h3 {
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.experience-section p {
-  font-size: 0.875rem;
-  color: var(--color-text-secondary);
-}
+.experience-section h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+.experience-section p { font-size: 0.875rem; color: var(--color-text-secondary); }
 
 .projects-container h3 {
   font-size: 1.125rem;
   margin: 1rem 0;
-  /* Navy blue for section headers */
   color: var(--color-window-header);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 700;
 }
 
-.projects-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
 .project-mini {
   padding: 0.75rem;
-  border-radius: 0;
-  /* 3D inset border effect */
   border: 2px inset var(--color-border);
   background-color: white;
-}
-
-.project-mini strong {
-  display: block;
-  margin-bottom: 0.25rem;
-}
-
-.project-mini p {
-  font-size: 0.8125rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 0.5rem;
-}
-
-.project-mini a {
-  font-size: 0.8125rem;
-  /* Classic blue hyperlink color */
-  color: #0000ee;
-  text-decoration: underline;
-  font-weight: 600;
-}
-
-.project-mini a:hover {
-  color: var(--color-accent-secondary);
-}
-
-.contact-win-body h2 {
   margin-bottom: 1rem;
 }
 
-.contact-links {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin-top: 1.5rem;
-}
+.project-mini a { color: #0000ee; text-decoration: underline; font-weight: 600; }
+.project-mini a:hover { color: var(--color-accent-secondary); }
 
 .win-cta {
   display: inline-block;
-  /* 3D button styling */
   background-color: var(--color-button-face);
   color: var(--color-text-primary);
   padding: 0.75rem 1.5rem;
-  border-radius: 0;
   border: 2px outset var(--color-border);
   text-decoration: none;
   font-weight: 700;
   text-align: center;
-  transition: all 0.1s;
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
-.win-cta:hover {
-  transform: none;
-  border-style: inset;
-  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
+.win-cta:hover { border-style: inset; box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.3); }
 
-.social-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-}
-
-.social-grid a {
-  text-decoration: none;
-  color: var(--color-text-secondary);
-  font-size: 0.8125rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.social-grid a:hover {
-  /* Magenta hover color */
-  color: var(--color-accent-secondary);
-}
-
-.trash-content,
-.folder-content {
-  padding: 1rem;
-}
+.social-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.social-grid a { text-decoration: none; color: var(--color-text-secondary); font-size: 0.8125rem; }
+.social-grid a:hover { color: var(--color-accent-secondary); }
 
 .image-viewer-content {
   padding: 0.5rem;
@@ -536,169 +427,20 @@ body.desktop-os {
   opacity: 0.6;
 }
 
-.image-viewer-content img {
-  border: none !important;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-.folder-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 1.5rem;
-}
-
-.folder-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  text-align: center;
-  cursor: default;
-  padding: 0.5rem;
-  border: 1px solid transparent;
-}
-
-.folder-item:hover {
-  /* Navy blue selection */
-  background-color: var(--color-window-header);
-  color: white;
-  border: 1px solid var(--color-window-header);
-}
-
-.folder-item i {
-  font-size: 2rem;
-  /* Yellow folder icons */
-  color: var(--color-desktop-icon);
-  filter: drop-shadow(1px 1px 0 #666);
-}
-
-.folder-item:hover i {
-  color: white;
-}
-
-.folder-item span {
-  font-size: 0.7rem;
-  color: var(--color-text-secondary);
-  word-break: break-all;
-  max-width: 90px;
-}
-
-/* Animations */
-@keyframes window-open {
-  from {
-    opacity: 0;
-    transform: scale(0.95) translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-.window.active {
-  animation: window-open 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
+.folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1.5rem; }
+.folder-item { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; text-align: center; padding: 0.5rem; border: 1px solid transparent; }
+.folder-item:hover { background-color: var(--color-window-header); color: white; }
+.folder-item i { font-size: 2rem; color: var(--color-desktop-icon); filter: drop-shadow(1px 1px 0 #666); }
+.folder-item:hover i { color: white; }
 
 /* Mobile Adjustments */
 @media (max-width: 768px) {
-  body.desktop-os {
-    overflow: auto; /* Allow scrolling on the desktop if many icons exist */
-  }
-
-  .top-bar {
-    height: 44px;
-  }
-
-  .system-name {
-    padding: 0 1rem;
-    font-size: 1rem;
-  }
-
-  .dropdown-content {
-    top: 44px;
-    width: 100%;
-    min-width: 0;
-    box-shadow: none;
-    border-left: none;
-    border-right: none;
-  }
-
-  .dropdown-content a {
-    padding: 1rem 1.5rem;
-    font-size: 1.1rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  }
-
-  .window {
-    width: 100% !important;
-    height: calc(100vh - 44px) !important;
-    top: 44px !important;
-    left: 0 !important;
-    min-width: 0;
-    box-shadow: none;
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
-  }
-
-  .desktop-grid {
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 1.5rem;
-    padding: 1.5rem;
-    padding-top: 5rem;
-  }
-
-  .desktop-icon span {
-    font-size: 0.7rem;
-    max-width: 80px;
-  }
-
-  .icon-wrapper {
-    font-size: 1.8rem;
-  }
-
-  .social-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .top-bar-menu {
-    display: none;
-  }
-
-  .desktop-icon.trash {
-    position: relative;
-    bottom: auto;
-    right: auto;
-  }
-
-  .win-resize {
-    display: none !important;
-  }
-
-  .window-header {
-    height: 44px; /* Slightly taller for touch */
-    cursor: default !important;
-  }
-
-  .window-content {
-    padding: 1rem;
-  }
-}
-
-/* Force Resize Handle to Bottom Right */
-.window .win-resize {
-  position: absolute !important;
-  bottom: 2px !important;
-  right: 2px !important;
-  left: auto !important;
-  top: auto !important;
-  width: 16px !important;
-  height: 16px !important;
-  display: flex !important;
-  align-items: flex-end !important;
-  justify-content: flex-end !important;
-  cursor: nwse-resize !important;
-  z-index: 999 !important;
-  background: transparent !important;
-  color: var(--color-text-primary) !important;
+  body.desktop-os { overflow: auto; }
+  .top-bar { height: 44px; }
+  .system-name { padding: 0 1rem; font-size: 1rem; }
+  .dropdown-content { top: 44px; width: 100%; }
+  .window { width: 100% !important; height: calc(100vh - 44px) !important; top: 44px !important; left: 0 !important; border: none; box-shadow: none; }
+  .desktop-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); padding-top: 5rem; }
+  .win-resize { display: none !important; }
+  .window-header { height: 44px; cursor: default !important; }
 }
