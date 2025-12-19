@@ -15,7 +15,7 @@
 <body class="desktop-os">
     <div class="grain-overlay"></div>
     <div class="crt-overlay"></div>
-    
+
     <!-- Top Bar -->
     <nav class="top-bar">
         <div class="top-bar-left">
@@ -54,6 +54,10 @@
             <div class="desktop-icon trash" id="icon-trash" ondblclick="openWindow('win-trash')">
                 <div class="icon-wrapper"><i class="fa-solid fa-trash-can"></i></div>
                 <span>Trash</span>
+            </div>
+            <div class="desktop-icon" id="icon-important" ondblclick="openWindow('win-important')">
+                <div class="icon-wrapper"><i class="fa-solid fa-folder"></i></div>
+                <span>important</span>
             </div>
         </div>
 
@@ -239,6 +243,43 @@
 						</div>
             <div class="win-resize">◢</div>
 			</div>
+
+        <!-- Important Folder Window -->
+        <div class="window" id="win-important" style="display: none; top: 180px; left: 180px;">
+            <div class="window-header">
+                <div class="window-title">[#] important</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-important')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-important')">x</button>
+                </div>
+            </div>
+            <div class="window-content folder-content">
+                <div class="folder-grid">
+                    <div class="folder-item" ondblclick="openWindow('win-image-viewer')">
+                        <i class="fa-solid fa-file-image"></i>
+                        <span>important.png</span>
+                    </div>
+                </div>
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
+
+        <!-- Image Viewer Window -->
+        <div class="window" id="win-image-viewer" style="display: none; top: 50px; left: 50px; width: auto; max-width: 80vw;">
+            <div class="window-header">
+                <div class="window-title">[#] Photo Viewer - important.png</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-image-viewer')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-image-viewer')">x</button>
+                </div>
+            </div>
+            <div class="window-content image-viewer-content">
+                <img src="images/important.png" alt="Important" style="max-width: 100%; height: auto; display: block; margin: 0 auto; border: 1px solid var(--border-color);">
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
 
     </main>
 
