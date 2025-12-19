@@ -193,8 +193,10 @@ body.desktop-os {
 /* Windows */
 .window {
   position: absolute;
-  min-width: 400px;
-  min-height: 300px;
+  min-width: 350px;
+  min-height: 200px;
+  max-width: 90vw;
+  max-height: 85vh;
   background-color: var(--color-surface);
   border: 3px solid var(--color-text-primary);
   display: flex;
