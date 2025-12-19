@@ -558,10 +558,34 @@ body.desktop-os {
     overflow: auto; /* Allow scrolling on the desktop if many icons exist */
   }
 
+  .top-bar {
+    height: 44px;
+  }
+
+  .system-name {
+    padding: 0 1rem;
+    font-size: 1rem;
+  }
+
+  .dropdown-content {
+    top: 44px;
+    width: 100%;
+    min-width: 0;
+    box-shadow: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .dropdown-content a {
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+
   .window {
     width: 100% !important;
-    height: calc(100vh - 32px) !important;
-    top: 32px !important;
+    height: calc(100vh - 44px) !important;
+    top: 44px !important;
     left: 0 !important;
     min-width: 0;
     box-shadow: none;
@@ -574,7 +598,7 @@ body.desktop-os {
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     gap: 1.5rem;
     padding: 1.5rem;
-    padding-top: 4rem;
+    padding-top: 5rem;
   }
 
   .desktop-icon span {
@@ -607,5 +631,9 @@ body.desktop-os {
   .window-header {
     height: 44px; /* Slightly taller for touch */
     cursor: default !important;
+  }
+
+  .window-content {
+    padding: 1rem;
   }
 }

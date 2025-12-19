@@ -135,11 +135,13 @@ function handleStart(clientX, clientY, target) {
         document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
         icon.classList.add('selected');
 
-        // On mobile, if already selected, open on single tap
-        if (isMobile() && isAlreadySelected) {
-            const windowId = icon.getAttribute('ondblclick').match(/'([^']+)'/)[1];
-            window.openWindow(windowId);
-            return;
+        // On mobile, if already selected, open on single tap and DONT allow dragging
+        if (isMobile()) {
+            if (isAlreadySelected) {
+                const windowId = icon.getAttribute('ondblclick').match(/'([^']+)'/)[1];
+                window.openWindow(windowId);
+            }
+            return; // Exit handleStart to prevent icon dragging on mobile
         }
 
         draggedIcon = icon;
