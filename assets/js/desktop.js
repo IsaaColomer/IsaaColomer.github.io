@@ -162,17 +162,22 @@ function handleStart(clientX, clientY, target) {
         }
 
         draggedIcon = icon;
+        
+        // If it's the trash icon or hasn't been moved yet, it might have bottom/right or be in grid
+        // Capture its current pixel position relative to offsetParent
         startElemX = icon.offsetLeft;
         startElemY = icon.offsetTop;
+        
         startMouseX = clientX;
         startMouseY = clientY;
         
         icon.style.transition = 'none';
-        icon.style.zIndex = highestZ + 1;
+        highestZ++;
+        icon.style.zIndex = highestZ;
         return;
     } else {
         // Clear selection if clicking elsewhere
-        if (!target.closest('.window')) {
+        if (!target.closest('.window') && !target.closest('.system-dropdown')) {
             document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
         }
     }
@@ -228,12 +233,18 @@ function handleMove(clientX, clientY) {
 
     // 3. Handle Icon Dragging
     if (draggedIcon) {
-        let x = startElemX + deltaX;
-        let y = startElemY + deltaY;
+        // Only start dragging if moved more than 3px to avoid accidental "freezing" on click
+        if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+            let x = startElemX + deltaX;
+            let y = startElemY + deltaY;
 
-        draggedIcon.style.position = 'absolute';
-        draggedIcon.style.left = x + 'px';
-        draggedIcon.style.top = y + 'px';
+            draggedIcon.style.position = 'absolute';
+            draggedIcon.style.left = x + 'px';
+            draggedIcon.style.top = y + 'px';
+            // Clear bottom/right if they were set (like for trash icon)
+            draggedIcon.style.bottom = 'auto';
+            draggedIcon.style.right = 'auto';
+        }
     }
 }
 
@@ -267,7 +278,8 @@ window.onload = () => {
     window.openWindow('win-about');
     
     // Load Icon Positions
-    document.querySelectorAll('.desktop-icon').forEach(icon => {
+    const icons = document.querySelectorAll('.desktop-icon');
+    icons.forEach(icon => {
         const pos = localStorage.getItem(`pos-${icon.id}`);
         if (pos) {
             try {
@@ -276,12 +288,28 @@ window.onload = () => {
                     icon.style.position = 'absolute';
                     icon.style.left = parsed.left;
                     icon.style.top = parsed.top;
+                    icon.style.bottom = 'auto';
+                    icon.style.right = 'auto';
                 }
             } catch (e) {
                 console.error("Error parsing icon position", e);
             }
         }
     });
+
+    // CRITICAL FIX: After loading saved positions, freeze any icons still in the grid flow
+    // This prevents the "layout collapse" that causes icons to stack at the same position
+    setTimeout(() => {
+        icons.forEach(icon => {
+            if (window.getComputedStyle(icon).position !== 'absolute') {
+                const curLeft = icon.offsetLeft;
+                const curTop = icon.offsetTop;
+                icon.style.position = 'absolute';
+                icon.style.left = curLeft + 'px';
+                icon.style.top = curTop + 'px';
+            }
+        });
+    }, 100); // Small delay to ensure grid has rendered
 };
 
 // Close dropdown when clicking outside
