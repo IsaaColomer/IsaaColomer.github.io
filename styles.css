@@ -20,6 +20,73 @@
   --color-button-shadow: #808080;
 }
 
+/* --- Theme overrides (body classes) --- */
+body.theme-mac {
+  --color-bg: #a8a8a8;
+  --color-surface: #d8d8d8;
+  --color-accent: #2b2b2b;
+  --color-accent-secondary: #6b6bff;
+  --color-text-primary: #000000;
+  --color-text-secondary: #000000;
+  --color-text-muted: #3a3a3a;
+  --color-border: #7a7a7a;
+  --color-window-header: #4a4a4a;
+  --color-window-header-active: #2b2b2b;
+  --color-desktop-icon: #ffff66;
+  --color-button-face: #d8d8d8;
+  --color-button-highlight: #ffffff;
+  --color-button-shadow: #6b6b6b;
+}
+
+body.theme-amber {
+  --color-bg: #1b1204;
+  --color-surface: #c0c0c0;
+  --color-accent: #ffb000;
+  --color-accent-secondary: #ff6a00;
+  --color-text-primary: #000000;
+  --color-text-secondary: #000000;
+  --color-text-muted: #404040;
+  --color-border: #808080;
+  --color-window-header: #7a4a00;
+  --color-window-header-active: #a16000;
+  --color-desktop-icon: #ffcc66;
+  --color-button-face: #c0c0c0;
+  --color-button-highlight: #ffffff;
+  --color-button-shadow: #808080;
+}
+
+body.theme-green {
+  --color-bg: #05140b;
+  --color-surface: #c0c0c0;
+  --color-accent: #00ff88;
+  --color-accent-secondary: #00c8ff;
+  --color-text-primary: #000000;
+  --color-text-secondary: #000000;
+  --color-text-muted: #404040;
+  --color-border: #808080;
+  --color-window-header: #0b4a2a;
+  --color-window-header-active: #0e6b3c;
+  --color-desktop-icon: #aaffcc;
+  --color-button-face: #c0c0c0;
+  --color-button-highlight: #ffffff;
+  --color-button-shadow: #808080;
+}
+
+/* Terminal color tweaks per theme */
+body.theme-amber .terminal-content {
+  color: #ffb000;
+}
+body.theme-amber .terminal-input {
+  color: #ffb000;
+}
+body.theme-amber .terminal-input::placeholder {
+  color: rgba(255,176,0,0.5);
+}
+
+body.theme-green .terminal-content {
+  color: #00ff88;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -585,4 +652,533 @@ body.animations-enabled #win-pacman.active {
     font-size: 0.7rem;
     float: right;
     margin-left: 10px;
+}
+
+/* --- Boot screen --- */
+#boot-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.98));
+  color: #00ff88;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+#boot-screen.hidden {
+  display: none;
+}
+
+.boot-inner {
+  width: min(520px, 92vw);
+  border: 2px inset #3a3a3a;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 18px 16px;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.6);
+}
+
+.boot-title {
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.boot-subtitle {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-bottom: 14px;
+}
+
+.boot-bar {
+  height: 14px;
+  border: 2px inset #3a3a3a;
+  background: rgba(255,255,255,0.06);
+  overflow: hidden;
+}
+
+.boot-bar-fill {
+  height: 100%;
+  width: 35%;
+  background: linear-gradient(90deg, rgba(0,255,136,0.2), rgba(0,255,136,1), rgba(0,255,136,0.2));
+  animation: boot-progress 1.2s ease-in-out infinite;
+}
+
+.boot-hint {
+  margin-top: 12px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+}
+
+@keyframes boot-progress {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(320%); }
+}
+
+/* --- Screensaver --- */
+#screensaver {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: none;
+  background: rgba(0,0,0,0.92);
+}
+
+#screensaver.active {
+  display: block;
+}
+
+.ss-move-x {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  animation: ss-x 11s linear infinite alternate;
+}
+
+.ss-move-y {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  animation: ss-y 7s linear infinite alternate;
+}
+
+.ss-box {
+  position: absolute;
+  left: 4%;
+  top: 10%;
+  width: min(520px, 92vw);
+  border: 2px inset #4a4a4a;
+  background: rgba(0,0,0,0.75);
+  color: #00ff88;
+  padding: 12px 12px 10px;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.7);
+}
+
+.ss-title {
+  font-weight: 800;
+  font-size: 12px;
+  margin-bottom: 8px;
+  color: rgba(255,255,255,0.85);
+}
+
+.ss-ascii pre {
+  font-size: 11px;
+  line-height: 1.1;
+  overflow: hidden;
+  margin: 0;
+}
+
+.ss-footer {
+  margin-top: 8px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+}
+
+@keyframes ss-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(100vw - 560px)); }
+}
+
+@keyframes ss-y {
+  from { transform: translateY(0); }
+  to { transform: translateY(calc(100vh - 300px)); }
+}
+
+@media (max-width: 768px) {
+  @keyframes ss-x {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(100vw - 92vw)); }
+  }
+}
+
+/* --- Terminal --- */
+.terminal-content {
+  padding: 12px;
+  background: #0b0f0c;
+  color: #00ff88;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.terminal-output {
+  height: calc(100% - 34px);
+  overflow: auto;
+  padding-right: 6px;
+  font-size: 13px;
+  line-height: 1.35;
+  white-space: pre-wrap;
+}
+
+.terminal-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  padding-top: 8px;
+}
+
+.terminal-prompt {
+  color: rgba(255,255,255,0.85);
+  font-size: 12px;
+  user-select: none;
+}
+
+.terminal-input {
+  flex: 1;
+  border: 1px inset #3a3a3a;
+  background: rgba(0,0,0,0.75);
+  color: #00ff88;
+  padding: 6px 8px;
+  outline: none;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.terminal-input::placeholder {
+  color: rgba(0,255,136,0.45);
+}
+
+.terminal-line {
+  color: rgba(255,255,255,0.78);
+}
+
+.terminal-err {
+  color: #ff4d4d;
+}
+
+.terminal-ok {
+  color: #00ff88;
+}
+
+/* --- Calculator --- */
+.calc-content {
+  padding: 10px;
+}
+
+.calc-display {
+  border: 2px inset var(--color-border);
+  background: #111;
+  color: #00ff88;
+  font-size: 28px;
+  padding: 10px 10px;
+  text-align: right;
+  margin-bottom: 10px;
+  font-family: "Courier New", Courier, monospace;
+  overflow: hidden;
+}
+
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.calc-btn {
+  border: 2px outset var(--color-border);
+  background: var(--color-button-face);
+  height: 46px;
+  font-weight: 800;
+  cursor: pointer;
+  user-select: none;
+}
+
+.calc-btn:active {
+  border-style: inset;
+}
+
+.calc-btn.op {
+  background: #d4d0c8;
+}
+
+.calc-btn.eq {
+  background: var(--color-window-header);
+  color: #fff;
+}
+
+.calc-btn.wide {
+  grid-column: span 2;
+}
+
+/* --- Notepad --- */
+.notepad-content {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notepad-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.np-btn {
+  background-color: var(--color-button-face);
+  border: 2px outset var(--color-border);
+  padding: 6px 10px;
+  font-weight: 800;
+  cursor: pointer;
+  user-select: none;
+}
+
+.np-btn:active {
+  border-style: inset;
+}
+
+.np-status {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.notepad-text {
+  flex: 1;
+  width: 100%;
+  resize: none;
+  border: 2px inset var(--color-border);
+  padding: 10px;
+  background: #fff;
+  color: #000;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+  outline: none;
+}
+
+/* --- Music Player (UI-only) --- */
+.music-content {
+  padding: 10px;
+}
+
+.music-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.music-now-title {
+  font-weight: 900;
+  font-size: 14px;
+}
+
+.music-now-meta {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.music-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.mp-btn {
+  width: 44px;
+  height: 34px;
+  border: 2px outset var(--color-border);
+  background: var(--color-button-face);
+  cursor: pointer;
+  font-weight: 900;
+  user-select: none;
+}
+
+.mp-btn:active {
+  border-style: inset;
+}
+
+.mp-btn.mp-play {
+  width: 54px;
+}
+
+.music-bar {
+  height: 12px;
+  border: 2px inset var(--color-border);
+  background: rgba(255,255,255,0.2);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.music-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, rgba(0,0,0,0), var(--color-window-header), rgba(0,0,0,0));
+}
+
+.music-body {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: 10px;
+}
+
+.music-list {
+  border: 2px inset var(--color-border);
+  background: #fff;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.music-track {
+  text-align: left;
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.music-track:hover,
+.music-track.active {
+  background: var(--color-window-header);
+  color: #fff;
+}
+
+.music-right {
+  border: 2px inset var(--color-border);
+  padding: 10px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.music-eq {
+  height: 90px;
+  border: 2px inset var(--color-border);
+  background: #111;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  padding: 8px;
+  align-items: end;
+}
+
+.eq-col {
+  background: #00ff88;
+  height: 20%;
+}
+
+.music-hint {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.music-hint code {
+  font-family: "Courier New", Courier, monospace;
+  background: rgba(0,0,0,0.06);
+  padding: 0 4px;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+  .music-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Skills --- */
+.skills-content {
+  padding: 14px;
+}
+
+.skills-title {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.skills-sub {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-bottom: 14px;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.skill-head {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 900;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.skill-bar {
+  height: 14px;
+  border: 2px inset var(--color-border);
+  background: rgba(255,255,255,0.35);
+  overflow: hidden;
+}
+
+.skill-fill {
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0,0,0,0), var(--color-window-header), rgba(0,0,0,0));
+}
+
+.skills-footer {
+  margin-top: 14px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.skills-footer code {
+  font-family: "Courier New", Courier, monospace;
+  background: rgba(0,0,0,0.06);
+  padding: 0 4px;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* --- Error dialog --- */
+.error-content {
+  padding: 12px;
+}
+
+.error-row {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.error-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 2px inset var(--color-border);
+}
+
+.error-icon i {
+  color: #c40000;
+  font-size: 20px;
+}
+
+.error-title {
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.error-body {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.error-actions {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
 }

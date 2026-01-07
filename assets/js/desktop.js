@@ -4,6 +4,12 @@ let draggedElement = null;
 let resizingElement = null;
 let draggedIcon = null;
 
+// Preferences / OS state
+let soundsEnabled = false;
+let audioCtx = null;
+let idleTimer = null;
+let isScreensaverActive = false;
+
 // Initial positions for dragging
 let startMouseX = 0;
 let startMouseY = 0;
@@ -12,6 +18,28 @@ let startElemY = 0;
 
 let startWidth = 0;
 let startHeight = 0;
+
+// Terminal state
+let termHistory = [];
+let termHistoryIdx = -1;
+let termInitialized = false;
+
+// Calculator state
+let calcState = {
+    display: '0',
+    prev: null,
+    op: null,
+    resetNext: false
+};
+
+// Music player (UI-only) state
+let musicState = {
+    tracks: ['CRT Dreams', 'Blue Screen Serenade', 'Teal Desktop Anthem', 'Kernel Panic (LoFi)'],
+    index: 0,
+    playing: false,
+    progress: 0,
+    interval: null
+};
 
 // Update Clock
 function updateClock() {
@@ -24,18 +52,219 @@ function updateClock() {
 setInterval(updateClock, 60000);
 updateClock();
 
+// -------------------------
+// Utilities / Persistence
+// -------------------------
+function isMobile() {
+    return window.innerWidth <= 768 || ('ontouchstart' in window);
+}
+
+function safeJSONParse(str) {
+    try { return JSON.parse(str); } catch { return null; }
+}
+
+function saveWindowState(win) {
+    if (!win || !win.id) return;
+    // Only persist on desktop (mobile layout is forced via CSS)
+    if (isMobile()) return;
+    const state = {
+        left: win.style.left || (win.offsetLeft + 'px'),
+        top: win.style.top || (win.offsetTop + 'px'),
+        width: win.style.width || (win.offsetWidth + 'px'),
+        height: win.style.height || (win.offsetHeight + 'px')
+    };
+    localStorage.setItem(`winstate-${win.id}`, JSON.stringify(state));
+}
+
+function restoreWindowState(win) {
+    if (!win || !win.id) return;
+    if (isMobile()) return;
+    const raw = localStorage.getItem(`winstate-${win.id}`);
+    if (!raw) return;
+    const s = safeJSONParse(raw);
+    if (!s) return;
+    if (s.left) win.style.left = s.left;
+    if (s.top) win.style.top = s.top;
+    if (s.width) win.style.width = s.width;
+    if (s.height) win.style.height = s.height;
+}
+
+function clamp(n, min, max) {
+    return Math.max(min, Math.min(max, n));
+}
+
+function ensureWithinDesktop(win) {
+    if (!win) return;
+    if (isMobile()) return;
+    const desktop = document.getElementById('desktop');
+    if (!desktop) return;
+    const dRect = desktop.getBoundingClientRect();
+    const wRect = win.getBoundingClientRect();
+
+    // current left/top relative to desktop
+    const curLeft = (parseInt(win.style.left || '0', 10) || 0);
+    const curTop = (parseInt(win.style.top || '0', 10) || 0);
+
+    const maxLeft = Math.max(0, Math.floor(dRect.width - wRect.width));
+    const maxTop = Math.max(0, Math.floor(dRect.height - wRect.height));
+
+    const clampedLeft = clamp(curLeft, 0, maxLeft);
+    const clampedTop = clamp(curTop, 0, maxTop);
+
+    win.style.left = clampedLeft + 'px';
+    win.style.top = clampedTop + 'px';
+}
+
+// -------------------------
+// System Sounds (WebAudio)
+// -------------------------
+function ensureAudio() {
+    if (!soundsEnabled) return null;
+    if (audioCtx && audioCtx.state !== 'closed') return audioCtx;
+    try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        return audioCtx;
+    } catch (e) {
+        console.warn('AudioContext not available', e);
+        return null;
+    }
+}
+
+function beep(type = 'click') {
+    if (!soundsEnabled) return;
+    const ctx = ensureAudio();
+    if (!ctx) return;
+    // Resume if suspended (often required after user gesture)
+    if (ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+    }
+
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    let freq = 520;
+    let dur = 0.045;
+    let vol = 0.05;
+    if (type === 'open') { freq = 640; dur = 0.05; vol = 0.06; }
+    if (type === 'close') { freq = 320; dur = 0.05; vol = 0.06; }
+    if (type === 'error') { freq = 180; dur = 0.12; vol = 0.08; }
+    if (type === 'ok') { freq = 740; dur = 0.06; vol = 0.06; }
+
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(freq, now);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(vol, now + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + dur + 0.02);
+}
+
+window.toggleSounds = function() {
+    soundsEnabled = !soundsEnabled;
+    localStorage.setItem('sounds-enabled', String(soundsEnabled));
+    updateSoundsToggleUI(soundsEnabled);
+    beep(soundsEnabled ? 'ok' : 'close');
+};
+
+function updateSoundsToggleUI(isEnabled) {
+    const btn = document.getElementById('sounds-toggle');
+    if (!btn) return;
+    btn.classList.remove('toggle-active', 'toggle-inactive');
+    btn.classList.add(isEnabled ? 'toggle-active' : 'toggle-inactive');
+}
+
+// -------------------------
+// Themes
+// -------------------------
+window.setTheme = function(theme) {
+    const allowed = new Set(['win95', 'mac', 'amber', 'green']);
+    const chosen = allowed.has(theme) ? theme : 'win95';
+    document.body.classList.remove('theme-win95', 'theme-mac', 'theme-amber', 'theme-green');
+    document.body.classList.add(`theme-${chosen}`);
+    localStorage.setItem('theme', chosen);
+    beep('click');
+    // Also print in terminal if open
+    termInfo(`Theme set to: ${chosen}`);
+};
+
+// -------------------------
+// Screensaver
+// -------------------------
+function showScreensaver() {
+    const el = document.getElementById('screensaver');
+    if (!el) return;
+    isScreensaverActive = true;
+    el.classList.add('active');
+}
+
+function hideScreensaver() {
+    const el = document.getElementById('screensaver');
+    if (!el) return;
+    isScreensaverActive = false;
+    el.classList.remove('active');
+}
+
+function resetIdleTimer() {
+    if (idleTimer) clearTimeout(idleTimer);
+    if (isScreensaverActive) hideScreensaver();
+    // 90s idle
+    idleTimer = setTimeout(() => {
+        showScreensaver();
+    }, 90000);
+}
+
+window.startScreensaver = function() {
+    showScreensaver();
+};
+
+// -------------------------
+// Error Dialog (Easter Eggs)
+// -------------------------
+function showError(title, body) {
+    const t = document.getElementById('error-title');
+    const b = document.getElementById('error-body');
+    if (t) t.textContent = title || 'System Error';
+    if (b) b.textContent = body || 'An unknown process has attempted to be extremely productive.';
+    beep('error');
+    window.openWindow('win-error');
+}
+
+window.triggerEasterEggError = function(filename) {
+    const errs = [
+        ['File not found', `Cannot locate '${filename}'. It might be in /dev/null.`],
+        ['Access denied', `Permission denied: '${filename}'. Try turning it off and on again.`],
+        ['Unexpected success', `Operation completed successfully. This is suspicious.`],
+        ['Kernel Panic', `The system encountered a vibe mismatch while reading '${filename}'.`],
+        ['Todo.exe crashed', `A wild TODO appeared. It was not handled.`]
+    ];
+    const pick = errs[Math.floor(Math.random() * errs.length)];
+    showError(pick[0], pick[1]);
+};
+
 // Window Functions
 window.openWindow = function(id) {
     const win = document.getElementById(id);
     if (!win) return;
+
+    resetIdleTimer();
+    if (isScreensaverActive) hideScreensaver();
     
     // Clear selections when opening a window
     document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
     
+    // Restore window state (position/size)
+    restoreWindowState(win);
+
     // Remove closing class if it was still there
     win.classList.remove('closing');
     win.style.display = 'flex';
     win.classList.add('active');
+    ensureWithinDesktop(win);
 
     // Special handling for Racer game: restart/reload iframe if it's empty
     if (id === 'win-racer') {
@@ -52,13 +281,47 @@ window.openWindow = function(id) {
             iframe.src = './Pacman/index.html';
         }
     }
+
+    // Terminal: focus input
+    if (id === 'win-terminal') {
+        initTerminalIfNeeded();
+        const input = document.getElementById('terminal-input');
+        if (input) setTimeout(() => input.focus(), 0);
+    }
+
+    // Notepad: load and focus
+    if (id === 'win-notepad') {
+        initNotepadIfNeeded();
+        const ta = document.getElementById('notepad-text');
+        if (ta) setTimeout(() => ta.focus(), 0);
+    }
+
+    // Music: refresh UI
+    if (id === 'win-music') {
+        musicRender();
+    }
     
     focusWindow(win);
+    beep('open');
 };
 
 window.closeWindow = function(id) {
     const win = document.getElementById(id);
     if (!win) return;
+
+    resetIdleTimer();
+    // Persist window state before hiding
+    saveWindowState(win);
+
+    // Notepad autosave on close
+    if (id === 'win-notepad') {
+        notepadSave();
+    }
+
+    // Music: stop UI animation
+    if (id === 'win-music') {
+        musicStop();
+    }
 
     // Handle animations if enabled
     if (document.body.classList.contains('animations-enabled')) {
@@ -78,6 +341,8 @@ window.closeWindow = function(id) {
         win.classList.remove('active');
         cleanupWindow(id, win);
     }
+
+    beep('close');
 };
 
 function cleanupWindow(id, win) {
@@ -145,17 +410,190 @@ function focusWindow(win) {
     win.style.zIndex = highestZ;
 }
 
-// Helper to detect mobile/touch
-const isMobile = () => window.innerWidth <= 768 || ('ontouchstart' in window);
+// -------------------------
+// Terminal
+// -------------------------
+function termEl() {
+    return document.getElementById('terminal-output');
+}
+
+function termWrite(text, cls) {
+    const out = termEl();
+    if (!out) return;
+    const div = document.createElement('div');
+    div.className = cls ? cls : 'terminal-line';
+    div.textContent = text;
+    out.appendChild(div);
+    out.scrollTop = out.scrollHeight;
+}
+
+function termInfo(text) {
+    // Only print if terminal window exists & was initialized
+    if (!document.getElementById('win-terminal')) return;
+    if (!termInitialized) return;
+    termWrite(text, 'terminal-ok');
+}
+
+function initTerminalIfNeeded() {
+    if (termInitialized) return;
+    const input = document.getElementById('terminal-input');
+    const out = termEl();
+    if (!input || !out) return;
+
+    termInitialized = true;
+    termWrite('IsaacOS Terminal v1.0', 'terminal-ok');
+    termWrite("Type 'help' to see available commands.", 'terminal-line');
+    termWrite('', 'terminal-line');
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const raw = input.value || '';
+            input.value = '';
+            handleTerminalCommand(raw);
+            return;
+        }
+
+        if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (termHistory.length === 0) return;
+            termHistoryIdx = clamp(termHistoryIdx < 0 ? termHistory.length - 1 : termHistoryIdx - 1, 0, termHistory.length - 1);
+            input.value = termHistory[termHistoryIdx] || '';
+            return;
+        }
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (termHistory.length === 0) return;
+            termHistoryIdx = clamp(termHistoryIdx + 1, 0, termHistory.length);
+            input.value = termHistoryIdx >= termHistory.length ? '' : (termHistory[termHistoryIdx] || '');
+            return;
+        }
+    });
+}
+
+function handleTerminalCommand(raw) {
+    const cmdLine = raw.trim();
+    termWrite(`isaac@os:~$ ${cmdLine}`, 'terminal-line');
+    resetIdleTimer();
+
+    if (!cmdLine) return;
+    termHistory.push(cmdLine);
+    termHistoryIdx = termHistory.length;
+
+    const parts = cmdLine.split(' ').filter(Boolean);
+    const cmd = (parts[0] || '').toLowerCase();
+    const arg = parts.slice(1).join(' ');
+
+    if (cmd === 'help') {
+        termWrite('Commands:', 'terminal-ok');
+        termWrite('  help                show this help', 'terminal-line');
+        termWrite('  clear               clear terminal', 'terminal-line');
+        termWrite('  about               open About window', 'terminal-line');
+        termWrite('  experience          open Experience window', 'terminal-line');
+        termWrite('  work | projects      open Work window', 'terminal-line');
+        termWrite('  contact             open Contact window', 'terminal-line');
+        termWrite('  skills              open Skills window', 'terminal-line');
+        termWrite('  theme [win95|mac|amber|green]', 'terminal-line');
+        termWrite('  sounds [on|off]', 'terminal-line');
+        termWrite('  animations [on|off]', 'terminal-line');
+        termWrite('  screensaver         start screensaver', 'terminal-line');
+        termWrite('  date                print current date', 'terminal-line');
+        termWrite('  echo <text>', 'terminal-line');
+        return;
+    }
+
+    if (cmd === 'clear') {
+        const out = termEl();
+        if (out) out.innerHTML = '';
+        return;
+    }
+
+    if (cmd === 'about') return window.openWindow('win-about');
+    if (cmd === 'experience') return window.openWindow('win-experience');
+    if (cmd === 'work' || cmd === 'projects') return window.openWindow('win-projects');
+    if (cmd === 'contact') return window.openWindow('win-contact');
+    if (cmd === 'skills') return window.openWindow('win-skills');
+
+    if (cmd === 'theme') {
+        const t = (arg || '').trim().toLowerCase();
+        if (!t) {
+            termWrite('Usage: theme win95|mac|amber|green', 'terminal-line');
+        } else {
+            window.setTheme(t);
+        }
+        return;
+    }
+
+    if (cmd === 'sounds') {
+        const v = (arg || '').trim().toLowerCase();
+        if (v === 'on') {
+            if (!soundsEnabled) window.toggleSounds();
+            termWrite('Sounds: ON', 'terminal-ok');
+            return;
+        }
+        if (v === 'off') {
+            if (soundsEnabled) window.toggleSounds();
+            termWrite('Sounds: OFF', 'terminal-ok');
+            return;
+        }
+        termWrite(`Sounds is currently: ${soundsEnabled ? 'ON' : 'OFF'}`, 'terminal-line');
+        termWrite('Usage: sounds on|off', 'terminal-line');
+        return;
+    }
+
+    if (cmd === 'animations') {
+        const v = (arg || '').trim().toLowerCase();
+        if (v === 'on') {
+            if (!document.body.classList.contains('animations-enabled')) window.toggleAnimations();
+            termWrite('Animations: ON', 'terminal-ok');
+            return;
+        }
+        if (v === 'off') {
+            if (document.body.classList.contains('animations-enabled')) window.toggleAnimations();
+            termWrite('Animations: OFF', 'terminal-ok');
+            return;
+        }
+        termWrite(`Animations is currently: ${document.body.classList.contains('animations-enabled') ? 'ON' : 'OFF'}`, 'terminal-line');
+        termWrite('Usage: animations on|off', 'terminal-line');
+        return;
+    }
+
+    if (cmd === 'screensaver') {
+        window.startScreensaver();
+        termWrite('Screensaver started.', 'terminal-ok');
+        return;
+    }
+
+    if (cmd === 'date') {
+        termWrite(new Date().toString(), 'terminal-line');
+        return;
+    }
+
+    if (cmd === 'echo') {
+        termWrite(arg || '', 'terminal-line');
+        return;
+    }
+
+    if (cmd === 'rm' || cmd === 'sudo') {
+        showError('Nice try', 'This OS runs on pure vibes. No sudo today.');
+        return;
+    }
+
+    termWrite(`Command not found: ${cmd}`, 'terminal-err');
+    termWrite("Type 'help' for commands.", 'terminal-line');
+}
 
 // Global Mouse Down Handler
 document.addEventListener('mousedown', function(e) {
+    resetIdleTimer();
     handleStart(e.clientX, e.clientY, e.target);
 });
 
 // Touch Support
 document.addEventListener('touchstart', function(e) {
     const touch = e.touches[0];
+    resetIdleTimer();
     handleStart(touch.clientX, touch.clientY, e.target);
 }, { passive: false });
 
@@ -241,11 +679,13 @@ function handleStart(clientX, clientY, target) {
 
 // Global Mouse Move Handler
 document.addEventListener('mousemove', function(e) {
+    resetIdleTimer();
     handleMove(e.clientX, e.clientY);
 });
 
 document.addEventListener('touchmove', function(e) {
     const touch = e.touches[0];
+    resetIdleTimer();
     handleMove(touch.clientX, touch.clientY);
 }, { passive: false });
 
@@ -271,12 +711,19 @@ function handleMove(clientX, clientY) {
         const desktop = document.getElementById('desktop');
         const dRect = desktop.getBoundingClientRect();
         const wRect = draggedElement.getBoundingClientRect();
+        const snap = 12;
 
         // Boundaries
         if (x < 0) x = 0;
         if (y < 0) y = 0;
         if (x + wRect.width > dRect.width) x = dRect.width - wRect.width;
         if (y + wRect.height > dRect.height) y = dRect.height - wRect.height;
+
+        // Snap to edges
+        if (Math.abs(x - 0) < snap) x = 0;
+        if (Math.abs(y - 0) < snap) y = 0;
+        if (Math.abs((x + wRect.width) - dRect.width) < snap) x = dRect.width - wRect.width;
+        if (Math.abs((y + wRect.height) - dRect.height) < snap) y = dRect.height - wRect.height;
 
         draggedElement.style.left = x + 'px';
         draggedElement.style.top = y + 'px';
@@ -307,9 +754,11 @@ document.addEventListener('touchend', handleEnd);
 function handleEnd() {
     if (draggedElement) {
         draggedElement.style.transition = '';
+        saveWindowState(draggedElement);
         draggedElement = null;
     }
     if (resizingElement) {
+        saveWindowState(resizingElement);
         resizingElement = null;
     }
     if (draggedIcon) {
@@ -325,6 +774,240 @@ function handleEnd() {
     }
 }
 
+// -------------------------
+// Notepad
+// -------------------------
+function initNotepadIfNeeded() {
+    const ta = document.getElementById('notepad-text');
+    if (!ta) return;
+    if (ta.dataset.bound === '1') return;
+    ta.dataset.bound = '1';
+
+    const saved = localStorage.getItem('notepad-text') || '';
+    ta.value = saved;
+
+    let saveT = null;
+    ta.addEventListener('input', () => {
+        const status = document.getElementById('notepad-status');
+        if (status) status.textContent = 'typing…';
+        if (saveT) clearTimeout(saveT);
+        saveT = setTimeout(() => {
+            localStorage.setItem('notepad-text', ta.value || '');
+            if (status) status.textContent = 'saved';
+        }, 450);
+    });
+}
+
+window.notepadSave = function() {
+    const ta = document.getElementById('notepad-text');
+    const status = document.getElementById('notepad-status');
+    if (!ta) return;
+    localStorage.setItem('notepad-text', ta.value || '');
+    if (status) status.textContent = 'saved';
+    beep('ok');
+};
+
+window.notepadClear = function() {
+    const ta = document.getElementById('notepad-text');
+    const status = document.getElementById('notepad-status');
+    if (!ta) return;
+    ta.value = '';
+    localStorage.setItem('notepad-text', '');
+    if (status) status.textContent = 'cleared';
+    beep('click');
+};
+
+// -------------------------
+// Calculator
+// -------------------------
+function calcSetDisplay(val) {
+    const el = document.getElementById('calc-display');
+    if (el) el.textContent = val;
+}
+
+function calcFormat(n) {
+    const s = String(n);
+    if (s.length > 12) return Number(n).toPrecision(8);
+    return s;
+}
+
+function calcCompute(a, b, op) {
+    const x = Number(a);
+    const y = Number(b);
+    if (Number.isNaN(x) || Number.isNaN(y)) return 'NaN';
+    if (op === '+') return x + y;
+    if (op === '-') return x - y;
+    if (op === '*') return x * y;
+    if (op === '/') return y === 0 ? '∞' : (x / y);
+    return y;
+}
+
+window.calcPress = function(key) {
+    resetIdleTimer();
+    beep('click');
+
+    const d = calcState.display;
+
+    if (key === 'C') {
+        calcState = { display: '0', prev: null, op: null, resetNext: false };
+        calcSetDisplay(calcState.display);
+        return;
+    }
+
+    if (key === '±') {
+        if (d === '0') return;
+        calcState.display = d.startsWith('-') ? d.slice(1) : '-' + d;
+        calcSetDisplay(calcState.display);
+        return;
+    }
+
+    if (key === '%') {
+        const v = Number(d);
+        if (Number.isNaN(v)) return;
+        calcState.display = calcFormat(v / 100);
+        calcSetDisplay(calcState.display);
+        return;
+    }
+
+    if (key === '.') {
+        if (calcState.resetNext) {
+            calcState.display = '0.';
+            calcState.resetNext = false;
+            calcSetDisplay(calcState.display);
+            return;
+        }
+        if (!d.includes('.')) {
+            calcState.display = d + '.';
+            calcSetDisplay(calcState.display);
+        }
+        return;
+    }
+
+    const isDigit = /^[0-9]$/.test(key);
+    if (isDigit) {
+        if (calcState.resetNext || d === '0') {
+            calcState.display = key;
+            calcState.resetNext = false;
+        } else {
+            calcState.display = d + key;
+        }
+        calcSetDisplay(calcState.display);
+        return;
+    }
+
+    const isOp = ['+', '-', '*', '/'].includes(key);
+    if (isOp) {
+        if (calcState.prev !== null && calcState.op && !calcState.resetNext) {
+            const res = calcCompute(calcState.prev, calcState.display, calcState.op);
+            calcState.prev = String(res);
+            calcState.display = calcFormat(res);
+            calcSetDisplay(calcState.display);
+        } else {
+            calcState.prev = calcState.display;
+        }
+        calcState.op = key;
+        calcState.resetNext = true;
+        return;
+    }
+
+    if (key === '=') {
+        if (calcState.prev === null || !calcState.op) return;
+        const res = calcCompute(calcState.prev, calcState.display, calcState.op);
+        calcState.display = calcFormat(res);
+        calcState.prev = null;
+        calcState.op = null;
+        calcState.resetNext = true;
+        calcSetDisplay(calcState.display);
+        beep('ok');
+        return;
+    }
+};
+
+// -------------------------
+// Music Player (UI-only)
+// -------------------------
+function musicEls() {
+    return {
+        title: document.getElementById('music-title'),
+        play: document.getElementById('music-play'),
+        progress: document.getElementById('music-progress'),
+        list: document.getElementById('music-list'),
+        eq: document.querySelectorAll('.music-eq .eq-col')
+    };
+}
+
+function musicRender() {
+    const els = musicEls();
+    if (els.title) els.title.textContent = `${String(musicState.index + 1).padStart(2, '0')} · ${musicState.tracks[musicState.index]}`;
+    if (els.play) els.play.textContent = musicState.playing ? '⏸' : '▶';
+    if (els.progress) els.progress.style.width = `${musicState.progress}%`;
+    if (els.list) {
+        Array.from(els.list.querySelectorAll('.music-track')).forEach((btn, idx) => {
+            btn.classList.toggle('active', idx === musicState.index);
+        });
+    }
+}
+
+function musicTick() {
+    musicState.progress += 1.2;
+    if (musicState.progress >= 100) {
+        musicState.progress = 0;
+        musicNext();
+        return;
+    }
+    const els = musicEls();
+    if (els.progress) els.progress.style.width = `${musicState.progress}%`;
+    if (els.eq && els.eq.length) {
+        els.eq.forEach(col => {
+            col.style.height = `${20 + Math.floor(Math.random() * 75)}%`;
+        });
+    }
+}
+
+function musicStart() {
+    if (musicState.interval) clearInterval(musicState.interval);
+    musicState.interval = setInterval(musicTick, 180);
+}
+
+function musicStop() {
+    if (musicState.interval) clearInterval(musicState.interval);
+    musicState.interval = null;
+    musicState.playing = false;
+    musicRender();
+}
+
+window.musicLoad = function(idx) {
+    musicState.index = clamp(idx, 0, musicState.tracks.length - 1);
+    musicState.progress = 0;
+    beep('click');
+    musicRender();
+    if (musicState.playing) musicStart();
+};
+
+window.musicToggle = function() {
+    musicState.playing = !musicState.playing;
+    beep(musicState.playing ? 'ok' : 'click');
+    musicRender();
+    if (musicState.playing) musicStart();
+    else musicStop();
+};
+
+window.musicNext = function() {
+    musicState.index = (musicState.index + 1) % musicState.tracks.length;
+    musicState.progress = 0;
+    beep('click');
+    musicRender();
+    if (musicState.playing) musicStart();
+};
+
+window.musicPrev = function() {
+    musicState.index = (musicState.index - 1 + musicState.tracks.length) % musicState.tracks.length;
+    musicState.progress = 0;
+    beep('click');
+    musicRender();
+    if (musicState.playing) musicStart();
+};
+
 // Initialize
 window.onload = () => {
     // Initialize Animations
@@ -333,6 +1016,21 @@ window.onload = () => {
         document.body.classList.add('animations-enabled');
     }
     updateAnimToggleUI(animsEnabled);
+
+    // Initialize Sounds (default OFF)
+    soundsEnabled = localStorage.getItem('sounds-enabled') === 'true';
+    updateSoundsToggleUI(soundsEnabled);
+
+    // Initialize Theme
+    const savedTheme = (localStorage.getItem('theme') || 'win95').toLowerCase();
+    window.setTheme(savedTheme);
+
+    // Initialize idle timer / screensaver
+    resetIdleTimer();
+    document.addEventListener('keydown', resetIdleTimer);
+    document.addEventListener('wheel', resetIdleTimer, { passive: true });
+    document.addEventListener('mousemove', resetIdleTimer, { passive: true });
+    document.addEventListener('touchstart', resetIdleTimer, { passive: true });
 
     window.openWindow('win-about');
     
@@ -383,6 +1081,14 @@ window.onload = () => {
             pos.el.style.top = pos.top + 'px';
         });
     }, 500); // 500ms delay to ensure browser has finished layout/rendering
+
+    // Hide boot screen once everything is ready
+    const boot = document.getElementById('boot-screen');
+    if (boot) {
+        setTimeout(() => {
+            boot.classList.add('hidden');
+        }, 650);
+    }
 };
 
 // Close dropdown when clicking outside
@@ -393,3 +1099,18 @@ document.addEventListener('mousedown', function(e) {
         closeDropdown();
     }
 });
+
+// Dismiss screensaver on interaction
+document.addEventListener('mousedown', () => { if (isScreensaverActive) hideScreensaver(); });
+document.addEventListener('touchstart', () => { if (isScreensaverActive) hideScreensaver(); }, { passive: true });
+document.addEventListener('keydown', () => { if (isScreensaverActive) hideScreensaver(); });
+
+// UI click sounds (lightweight): only for obvious controls
+document.addEventListener('click', (e) => {
+    if (!soundsEnabled) return;
+    const t = e.target;
+    if (!t) return;
+    if (t.closest('.win-btn') || t.closest('.dropdown-content a') || t.closest('.calc-btn') || t.closest('.np-btn') || t.closest('.mp-btn') || t.closest('.music-track')) {
+        beep('click');
+    }
+}, { passive: true });

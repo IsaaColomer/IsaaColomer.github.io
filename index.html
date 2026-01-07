@@ -5,7 +5,7 @@
 		<meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Interactive desktop portfolio of Isaac Colomer Casas, videogame designer and programmer" />
-    <link rel="stylesheet" href="./styles.css?v=1.2" />
+    <link rel="stylesheet" href="./styles.css?v=1.3" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -13,6 +13,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 	</head>
 <body class="desktop-os">
+    <!-- Boot / Loading screen -->
+    <div id="boot-screen" aria-hidden="true">
+        <div class="boot-inner">
+            <div class="boot-title">IsaacOS</div>
+            <div class="boot-subtitle">Booting...</div>
+            <div class="boot-bar"><div class="boot-bar-fill"></div></div>
+            <div class="boot-hint">Tip: double click icons to open · drag windows · resize from ◢</div>
+        </div>
+    </div>
+
+    <!-- Screensaver -->
+    <div id="screensaver" aria-hidden="true">
+        <div class="ss-move-x">
+            <div class="ss-move-y">
+                <div class="ss-box">
+                    <div class="ss-title">ISAACOS.SCR</div>
+                    <div class="ss-ascii">
+                        <pre>
+  ___ ____    _    ____ ____  ___  ____  
+ |_ _/ ___|  / \  / ___/ ___|/ _ \/ ___| 
+  | |\___ \ / _ \| |  | |   | | | \___ \ 
+  | | ___) / ___ \ |__| |___| |_| |___) |
+ |___|____/_/   \_\____\____|\___/|____/ 
+                        </pre>
+                    </div>
+                    <div class="ss-footer">move mouse / tap / press any key</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="grain-overlay"></div>
     <div class="crt-overlay"></div>
 
@@ -22,6 +53,12 @@
             <div class="system-dropdown">
                 <span class="system-name" id="system-trigger" onclick="toggleDropdown()">[+] IsaacOS</span>
                 <div class="dropdown-content" id="system-menu">
+                    <a href="#" onclick="openWindow('win-terminal'); closeDropdown();">Terminal</a>
+                    <a href="#" onclick="openWindow('win-calculator'); closeDropdown();">Calculator</a>
+                    <a href="#" onclick="openWindow('win-notepad'); closeDropdown();">Notepad</a>
+                    <a href="#" onclick="openWindow('win-music'); closeDropdown();">Music Player</a>
+                    <a href="#" onclick="openWindow('win-skills'); closeDropdown();">Skills</a>
+                    <div class="menu-divider"></div>
                     <a href="#" onclick="openWindow('win-about'); closeDropdown();">About</a>
                     <a href="#" onclick="openWindow('win-experience'); closeDropdown();">Experience</a>
                     <a href="#" onclick="openWindow('win-projects'); closeDropdown();">Work</a>
@@ -30,6 +67,14 @@
                     <a href="#" onclick="openWindow('win-pacman'); closeDropdown();">Play Pacman</a>
                     <div class="menu-divider"></div>
                     <a href="#" id="anim-toggle" onclick="toggleAnimations(); event.preventDefault();">Animations</a>
+                    <a href="#" id="sounds-toggle" onclick="toggleSounds(); event.preventDefault();">System Sounds</a>
+                    <div class="menu-divider"></div>
+                    <a href="#" onclick="setTheme('win95'); closeDropdown(); event.preventDefault();">Theme: Windows 95</a>
+                    <a href="#" onclick="setTheme('mac'); closeDropdown(); event.preventDefault();">Theme: Mac Classic</a>
+                    <a href="#" onclick="setTheme('amber'); closeDropdown(); event.preventDefault();">Theme: Amber CRT</a>
+                    <a href="#" onclick="setTheme('green'); closeDropdown(); event.preventDefault();">Theme: Green Phosphor</a>
+                    <div class="menu-divider"></div>
+                    <a href="#" onclick="startScreensaver(); closeDropdown(); event.preventDefault();">Start Screensaver</a>
                 </div>
             </div>
         </div>
@@ -57,6 +102,26 @@
                 <div class="icon-wrapper"><i class="fa-solid fa-circle-info"></i></div>
                 <span>readme.txt</span>
             </div>
+            <div class="desktop-icon" id="icon-terminal" ondblclick="openWindow('win-terminal')">
+                <div class="icon-wrapper"><i class="fa-solid fa-terminal"></i></div>
+                <span>terminal.exe</span>
+            </div>
+            <div class="desktop-icon" id="icon-calculator" ondblclick="openWindow('win-calculator')">
+                <div class="icon-wrapper"><i class="fa-solid fa-calculator"></i></div>
+                <span>calc.exe</span>
+            </div>
+            <div class="desktop-icon" id="icon-notepad" ondblclick="openWindow('win-notepad')">
+                <div class="icon-wrapper"><i class="fa-solid fa-note-sticky"></i></div>
+                <span>notes.txt</span>
+            </div>
+            <div class="desktop-icon" id="icon-music" ondblclick="openWindow('win-music')">
+                <div class="icon-wrapper"><i class="fa-solid fa-music"></i></div>
+                <span>player.exe</span>
+            </div>
+            <div class="desktop-icon" id="icon-skills" ondblclick="openWindow('win-skills')">
+                <div class="icon-wrapper"><i class="fa-solid fa-chart-column"></i></div>
+                <span>skills.sys</span>
+            </div>
             <div class="desktop-icon trash" id="icon-trash" ondblclick="openWindow('win-trash')">
                 <div class="icon-wrapper"><i class="fa-solid fa-trash-can"></i></div>
                 <span>Trash</span>
@@ -76,6 +141,200 @@
         </div>
 
         <!-- Window Templates -->
+
+        <!-- Terminal Window -->
+        <div class="window" id="win-terminal" style="display: none; top: 70px; left: 70px; width: 640px; height: 420px;">
+            <div class="window-header">
+                <div class="window-title">[#] Terminal</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-terminal')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-terminal')">x</button>
+                </div>
+            </div>
+            <div class="window-content terminal-content">
+                <div class="terminal-output" id="terminal-output" aria-live="polite"></div>
+                <div class="terminal-input-row">
+                    <span class="terminal-prompt">isaac@os:~$</span>
+                    <input id="terminal-input" class="terminal-input" type="text" autocomplete="off" spellcheck="false" placeholder="type 'help' and press Enter" />
+                </div>
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
+
+        <!-- Calculator Window -->
+        <div class="window" id="win-calculator" style="display: none; top: 110px; left: 110px; width: 320px; height: 420px;">
+            <div class="window-header">
+                <div class="window-title">[#] Calculator</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-calculator')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-calculator')">x</button>
+                </div>
+            </div>
+            <div class="window-content calc-content">
+                <div class="calc-display" id="calc-display">0</div>
+                <div class="calc-grid" aria-label="calculator">
+                    <button class="calc-btn" onclick="calcPress('C')">C</button>
+                    <button class="calc-btn" onclick="calcPress('±')">±</button>
+                    <button class="calc-btn" onclick="calcPress('%')">%</button>
+                    <button class="calc-btn op" onclick="calcPress('/')">÷</button>
+
+                    <button class="calc-btn" onclick="calcPress('7')">7</button>
+                    <button class="calc-btn" onclick="calcPress('8')">8</button>
+                    <button class="calc-btn" onclick="calcPress('9')">9</button>
+                    <button class="calc-btn op" onclick="calcPress('*')">×</button>
+
+                    <button class="calc-btn" onclick="calcPress('4')">4</button>
+                    <button class="calc-btn" onclick="calcPress('5')">5</button>
+                    <button class="calc-btn" onclick="calcPress('6')">6</button>
+                    <button class="calc-btn op" onclick="calcPress('-')">−</button>
+
+                    <button class="calc-btn" onclick="calcPress('1')">1</button>
+                    <button class="calc-btn" onclick="calcPress('2')">2</button>
+                    <button class="calc-btn" onclick="calcPress('3')">3</button>
+                    <button class="calc-btn op" onclick="calcPress('+')">+</button>
+
+                    <button class="calc-btn wide" onclick="calcPress('0')">0</button>
+                    <button class="calc-btn" onclick="calcPress('.')">.</button>
+                    <button class="calc-btn eq" onclick="calcPress('=')">=</button>
+                </div>
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
+
+        <!-- Notepad Window -->
+        <div class="window" id="win-notepad" style="display: none; top: 90px; left: 420px; width: 520px; height: 420px;">
+            <div class="window-header">
+                <div class="window-title">[#] Notepad</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-notepad')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-notepad')">x</button>
+                </div>
+            </div>
+            <div class="window-content notepad-content">
+                <div class="notepad-toolbar">
+                    <button class="np-btn" onclick="notepadSave()">Save</button>
+                    <button class="np-btn" onclick="notepadClear()">Clear</button>
+                    <span class="np-status" id="notepad-status">ready</span>
+                </div>
+                <textarea id="notepad-text" class="notepad-text" spellcheck="false" placeholder="write something… (autosave on close)"></textarea>
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
+
+        <!-- Music Player Window (UI only) -->
+        <div class="window" id="win-music" style="display: none; top: 140px; left: 360px; width: 520px; height: 360px;">
+            <div class="window-header">
+                <div class="window-title">[#] Music Player</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-music')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-music')">x</button>
+                </div>
+            </div>
+            <div class="window-content music-content">
+                <div class="music-top">
+                    <div class="music-now">
+                        <div class="music-now-title" id="music-title">No track loaded</div>
+                        <div class="music-now-meta">UI-only player · no audio</div>
+                    </div>
+                    <div class="music-controls">
+                        <button class="mp-btn" onclick="musicPrev()">⏮</button>
+                        <button class="mp-btn mp-play" id="music-play" onclick="musicToggle()">▶</button>
+                        <button class="mp-btn" onclick="musicNext()">⏭</button>
+                    </div>
+                </div>
+                <div class="music-bar">
+                    <div class="music-bar-fill" id="music-progress"></div>
+                </div>
+                <div class="music-body">
+                    <div class="music-list" id="music-list" aria-label="playlist">
+                        <button class="music-track" onclick="musicLoad(0)">01 · CRT Dreams</button>
+                        <button class="music-track" onclick="musicLoad(1)">02 · Blue Screen Serenade</button>
+                        <button class="music-track" onclick="musicLoad(2)">03 · Teal Desktop Anthem</button>
+                        <button class="music-track" onclick="musicLoad(3)">04 · Kernel Panic (LoFi)</button>
+                    </div>
+                    <div class="music-right">
+                        <div class="music-eq">
+                            <div class="eq-col"></div><div class="eq-col"></div><div class="eq-col"></div><div class="eq-col"></div><div class="eq-col"></div>
+                        </div>
+                        <div class="music-hint">Tip: type <code>sounds on</code> in Terminal for system beeps.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
+
+        <!-- Skills Window -->
+        <div class="window" id="win-skills" style="display: none; top: 120px; left: 220px; width: 560px; height: 420px;">
+            <div class="window-header">
+                <div class="window-title">[#] skills.sys</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-skills')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-skills')">x</button>
+                </div>
+            </div>
+            <div class="window-content skills-content">
+                <h2 class="skills-title">Skill Matrix</h2>
+                <p class="skills-sub">A very scientific chart. Totally not made up.</p>
+                <div class="skills-grid">
+                    <div class="skill">
+                        <div class="skill-head"><span>C / C++</span><span>80%</span></div>
+                        <div class="skill-bar"><div class="skill-fill" style="width: 80%"></div></div>
+                    </div>
+                    <div class="skill">
+                        <div class="skill-head"><span>C#</span><span>85%</span></div>
+                        <div class="skill-bar"><div class="skill-fill" style="width: 85%"></div></div>
+                    </div>
+                    <div class="skill">
+                        <div class="skill-head"><span>Unity</span><span>88%</span></div>
+                        <div class="skill-bar"><div class="skill-fill" style="width: 88%"></div></div>
+                    </div>
+                    <div class="skill">
+                        <div class="skill-head"><span>Unreal Engine</span><span>72%</span></div>
+                        <div class="skill-bar"><div class="skill-fill" style="width: 72%"></div></div>
+                    </div>
+                    <div class="skill">
+                        <div class="skill-head"><span>AI / Automation</span><span>78%</span></div>
+                        <div class="skill-bar"><div class="skill-fill" style="width: 78%"></div></div>
+                    </div>
+                    <div class="skill">
+                        <div class="skill-head"><span>Testing / QA</span><span>82%</span></div>
+                        <div class="skill-bar"><div class="skill-fill" style="width: 82%"></div></div>
+                    </div>
+                </div>
+                <div class="skills-footer">Try: <code>skills</code> in Terminal · or <code>theme amber</code></div>
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
+
+        <!-- System Error Dialog (Easter eggs) -->
+        <div class="window" id="win-error" style="display: none; top: 160px; left: 160px; width: 420px; height: 220px;">
+            <div class="window-header">
+                <div class="window-title">[!] System Error</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-error')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-error')">x</button>
+                </div>
+            </div>
+            <div class="window-content error-content">
+                <div class="error-row">
+                    <div class="error-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="error-text">
+                        <div class="error-title" id="error-title">Something happened.</div>
+                        <div class="error-body" id="error-body">An unknown process has attempted to be extremely productive.</div>
+                    </div>
+                </div>
+                <div class="error-actions">
+                    <button class="np-btn" onclick="closeWindow('win-error')">OK</button>
+                </div>
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
         
         <!-- Experience Window -->
         <div class="window" id="win-experience" style="display: none; top: 60px; left: 60px; width: 600px; height: 500px;">
@@ -233,15 +492,15 @@
             </div>
             <div class="window-content trash-content">
                 <div class="folder-grid">
-                    <div class="folder-item">
+                    <div class="folder-item" ondblclick="triggerEasterEggError('production_backup_v2_FINAL.txt')">
                         <i class="fa-solid fa-file-lines"></i>
                         <span>production_backup_v2_FINAL.txt</span>
                     </div>
-                    <div class="folder-item">
+                    <div class="folder-item" ondblclick="triggerEasterEggError('fix_for_the_bug_i_caused.txt')">
                         <i class="fa-solid fa-file-lines"></i>
                         <span>fix_for_the_bug_i_caused.txt</span>
                     </div>
-                    <div class="folder-item">
+                    <div class="folder-item" ondblclick="triggerEasterEggError('why_is_the_site_down.txt')">
                         <i class="fa-solid fa-file-lines"></i>
                         <span>why_is_the_site_down.txt</span>
                     </div>
