@@ -32,6 +32,8 @@ window.openWindow = function(id) {
     // Clear selections when opening a window
     document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
     
+    // Remove closing class if it was still there
+    win.classList.remove('closing');
     win.style.display = 'flex';
     win.classList.add('active');
 
@@ -57,9 +59,28 @@ window.openWindow = function(id) {
 window.closeWindow = function(id) {
     const win = document.getElementById(id);
     if (!win) return;
-    win.style.display = 'none';
-    win.classList.remove('active');
 
+    // Handle animations if enabled
+    if (document.body.classList.contains('animations-enabled')) {
+        win.classList.add('closing');
+        win.classList.remove('active');
+        
+        // Wait for animation to finish before hiding
+        setTimeout(() => {
+            if (win.classList.contains('closing')) { // Check if still closing
+                win.style.display = 'none';
+                win.classList.remove('closing');
+                cleanupWindow(id, win);
+            }
+        }, 200); // Match CSS animation duration
+    } else {
+        win.style.display = 'none';
+        win.classList.remove('active');
+        cleanupWindow(id, win);
+    }
+};
+
+function cleanupWindow(id, win) {
     // Special handling for Racer game: clear iframe to stop audio
     if (id === 'win-racer') {
         const iframe = win.querySelector('iframe');
@@ -75,7 +96,7 @@ window.closeWindow = function(id) {
             iframe.src = 'about:blank';
         }
     }
-};
+}
 
 // Dropdown Logic
 window.toggleDropdown = function() {
@@ -101,6 +122,21 @@ window.closeDropdown = function() {
         trigger.classList.remove('active');
     }
 };
+
+// Animation Toggle Logic
+window.toggleAnimations = function() {
+    const isEnabled = document.body.classList.toggle('animations-enabled');
+    localStorage.setItem('animations-enabled', isEnabled);
+    updateAnimToggleUI(isEnabled);
+};
+
+function updateAnimToggleUI(isEnabled) {
+    const btn = document.getElementById('anim-toggle');
+    if (btn) {
+        btn.classList.remove('toggle-active', 'toggle-inactive');
+        btn.classList.add(isEnabled ? 'toggle-active' : 'toggle-inactive');
+    }
+}
 
 function focusWindow(win) {
     document.querySelectorAll('.window').forEach(w => w.classList.remove('focused'));
@@ -291,6 +327,13 @@ function handleEnd() {
 
 // Initialize
 window.onload = () => {
+    // Initialize Animations
+    const animsEnabled = localStorage.getItem('animations-enabled') !== 'false'; // Default to true
+    if (animsEnabled) {
+        document.body.classList.add('animations-enabled');
+    }
+    updateAnimToggleUI(animsEnabled);
+
     window.openWindow('win-about');
     
     // Load Icon Positions

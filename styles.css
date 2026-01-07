@@ -504,3 +504,85 @@ body.desktop-os {
     grid-template-columns: 1fr;
   }
 }
+
+/* --- Animations --- */
+
+/* Window Opening Animation */
+@keyframes win-open {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Window Closing Animation */
+@keyframes win-close {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+}
+
+/* Content Fade/Slide Animation */
+@keyframes content-appear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Only apply when animations are enabled */
+body.animations-enabled .window.active {
+  animation: win-open 0.2s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
+}
+
+body.animations-enabled .window.closing {
+  animation: win-close 0.2s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
+  pointer-events: none;
+}
+
+body.animations-enabled .window.active .window-content {
+  animation: content-appear 0.4s ease-out 0.1s both;
+}
+
+/* Special Case: Disable animations for games to avoid iframe reload issues or performance hits if needed */
+body.animations-enabled #win-racer.active,
+body.animations-enabled #win-pacman.active {
+    animation: win-open 0.2s ease-out forwards;
+}
+
+/* Dropdown Menu Item Styling for Toggle */
+.menu-divider {
+    height: 1px;
+    background-color: var(--color-button-shadow);
+    margin: 4px 0;
+    border-bottom: 1px solid var(--color-button-highlight);
+}
+
+.dropdown-content a.toggle-active::after {
+    content: " [ON]";
+    color: var(--color-accent);
+    font-size: 0.7rem;
+    float: right;
+    margin-left: 10px;
+}
+
+.dropdown-content a.toggle-inactive::after {
+    content: " [OFF]";
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+    float: right;
+    margin-left: 10px;
+}
