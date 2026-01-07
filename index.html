@@ -5,7 +5,7 @@
 		<meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Interactive desktop portfolio of Isaac Colomer Casas, videogame designer and programmer" />
-    <link rel="stylesheet" href="./styles.css?v=1.3" />
+    <link rel="stylesheet" href="./styles.css?v=1.4" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -15,11 +15,21 @@
 <body class="desktop-os">
     <!-- Boot / Loading screen -->
     <div id="boot-screen" aria-hidden="true">
-        <div class="boot-inner">
-            <div class="boot-title">IsaacOS</div>
-            <div class="boot-subtitle">Booting...</div>
-            <div class="boot-bar"><div class="boot-bar-fill"></div></div>
-            <div class="boot-hint">Tip: double click icons to open · drag windows · resize from ◢</div>
+        <div class="boot-window" role="dialog" aria-label="Starting IsaacOS">
+            <div class="boot-header">
+                <div class="boot-caption">Starting IsaacOS</div>
+            </div>
+            <div class="boot-body">
+                <div class="boot-row">
+                    <div class="boot-mark">[+]</div>
+                    <div class="boot-text">
+                        <div class="boot-title">IsaacOS</div>
+                        <div class="boot-subtitle">Loading desktop environment…</div>
+                    </div>
+                </div>
+                <div class="boot-bar" aria-hidden="true"><div class="boot-bar-fill"></div></div>
+                <div class="boot-hint">Tip: double click icons to open · drag windows · resize from ◢</div>
+            </div>
         </div>
     </div>
 
@@ -57,7 +67,6 @@
                     <a href="#" onclick="openWindow('win-calculator'); closeDropdown();">Calculator</a>
                     <a href="#" onclick="openWindow('win-notepad'); closeDropdown();">Notepad</a>
                     <a href="#" onclick="openWindow('win-music'); closeDropdown();">Music Player</a>
-                    <a href="#" onclick="openWindow('win-skills'); closeDropdown();">Skills</a>
                     <div class="menu-divider"></div>
                     <a href="#" onclick="openWindow('win-about'); closeDropdown();">About</a>
                     <a href="#" onclick="openWindow('win-experience'); closeDropdown();">Experience</a>
@@ -68,11 +77,6 @@
                     <div class="menu-divider"></div>
                     <a href="#" id="anim-toggle" onclick="toggleAnimations(); event.preventDefault();">Animations</a>
                     <a href="#" id="sounds-toggle" onclick="toggleSounds(); event.preventDefault();">System Sounds</a>
-                    <div class="menu-divider"></div>
-                    <a href="#" onclick="setTheme('win95'); closeDropdown(); event.preventDefault();">Theme: Windows 95</a>
-                    <a href="#" onclick="setTheme('mac'); closeDropdown(); event.preventDefault();">Theme: Mac Classic</a>
-                    <a href="#" onclick="setTheme('amber'); closeDropdown(); event.preventDefault();">Theme: Amber CRT</a>
-                    <a href="#" onclick="setTheme('green'); closeDropdown(); event.preventDefault();">Theme: Green Phosphor</a>
                     <div class="menu-divider"></div>
                     <a href="#" onclick="startScreensaver(); closeDropdown(); event.preventDefault();">Start Screensaver</a>
                 </div>
@@ -117,10 +121,6 @@
             <div class="desktop-icon" id="icon-music" ondblclick="openWindow('win-music')">
                 <div class="icon-wrapper"><i class="fa-solid fa-music"></i></div>
                 <span>player.exe</span>
-            </div>
-            <div class="desktop-icon" id="icon-skills" ondblclick="openWindow('win-skills')">
-                <div class="icon-wrapper"><i class="fa-solid fa-chart-column"></i></div>
-                <span>skills.sys</span>
             </div>
             <div class="desktop-icon trash" id="icon-trash" ondblclick="openWindow('win-trash')">
                 <div class="icon-wrapper"><i class="fa-solid fa-trash-can"></i></div>
@@ -263,50 +263,6 @@
                         <div class="music-hint">Tip: type <code>sounds on</code> in Terminal for system beeps.</div>
                     </div>
                 </div>
-            </div>
-            <div class="win-resize">◢</div>
-        </div>
-
-        <!-- Skills Window -->
-        <div class="window" id="win-skills" style="display: none; top: 120px; left: 220px; width: 560px; height: 420px;">
-            <div class="window-header">
-                <div class="window-title">[#] skills.sys</div>
-                <div class="window-controls">
-                    <button class="win-btn minimize" onclick="closeWindow('win-skills')">-</button>
-                    <button class="win-btn maximize">^</button>
-                    <button class="win-btn close" onclick="closeWindow('win-skills')">x</button>
-                </div>
-            </div>
-            <div class="window-content skills-content">
-                <h2 class="skills-title">Skill Matrix</h2>
-                <p class="skills-sub">A very scientific chart. Totally not made up.</p>
-                <div class="skills-grid">
-                    <div class="skill">
-                        <div class="skill-head"><span>C / C++</span><span>80%</span></div>
-                        <div class="skill-bar"><div class="skill-fill" style="width: 80%"></div></div>
-                    </div>
-                    <div class="skill">
-                        <div class="skill-head"><span>C#</span><span>85%</span></div>
-                        <div class="skill-bar"><div class="skill-fill" style="width: 85%"></div></div>
-                    </div>
-                    <div class="skill">
-                        <div class="skill-head"><span>Unity</span><span>88%</span></div>
-                        <div class="skill-bar"><div class="skill-fill" style="width: 88%"></div></div>
-                    </div>
-                    <div class="skill">
-                        <div class="skill-head"><span>Unreal Engine</span><span>72%</span></div>
-                        <div class="skill-bar"><div class="skill-fill" style="width: 72%"></div></div>
-                    </div>
-                    <div class="skill">
-                        <div class="skill-head"><span>AI / Automation</span><span>78%</span></div>
-                        <div class="skill-bar"><div class="skill-fill" style="width: 78%"></div></div>
-                    </div>
-                    <div class="skill">
-                        <div class="skill-head"><span>Testing / QA</span><span>82%</span></div>
-                        <div class="skill-bar"><div class="skill-fill" style="width: 82%"></div></div>
-                    </div>
-                </div>
-                <div class="skills-footer">Try: <code>skills</code> in Terminal · or <code>theme amber</code></div>
             </div>
             <div class="win-resize">◢</div>
         </div>

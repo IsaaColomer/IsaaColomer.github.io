@@ -10,6 +10,9 @@ let audioCtx = null;
 let idleTimer = null;
 let isScreensaverActive = false;
 
+// Desktop icon layout: enforce non-overlapping slots
+let iconGrid = null; // { stepX, stepY, cols, rows }
+
 // Initial positions for dragging
 let startMouseX = 0;
 let startMouseY = 0;
@@ -91,6 +94,134 @@ function restoreWindowState(win) {
 
 function clamp(n, min, max) {
     return Math.max(min, Math.min(max, n));
+}
+
+function computeGridFromIconPositions() {
+    const desktop = document.getElementById('desktop');
+    if (!desktop) return null;
+    const icons = Array.from(document.querySelectorAll('.desktop-icon'));
+    if (icons.length === 0) return null;
+
+    const dRect = desktop.getBoundingClientRect();
+    const xs = [];
+    const ys = [];
+
+    icons.forEach(icon => {
+        const rect = icon.getBoundingClientRect();
+        xs.push(Math.round(rect.left - dRect.left));
+        ys.push(Math.round(rect.top - dRect.top));
+    });
+
+    const uniqSort = (arr) => Array.from(new Set(arr)).sort((a, b) => a - b);
+    const uniqXs = uniqSort(xs);
+    const uniqYs = uniqSort(ys);
+
+    const smallestStep = (arr) => {
+        let best = null;
+        for (let i = 1; i < arr.length; i++) {
+            const diff = arr[i] - arr[i - 1];
+            // ignore tiny diffs from rounding/noise
+            if (diff > 40 && (best === null || diff < best)) best = diff;
+        }
+        return best;
+    };
+
+    const stepX = smallestStep(uniqXs) || 152; // fallback: 120 + ~32 gap
+    const stepY = smallestStep(uniqYs) || 152;
+
+    const cols = Math.max(1, Math.floor(dRect.width / stepX));
+    const rows = Math.max(1, Math.floor(dRect.height / stepY));
+
+    return { stepX, stepY, cols, rows };
+}
+
+function iconCellFromPos(left, top, grid) {
+    const g = grid || iconGrid;
+    if (!g) return { ix: 0, iy: 0 };
+    const ix = clamp(Math.round(left / g.stepX), 0, g.cols - 1);
+    const iy = clamp(Math.round(top / g.stepY), 0, g.rows - 1);
+    return { ix, iy };
+}
+
+function applyIconCell(icon, cell, grid) {
+    const g = grid || iconGrid;
+    if (!g) return;
+    icon.style.position = 'absolute';
+    icon.style.left = (cell.ix * g.stepX) + 'px';
+    icon.style.top = (cell.iy * g.stepY) + 'px';
+    icon.style.bottom = 'auto';
+    icon.style.right = 'auto';
+}
+
+function findNearestFreeCell(preferred, occupied, grid) {
+    const g = grid || iconGrid;
+    if (!g) return preferred;
+
+    const key = (ix, iy) => `${ix},${iy}`;
+    const isFree = (ix, iy) => !occupied.has(key(ix, iy));
+
+    const startIx = clamp(preferred.ix, 0, g.cols - 1);
+    const startIy = clamp(preferred.iy, 0, g.rows - 1);
+    if (isFree(startIx, startIy)) return { ix: startIx, iy: startIy };
+
+    const maxR = Math.max(g.cols, g.rows) + 2;
+    for (let r = 1; r <= maxR; r++) {
+        for (let dx = -r; dx <= r; dx++) {
+            for (let dy = -r; dy <= r; dy++) {
+                if (Math.abs(dx) !== r && Math.abs(dy) !== r) continue; // ring only
+                const ix = startIx + dx;
+                const iy = startIy + dy;
+                if (ix < 0 || iy < 0 || ix >= g.cols || iy >= g.rows) continue;
+                if (isFree(ix, iy)) return { ix, iy };
+            }
+        }
+    }
+
+    // fallback: first free scan
+    for (let iy = 0; iy < g.rows; iy++) {
+        for (let ix = 0; ix < g.cols; ix++) {
+            if (isFree(ix, iy)) return { ix, iy };
+        }
+    }
+    return { ix: startIx, iy: startIy };
+}
+
+function layoutIconsNoOverlap({ persist = false } = {}) {
+    const desktop = document.getElementById('desktop');
+    if (!desktop) return;
+
+    iconGrid = computeGridFromIconPositions() || iconGrid;
+    const g = iconGrid;
+    if (!g) return;
+
+    const dRect = desktop.getBoundingClientRect();
+    const icons = Array.from(document.querySelectorAll('.desktop-icon'));
+
+    const items = icons.map(icon => {
+        const rect = icon.getBoundingClientRect();
+        return {
+            icon,
+            left: Math.round(rect.left - dRect.left),
+            top: Math.round(rect.top - dRect.top)
+        };
+    }).sort((a, b) => (a.top - b.top) || (a.left - b.left) || (a.icon.id.localeCompare(b.icon.id)));
+
+    const occupied = new Set();
+    const key = (ix, iy) => `${ix},${iy}`;
+
+    items.forEach(({ icon, left, top }) => {
+        const preferred = iconCellFromPos(left, top, g);
+        const cell = findNearestFreeCell(preferred, occupied, g);
+        occupied.add(key(cell.ix, cell.iy));
+        applyIconCell(icon, cell, g);
+
+        if (persist && icon.id) {
+            localStorage.setItem(`pos-${icon.id}`, JSON.stringify({
+                left: icon.style.left,
+                top: icon.style.top
+            }));
+        }
+    });
 }
 
 function ensureWithinDesktop(win) {
@@ -177,20 +308,6 @@ function updateSoundsToggleUI(isEnabled) {
     btn.classList.remove('toggle-active', 'toggle-inactive');
     btn.classList.add(isEnabled ? 'toggle-active' : 'toggle-inactive');
 }
-
-// -------------------------
-// Themes
-// -------------------------
-window.setTheme = function(theme) {
-    const allowed = new Set(['win95', 'mac', 'amber', 'green']);
-    const chosen = allowed.has(theme) ? theme : 'win95';
-    document.body.classList.remove('theme-win95', 'theme-mac', 'theme-amber', 'theme-green');
-    document.body.classList.add(`theme-${chosen}`);
-    localStorage.setItem('theme', chosen);
-    beep('click');
-    // Also print in terminal if open
-    termInfo(`Theme set to: ${chosen}`);
-};
 
 // -------------------------
 // Screensaver
@@ -493,8 +610,6 @@ function handleTerminalCommand(raw) {
         termWrite('  experience          open Experience window', 'terminal-line');
         termWrite('  work | projects      open Work window', 'terminal-line');
         termWrite('  contact             open Contact window', 'terminal-line');
-        termWrite('  skills              open Skills window', 'terminal-line');
-        termWrite('  theme [win95|mac|amber|green]', 'terminal-line');
         termWrite('  sounds [on|off]', 'terminal-line');
         termWrite('  animations [on|off]', 'terminal-line');
         termWrite('  screensaver         start screensaver', 'terminal-line');
@@ -513,17 +628,6 @@ function handleTerminalCommand(raw) {
     if (cmd === 'experience') return window.openWindow('win-experience');
     if (cmd === 'work' || cmd === 'projects') return window.openWindow('win-projects');
     if (cmd === 'contact') return window.openWindow('win-contact');
-    if (cmd === 'skills') return window.openWindow('win-skills');
-
-    if (cmd === 'theme') {
-        const t = (arg || '').trim().toLowerCase();
-        if (!t) {
-            termWrite('Usage: theme win95|mac|amber|green', 'terminal-line');
-        } else {
-            window.setTheme(t);
-        }
-        return;
-    }
 
     if (cmd === 'sounds') {
         const v = (arg || '').trim().toLowerCase();
@@ -763,12 +867,9 @@ function handleEnd() {
     }
     if (draggedIcon) {
         draggedIcon.style.transition = '';
-        // Save position only if it was actually moved (has absolute position and coordinates)
+        // If it was actually moved, snap everything to guaranteed non-overlapping slots and persist
         if (draggedIcon.style.position === 'absolute' && draggedIcon.style.left && draggedIcon.style.top) {
-            localStorage.setItem(`pos-${draggedIcon.id}`, JSON.stringify({
-                left: draggedIcon.style.left,
-                top: draggedIcon.style.top
-            }));
+            layoutIconsNoOverlap({ persist: true });
         }
         draggedIcon = null;
     }
@@ -1021,10 +1122,6 @@ window.onload = () => {
     soundsEnabled = localStorage.getItem('sounds-enabled') === 'true';
     updateSoundsToggleUI(soundsEnabled);
 
-    // Initialize Theme
-    const savedTheme = (localStorage.getItem('theme') || 'win95').toLowerCase();
-    window.setTheme(savedTheme);
-
     // Initialize idle timer / screensaver
     resetIdleTimer();
     document.addEventListener('keydown', resetIdleTimer);
@@ -1080,6 +1177,9 @@ window.onload = () => {
             pos.el.style.left = pos.left + 'px';
             pos.el.style.top = pos.top + 'px';
         });
+
+        // Final pass: ensure icons can NEVER overlap (and persist fixed positions)
+        layoutIconsNoOverlap({ persist: true });
     }, 500); // 500ms delay to ensure browser has finished layout/rendering
 
     // Hide boot screen once everything is ready
