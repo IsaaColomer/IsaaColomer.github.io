@@ -9,6 +9,7 @@ let soundsEnabled = false;
 let audioCtx = null;
 let idleTimer = null;
 let isScreensaverActive = false;
+let screensaverActivatedAt = 0;
 
 // Desktop icon layout: enforce non-overlapping slots
 let iconGrid = null; // { stepX, stepY, cols, rows }
@@ -316,6 +317,7 @@ function showScreensaver() {
     const el = document.getElementById('screensaver');
     if (!el) return;
     isScreensaverActive = true;
+    screensaverActivatedAt = Date.now();
     el.classList.add('active');
 }
 
@@ -328,7 +330,6 @@ function hideScreensaver() {
 
 function resetIdleTimer() {
     if (idleTimer) clearTimeout(idleTimer);
-    if (isScreensaverActive) hideScreensaver();
     // 90s idle
     idleTimer = setTimeout(() => {
         showScreensaver();
@@ -1201,9 +1202,18 @@ document.addEventListener('mousedown', function(e) {
 });
 
 // Dismiss screensaver on interaction
-document.addEventListener('mousedown', () => { if (isScreensaverActive) hideScreensaver(); });
-document.addEventListener('touchstart', () => { if (isScreensaverActive) hideScreensaver(); }, { passive: true });
-document.addEventListener('keydown', () => { if (isScreensaverActive) hideScreensaver(); });
+function tryDismissScreensaver() {
+    if (!isScreensaverActive) return;
+    // Grace period to avoid immediate self-dismiss due to event noise right after activation
+    if (Date.now() - screensaverActivatedAt < 250) return;
+    hideScreensaver();
+}
+
+document.addEventListener('mousedown', tryDismissScreensaver);
+document.addEventListener('touchstart', tryDismissScreensaver, { passive: true });
+document.addEventListener('keydown', tryDismissScreensaver);
+document.addEventListener('mousemove', tryDismissScreensaver, { passive: true });
+document.addEventListener('wheel', tryDismissScreensaver, { passive: true });
 
 // UI click sounds (lightweight): only for obvious controls
 document.addEventListener('click', (e) => {
