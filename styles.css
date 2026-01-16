@@ -655,6 +655,70 @@ body.animations-enabled #win-pacman.active {
   color: var(--color-window-header);
 }
 
+/* --- OS logo (boot + top bar) --- */
+.os-logo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+  /* CRT-ish tint + punch */
+  filter: contrast(1.08) saturate(1.15) brightness(0.98) hue-rotate(-6deg);
+  /* icon edge */
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,0.65),
+    inset -1px -1px 0 rgba(0,0,0,0.35);
+}
+
+.os-logo--boot {
+  width: 44px;
+  height: 44px;
+}
+
+.os-logo--topbar {
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  border: 1px solid rgba(0,0,0,0.35);
+}
+
+/* Add subtle scanlines over the logo itself (boot is above the global CRT overlay) */
+.boot-mark,
+.os-logo-wrap {
+  position: relative;
+}
+
+.boot-mark::after,
+.os-logo-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0,0,0,0.00),
+    rgba(0,0,0,0.00) 2px,
+    rgba(0,0,0,0.08) 3px
+  );
+  mix-blend-mode: multiply;
+  opacity: 0.35;
+}
+
+.os-logo-wrap {
+  display: inline-block;
+  line-height: 0;
+}
+
+.os-logo-wrap--topbar {
+  width: 18px;
+  height: 18px;
+}
+
+/* top bar label layout */
+.system-name {
+  gap: 6px;
+}
+
 .boot-title {
   font-size: 16px;
   font-weight: 900;
@@ -671,13 +735,23 @@ body.animations-enabled #win-pacman.active {
   border: 2px inset var(--color-border);
   background: #fff;
   overflow: hidden;
+  position: relative;
 }
 
 .boot-bar-fill {
   height: 100%;
-  width: 40%;
-  background: linear-gradient(90deg, rgba(0,0,0,0), #00a000, rgba(0,0,0,0));
-  animation: boot-progress 1.1s linear infinite;
+  width: 0%;
+  /* Win95-ish segmented fill */
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 122, 255, 0.0) 0px,
+      rgba(0, 122, 255, 0.0) 4px,
+      rgba(255,255,255,0.55) 4px,
+      rgba(255,255,255,0.55) 5px
+    ),
+    linear-gradient(90deg, #0b64ff, #00a8ff);
+  box-shadow: inset 1px 1px 0 rgba(255,255,255,0.35);
 }
 
 .boot-hint {
@@ -686,10 +760,7 @@ body.animations-enabled #win-pacman.active {
   color: var(--color-text-muted);
 }
 
-@keyframes boot-progress {
-  0% { transform: translateX(-120%); }
-  100% { transform: translateX(320%); }
-}
+/* (boot bar is now driven deterministically in JS) */
 
 /* --- Screensaver --- */
 #screensaver {
@@ -974,15 +1045,25 @@ body.animations-enabled #win-pacman.active {
 .music-bar {
   height: 12px;
   border: 2px inset var(--color-border);
-  background: rgba(255,255,255,0.2);
+  background: #fff;
   overflow: hidden;
   margin-bottom: 10px;
+  position: relative;
 }
 
 .music-bar-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, rgba(0,0,0,0), var(--color-window-header), rgba(0,0,0,0));
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 122, 255, 0.0) 0px,
+      rgba(0, 122, 255, 0.0) 4px,
+      rgba(255,255,255,0.55) 4px,
+      rgba(255,255,255,0.55) 5px
+    ),
+    linear-gradient(90deg, #0b64ff, #00a8ff);
+  box-shadow: inset 1px 1px 0 rgba(255,255,255,0.35);
 }
 
 .music-body {
@@ -1036,8 +1117,17 @@ body.animations-enabled #win-pacman.active {
 }
 
 .eq-col {
-  background: #00ff88;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(0,0,0,0.00) 0px,
+      rgba(0,0,0,0.00) 4px,
+      rgba(255,255,255,0.18) 4px,
+      rgba(255,255,255,0.18) 5px
+    ),
+    linear-gradient(180deg, #00ff88, #00b965);
   height: 20%;
+  box-shadow: inset 1px 1px 0 rgba(255,255,255,0.15);
 }
 
 .music-hint {

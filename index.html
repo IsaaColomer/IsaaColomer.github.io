@@ -21,7 +21,9 @@
             </div>
             <div class="boot-body">
                 <div class="boot-row">
-                    <div class="boot-mark">[+]</div>
+                    <div class="boot-mark">
+                        <img class="os-logo os-logo--boot" src="images/belle.jpeg" alt="IsaacOS logo">
+                    </div>
                     <div class="boot-text">
                         <div class="boot-title">IsaacOS</div>
                         <div class="boot-subtitle">Loading desktop environment…</div>
@@ -61,7 +63,12 @@
     <nav class="top-bar">
         <div class="top-bar-left">
             <div class="system-dropdown">
-                <span class="system-name" id="system-trigger" onclick="toggleDropdown()">[+] IsaacOS</span>
+                <span class="system-name" id="system-trigger" onclick="toggleDropdown()">
+                    <span class="os-logo-wrap os-logo-wrap--topbar" aria-hidden="true">
+                        <img class="os-logo os-logo--topbar" src="images/belle.jpeg" alt="">
+                    </span>
+                    <span>IsaacOS</span>
+                </span>
                 <div class="dropdown-content" id="system-menu">
                     <a href="#" onclick="openWindow('win-terminal'); closeDropdown();">Terminal</a>
                     <a href="#" onclick="openWindow('win-calculator'); closeDropdown();">Calculator</a>

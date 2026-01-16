@@ -1186,9 +1186,29 @@ window.onload = () => {
     // Hide boot screen once everything is ready
     const boot = document.getElementById('boot-screen');
     if (boot) {
+        const bootDurationMs = 2500;
+        const fill = boot.querySelector('.boot-bar-fill');
+
+        // Determinate, slightly "steppy" progress to feel retro
+        if (fill) {
+            fill.style.animation = 'none';
+            fill.style.transform = 'none';
+            fill.style.width = '0%';
+        }
+
+        const start = performance.now();
+        const tick = (now) => {
+            const t = Math.min(1, (now - start) / bootDurationMs);
+            const stepped = Math.floor(t * 22) / 22; // 22 steps
+            if (fill) fill.style.width = `${Math.max(2, Math.round(stepped * 100))}%`;
+            if (t < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+
         setTimeout(() => {
+            if (fill) fill.style.width = '100%';
             boot.classList.add('hidden');
-        }, 650);
+        }, bootDurationMs);
     }
 };
 
