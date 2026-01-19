@@ -36,36 +36,6 @@ body.desktop-os {
   width: 100vw;
   overflow: hidden;
   position: relative;
-  cursor: var(--cursor-default, default);
-}
-
-/* Default cursor inside windows/content (use alt arrow if provided by sprite) */
-.window,
-.window-content {
-  cursor: var(--cursor-default-alt, var(--cursor-default, default));
-}
-
-/* Interactive / clickable */
-a,
-button,
-.win-btn,
-.desktop-icon,
-.folder-item,
-.system-name,
-.dropdown-content a {
-  cursor: var(--cursor-pointer, pointer);
-}
-
-/* Text editing */
-input,
-textarea,
-[contenteditable="true"] {
-  cursor: var(--cursor-text, text);
-}
-
-/* Boot screen feels like loading */
-#boot-screen {
-  cursor: var(--cursor-wait, wait);
 }
 
 /* Scanline Effect */
@@ -316,7 +286,7 @@ textarea,
   display: flex !important;
   align-items: flex-end !important;
   justify-content: flex-end !important;
-  cursor: var(--cursor-resize, nwse-resize) !important;
+  cursor: nwse-resize !important;
   z-index: 150 !important;
   background: transparent !important;
   color: var(--color-text-primary) !important;
@@ -337,13 +307,9 @@ textarea,
   justify-content: space-between;
   align-items: center;
   padding: 0 0.75rem;
-  cursor: var(--cursor-grab, grab);
+  cursor: grab;
   user-select: none;
   border-bottom: 2px solid var(--color-border);
-}
-
-.window-header:active {
-  cursor: var(--cursor-grabbing, grabbing);
 }
 
 .window-title {
@@ -369,7 +335,7 @@ textarea,
   font-family: monospace;
   font-size: 1rem;
   font-weight: 700;
-  cursor: var(--cursor-pointer, pointer);
+  cursor: pointer;
 }
 
 .win-btn:hover {
@@ -448,18 +414,6 @@ textarea,
   justify-content: center;
   overflow: hidden;
   position: relative;
-}
-
-/* Click-to-zoom cursor behavior */
-.image-viewer-content img.zoomable {
-  cursor: var(--cursor-zoom-in, zoom-in);
-  transition: transform 120ms steps(3, end);
-  transform-origin: center center;
-}
-
-.image-viewer-content img.zoomable.is-zoomed {
-  cursor: var(--cursor-zoom-out, zoom-out);
-  transform: scale(1.8);
 }
 
 .image-viewer-content::after {

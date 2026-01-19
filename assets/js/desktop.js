@@ -45,167 +45,6 @@ let musicState = {
     interval: null
 };
 
-// -------------------------
-// Custom cursor sprite (single image) -> multiple cursors
-// -------------------------
-const CURSOR_SPRITE_CANDIDATES = [
-    'images/cursors.png',
-    'images/cursors.jpg',
-    'images/cursors.jpeg',
-    'images/cursors.webp',
-    'images/cursors-sprite.png',
-    'images/cursors-sprite.jpg',
-    'images/cursors-sprite.jpeg',
-];
-
-function loadFirstAvailableImage(srcCandidates) {
-    return new Promise((resolve, reject) => {
-        let i = 0;
-        const tryNext = () => {
-            if (i >= srcCandidates.length) {
-                reject(new Error('No cursor sprite found'));
-                return;
-            }
-            const src = srcCandidates[i++];
-            const img = new Image();
-            img.onload = () => resolve({ img, src });
-            img.onerror = () => tryNext();
-            img.src = src;
-        };
-        tryNext();
-    });
-}
-
-function isBackgroundishPixel(r, g, b) {
-    // Sprite is black pixels on white background (often JPEG). Treat near-white as background.
-    return r > 245 && g > 245 && b > 245;
-}
-
-function findContentBounds(ctx, w, h) {
-    const data = ctx.getImageData(0, 0, w, h).data;
-    let minX = w, minY = h, maxX = -1, maxY = -1;
-    for (let y = 0; y < h; y++) {
-        for (let x = 0; x < w; x++) {
-            const idx = (y * w + x) * 4;
-            const r = data[idx], g = data[idx + 1], b = data[idx + 2];
-            if (!isBackgroundishPixel(r, g, b)) {
-                if (x < minX) minX = x;
-                if (y < minY) minY = y;
-                if (x > maxX) maxX = x;
-                if (y > maxY) maxY = y;
-            }
-        }
-    }
-    if (maxX < 0) return { x: 0, y: 0, w, h }; // no content found
-    const pad = 2;
-    const x0 = Math.max(0, minX - pad);
-    const y0 = Math.max(0, minY - pad);
-    const x1 = Math.min(w - 1, maxX + pad);
-    const y1 = Math.min(h - 1, maxY + pad);
-    return { x: x0, y: y0, w: (x1 - x0 + 1), h: (y1 - y0 + 1) };
-}
-
-function makeCursorDataUrl(spriteImg, sx, sy, sw, sh, outSize = 32) {
-    const cell = document.createElement('canvas');
-    cell.width = sw;
-    cell.height = sh;
-    const cctx = cell.getContext('2d', { willReadFrequently: true });
-    if (!cctx) return null;
-    cctx.imageSmoothingEnabled = false;
-    cctx.drawImage(spriteImg, sx, sy, sw, sh, 0, 0, sw, sh);
-
-    const bounds = findContentBounds(cctx, sw, sh);
-
-    const out = document.createElement('canvas');
-    out.width = outSize;
-    out.height = outSize;
-    const octx = out.getContext('2d');
-    if (!octx) return null;
-    octx.imageSmoothingEnabled = false;
-    octx.clearRect(0, 0, outSize, outSize);
-
-    const maxDraw = outSize - 2;
-    const scale = Math.min(maxDraw / bounds.w, maxDraw / bounds.h);
-    const dw = Math.max(1, Math.round(bounds.w * scale));
-    const dh = Math.max(1, Math.round(bounds.h * scale));
-    const dx = Math.round((outSize - dw) / 2);
-    const dy = Math.round((outSize - dh) / 2);
-
-    octx.drawImage(
-        spriteImg,
-        sx + bounds.x,
-        sy + bounds.y,
-        bounds.w,
-        bounds.h,
-        dx,
-        dy,
-        dw,
-        dh
-    );
-
-    return out.toDataURL('image/png');
-}
-
-function setCursorVar(varName, dataUrl, hotX, hotY, fallback) {
-    if (!dataUrl) return;
-    document.documentElement.style.setProperty(
-        varName,
-        `url("${dataUrl}") ${hotX} ${hotY}, ${fallback}`
-    );
-}
-
-async function initCustomCursors() {
-    try {
-        const { img } = await loadFirstAvailableImage(CURSOR_SPRITE_CANDIDATES);
-        const cols = 5;
-        const rows = 2;
-        const cellW = Math.floor(img.width / cols);
-        const cellH = Math.floor(img.height / rows);
-
-        // Grid order (left->right, top row then bottom row):
-        // 0 arrow, 1 arrow-alt, 2 grab(open hand), 3 pointer(hand), 4 grabbing(closed hand)
-        // 5 wait(hourglass), 6 text(I-beam), 7 move, 8 zoom-in, 9 zoom-out
-        const cells = Array.from({ length: cols * rows }, (_, i) => {
-            const cx = i % cols;
-            const cy = Math.floor(i / cols);
-            return {
-                sx: cx * cellW,
-                sy: cy * cellH,
-                sw: cellW,
-                sh: cellH
-            };
-        });
-
-        const urls = cells.map(c => makeCursorDataUrl(img, c.sx, c.sy, c.sw, c.sh, 32));
-
-        // Hotspots (approx; tweakable later)
-        setCursorVar('--cursor-default', urls[0], 2, 2, 'default');
-        setCursorVar('--cursor-default-alt', urls[1], 2, 2, 'default');
-        setCursorVar('--cursor-grab', urls[2], 10, 6, 'grab');
-        setCursorVar('--cursor-pointer', urls[3], 10, 6, 'pointer');
-        setCursorVar('--cursor-grabbing', urls[4], 10, 6, 'grabbing');
-        setCursorVar('--cursor-wait', urls[5], 16, 16, 'wait');
-        setCursorVar('--cursor-text', urls[6], 16, 16, 'text');
-        setCursorVar('--cursor-move', urls[7], 16, 16, 'move');
-        setCursorVar('--cursor-zoom-in', urls[8], 16, 16, 'zoom-in');
-        setCursorVar('--cursor-zoom-out', urls[9], 16, 16, 'zoom-out');
-    } catch {
-        // No sprite present: keep native cursors.
-    }
-}
-
-function initImageViewerZoom() {
-    const content = document.querySelector('#win-image-viewer .image-viewer-content');
-    if (!content) return;
-    const img = content.querySelector('img');
-    if (!img) return;
-
-    img.classList.add('zoomable');
-    img.addEventListener('click', () => {
-        img.classList.toggle('is-zoomed');
-    });
-}
-
 // Update Clock
 function updateClock() {
     const clockEl = document.getElementById('clock');
@@ -1273,9 +1112,6 @@ window.musicPrev = function() {
 
 // Initialize
 window.onload = () => {
-    // Custom cursors (requires you to add the sprite image into /images; see CURSOR_SPRITE_CANDIDATES)
-    initCustomCursors();
-
     // Initialize Animations
     const animsEnabled = localStorage.getItem('animations-enabled') !== 'false'; // Default to true
     if (animsEnabled) {
@@ -1295,9 +1131,6 @@ window.onload = () => {
     document.addEventListener('touchstart', resetIdleTimer, { passive: true });
 
     window.openWindow('win-about');
-
-    // Image viewer UX: click-to-zoom + cursor swap
-    initImageViewerZoom();
     
     // Load Icon Positions
     const icons = document.querySelectorAll('.desktop-icon');
