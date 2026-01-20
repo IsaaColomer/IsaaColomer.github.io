@@ -21,10 +21,10 @@
 
   /* --- Custom cursors (.cur) --- */
   --cursor-default: url("images/arrow.cur"), auto;
-  --cursor-pointer: url("images/arrow.cur"), pointer;
+  --cursor-pointer: url("images/Cursor_15.cur"), pointer;
   --cursor-text: url("images/Cursor_14.cur"), text;
   --cursor-wait: url("images/Cursor_3.cur"), wait;
-  --cursor-grab: url("images/Cursor_15.cur"), grab;
+  --cursor-grab: url("images/Cursor_10.cur"), grab;
   --cursor-grabbing: url("images/Cursor_10.cur"), grabbing;
   --cursor-resize-nwse: url("images/Cursor_7.cur"), nwse-resize;
 }
