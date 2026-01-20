@@ -707,6 +707,7 @@ function handleStart(clientX, clientY, target) {
     const resizeHandle = target.closest('.win-resize');
     if (resizeHandle) {
         if (window.innerWidth <= 768) return; // Disable on mobile
+        document.body.classList.add('is-resizing');
         resizingElement = resizeHandle.closest('.window');
         focusWindow(resizingElement);
         startWidth = resizingElement.offsetWidth;
@@ -720,6 +721,7 @@ function handleStart(clientX, clientY, target) {
     const header = target.closest('.window-header');
     if (header) {
         if (window.innerWidth <= 768) return; // Disable on mobile
+        document.body.classList.add('is-dragging');
         const win = header.closest('.window');
         draggedElement = win;
         focusWindow(win);
@@ -839,6 +841,7 @@ function handleMove(clientX, clientY) {
     if (draggedIcon) {
         // Only start dragging if moved more than 3px to avoid accidental "freezing" on click
         if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+            document.body.classList.add('is-dragging');
             let x = startElemX + deltaX;
             let y = startElemY + deltaY;
 
@@ -857,6 +860,8 @@ document.addEventListener('mouseup', handleEnd);
 document.addEventListener('touchend', handleEnd);
 
 function handleEnd() {
+    document.body.classList.remove('is-dragging');
+    document.body.classList.remove('is-resizing');
     if (draggedElement) {
         draggedElement.style.transition = '';
         saveWindowState(draggedElement);

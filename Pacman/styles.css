@@ -15,6 +15,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  cursor: url("../images/arrow.cur"), auto;
 }
 
 .game-container {
