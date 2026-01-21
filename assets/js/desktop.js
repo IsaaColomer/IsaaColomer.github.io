@@ -28,6 +28,11 @@ let termHistory = [];
 let termHistoryIdx = -1;
 let termInitialized = false;
 
+// Skills Explorer state
+let skillsInitialized = false;
+let skillsActiveCategory = 'All';
+let skillsActiveId = null;
+
 // Calculator state
 let calcState = {
     display: '0',
@@ -417,6 +422,11 @@ window.openWindow = function(id) {
     // Music: refresh UI
     if (id === 'win-music') {
         musicRender();
+    }
+
+    // Skills Explorer: lazy init + render
+    if (id === 'win-skills') {
+        initSkillsExplorerIfNeeded();
     }
     
     focusWindow(win);
@@ -902,6 +912,323 @@ function initNotepadIfNeeded() {
             localStorage.setItem('notepad-text', ta.value || '');
             if (status) status.textContent = 'saved';
         }, 450);
+    });
+}
+
+// -------------------------
+// Skills Explorer
+// -------------------------
+const SKILLS_DATA = [
+    {
+        id: 'python',
+        name: 'Python',
+        category: 'AI / Automation',
+        tags: ['ai', 'automation', 'data', 'scripting'],
+        blurb: 'AI tooling, automation scripts, and data handling in production-ish workflows.',
+        proofs: [
+            { label: 'Experience window', url: '#', openWindowId: 'win-experience' }
+        ]
+    },
+    {
+        id: 'llm_workflows',
+        name: 'LLM workflows',
+        category: 'AI / Automation',
+        tags: ['llm', 'automation', 'prototyping'],
+        blurb: 'Designing and integrating LLM-driven workflows to speed up prototypes and internal tooling.',
+        proofs: [
+            { label: 'Experience window', url: '#', openWindowId: 'win-experience' }
+        ]
+    },
+    {
+        id: 'containerized_envs',
+        name: 'Containerized environments',
+        category: 'AI / Automation',
+        tags: ['containers', 'envs', 'reproducibility'],
+        blurb: 'Comfortable working with containerized setups to keep development and testing consistent.',
+        proofs: [
+            { label: 'Experience window', url: '#', openWindowId: 'win-experience' }
+        ]
+    },
+    {
+        id: 'test_automation',
+        name: 'Test automation',
+        category: 'Testing / QA',
+        tags: ['testing', 'automation', 'quality'],
+        blurb: 'Automation and reliability-minded workflows for validating software behavior.',
+        proofs: [
+            { label: 'Experience window', url: '#', openWindowId: 'win-experience' }
+        ]
+    },
+    {
+        id: 'qa_validation',
+        name: 'Software validation (QA)',
+        category: 'Testing / QA',
+        tags: ['qa', 'validation', 'docs', 'process'],
+        blurb: 'Executed comprehensive software validation and maintained validation documentation.',
+        proofs: [
+            { label: 'Experience window', url: '#', openWindowId: 'win-experience' }
+        ]
+    },
+    {
+        id: 'c',
+        name: 'C',
+        category: 'Languages',
+        tags: ['low-level', 'systems'],
+        blurb: 'Solid foundation in C for performance-oriented and systems-adjacent programming.',
+        proofs: [
+            { label: 'About', url: '#', openWindowId: 'win-about' }
+        ]
+    },
+    {
+        id: 'cpp',
+        name: 'C++',
+        category: 'Languages',
+        tags: ['performance', 'game-dev'],
+        blurb: 'C++ experience oriented around game development and performance-sensitive code.',
+        proofs: [
+            { label: 'About', url: '#', openWindowId: 'win-about' }
+        ]
+    },
+    {
+        id: 'csharp',
+        name: 'C#',
+        category: 'Languages',
+        tags: ['unity', '.net', 'game-dev'],
+        blurb: 'C# for gameplay scripting, tooling, and Unity-centric development.',
+        proofs: [
+            { label: 'About', url: '#', openWindowId: 'win-about' }
+        ]
+    },
+    {
+        id: 'unity',
+        name: 'Unity',
+        category: 'Engines / Dev',
+        tags: ['engine', 'game-dev', 'teaching'],
+        blurb: 'Unity development and mentoring: gameplay systems, prototypes, and fundamentals.',
+        proofs: [
+            { label: 'Experience window', url: '#', openWindowId: 'win-experience' }
+        ]
+    },
+    {
+        id: 'unreal',
+        name: 'Unreal Engine (UE 5.1)',
+        category: 'Engines / Dev',
+        tags: ['unreal', 'ue5', '3d'],
+        blurb: 'Unreal Engine work including a UE 5.1 first-person walking simulator (final degree project).',
+        proofs: [
+            { label: 'Work window', url: '#', openWindowId: 'win-projects' },
+            { label: 'Final Degree Work (YouTube)', url: 'https://www.youtube.com/watch?v=aa2Q2_MgMjY' }
+        ]
+    },
+    {
+        id: 'vr_quest',
+        name: 'VR (Quest 2 optimization)',
+        category: 'Engines / Dev',
+        tags: ['vr', 'quest2', 'optimization'],
+        blurb: 'VR project work optimized for Quest 2 constraints and performance targets.',
+        proofs: [
+            { label: 'Work window', url: '#', openWindowId: 'win-projects' },
+            { label: 'Giravolt 2023 (GitHub)', url: 'https://github.com/Makinilla-maker/Giravolt2023' }
+        ]
+    },
+    {
+        id: 'game_design',
+        name: 'Game design',
+        category: 'Game Design',
+        tags: ['design', 'systems', 'player-experience'],
+        blurb: 'Design focused on player experience, systems, and iterative improvements.',
+        proofs: [
+            { label: 'Work window', url: '#', openWindowId: 'win-projects' },
+            { label: 'Design projects page', url: 'generic.html' }
+        ]
+    },
+    {
+        id: 'level_design',
+        name: 'Level design',
+        category: 'Game Design',
+        tags: ['level', 'layout', 'pacing'],
+        blurb: 'Co-designed and built levels for a university project in a student-made engine.',
+        proofs: [
+            { label: 'Work window', url: '#', openWindowId: 'win-projects' },
+            { label: "Dune Fremen's Rising (Info)", url: 'https://shorturl.at/hqtAC' }
+        ]
+    },
+    {
+        id: 'bugfixing_playtest',
+        name: 'Bug fixing & playtesting',
+        category: 'Game Dev',
+        tags: ['bugs', 'playtesting', 'iteration'],
+        blurb: 'Hands-on debugging and playtesting under game jam constraints.',
+        proofs: [
+            { label: 'Work window', url: '#', openWindowId: 'win-projects' },
+            { label: 'Lights Out (itch.io)', url: 'https://osvak.itch.io/lights-out' }
+        ]
+    },
+    {
+        id: 'custom_engine_collab',
+        name: 'Custom engine collaboration',
+        category: 'Game Dev',
+        tags: ['engine', 'collaboration', 'rpg'],
+        blurb: 'Worked with a proprietary student-built engine to deliver a classic RPG project.',
+        proofs: [
+            { label: 'Caronte Mandate (release)', url: 'https://github.com/KuronoaScarlet/ProjectII/releases/tag/1.0' }
+        ]
+    },
+    {
+        id: 'html_css_js',
+        name: 'HTML/CSS/JavaScript',
+        category: 'Web / UI',
+        tags: ['frontend', 'ui', 'dom'],
+        blurb: 'Built this interactive desktop UI with custom windowing, drag/resize, and UI state.',
+        proofs: [
+            { label: 'This site (IsaacOS)', url: 'index.html' },
+            { label: 'GitHub profile', url: 'https://github.com/IsaaColomer' }
+        ]
+    },
+    {
+        id: 'ui_state',
+        name: 'UI state & interactions',
+        category: 'Web / UI',
+        tags: ['state', 'events', 'ux'],
+        blurb: 'Comfortable managing UI state via event-driven DOM interactions (drag, resize, focus, overlays).',
+        proofs: [
+            { label: 'Desktop windowing UX', url: 'index.html' },
+            { label: 'GitHub profile', url: 'https://github.com/IsaaColomer' }
+        ]
+    }
+];
+
+function initSkillsExplorerIfNeeded() {
+    if (skillsInitialized) {
+        renderSkillsExplorer();
+        return;
+    }
+    const win = document.getElementById('win-skills');
+    if (!win) return;
+
+    const search = document.getElementById('skills-search');
+    const cats = document.getElementById('skills-categories');
+    const grid = document.getElementById('skills-grid');
+    const count = document.getElementById('skills-count');
+    const title = document.getElementById('skills-details-title');
+    const body = document.getElementById('skills-details-body');
+    const links = document.getElementById('skills-details-links');
+
+    if (!search || !cats || !grid || !count || !title || !body || !links) return;
+
+    skillsInitialized = true;
+
+    search.addEventListener('input', () => {
+        renderSkillsExplorer();
+    });
+
+    // Categories
+    const categories = ['All', ...Array.from(new Set(SKILLS_DATA.map(s => s.category))).sort((a, b) => a.localeCompare(b))];
+    cats.innerHTML = '';
+    categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'skills-cat-btn' + (cat === skillsActiveCategory ? ' active' : '');
+        btn.textContent = cat;
+        btn.addEventListener('click', () => {
+            skillsActiveCategory = cat;
+            // Keep selection if it still exists in filtered set; otherwise clear
+            const next = getFilteredSkills();
+            if (!next.some(s => s.id === skillsActiveId)) skillsActiveId = null;
+            renderSkillsExplorer();
+        });
+        cats.appendChild(btn);
+    });
+
+    // Initial selection: first skill
+    const initial = SKILLS_DATA[0];
+    skillsActiveId = initial ? initial.id : null;
+    renderSkillsExplorer();
+}
+
+function getFilteredSkills() {
+    const search = document.getElementById('skills-search');
+    const q = (search && typeof search.value === 'string') ? search.value.trim().toLowerCase() : '';
+
+    return SKILLS_DATA.filter(s => {
+        if (skillsActiveCategory !== 'All' && s.category !== skillsActiveCategory) return false;
+        if (!q) return true;
+        const hay = `${s.name} ${(s.tags || []).join(' ')} ${s.category} ${s.blurb}`.toLowerCase();
+        return hay.includes(q);
+    });
+}
+
+function renderSkillsExplorer() {
+    const cats = document.getElementById('skills-categories');
+    const grid = document.getElementById('skills-grid');
+    const count = document.getElementById('skills-count');
+    const title = document.getElementById('skills-details-title');
+    const body = document.getElementById('skills-details-body');
+    const links = document.getElementById('skills-details-links');
+    if (!cats || !grid || !count || !title || !body || !links) return;
+
+    // Update category active state
+    Array.from(cats.querySelectorAll('.skills-cat-btn')).forEach(btn => {
+        btn.classList.toggle('active', btn.textContent === skillsActiveCategory);
+    });
+
+    const filtered = getFilteredSkills();
+    count.textContent = `${filtered.length} skill${filtered.length === 1 ? '' : 's'}`;
+
+    grid.innerHTML = '';
+    filtered.forEach(s => {
+        const pill = document.createElement('button');
+        pill.type = 'button';
+        pill.className = 'skill-pill' + (s.id === skillsActiveId ? ' active' : '');
+        pill.innerHTML = `
+            <div class="skill-name"></div>
+            <div class="skill-meta"></div>
+        `;
+        const name = pill.querySelector('.skill-name');
+        const meta = pill.querySelector('.skill-meta');
+        if (name) name.textContent = s.name;
+        if (meta) meta.textContent = s.category;
+        pill.addEventListener('click', () => {
+            skillsActiveId = s.id;
+            renderSkillsExplorer();
+        });
+        grid.appendChild(pill);
+    });
+
+    const active = filtered.find(s => s.id === skillsActiveId) || SKILLS_DATA.find(s => s.id === skillsActiveId) || null;
+    if (!active && filtered[0]) {
+        skillsActiveId = filtered[0].id;
+    }
+
+    const selected = filtered.find(s => s.id === skillsActiveId) || SKILLS_DATA.find(s => s.id === skillsActiveId) || null;
+    if (!selected) {
+        title.textContent = 'Pick a skill';
+        body.textContent = 'Select a skill on the left to see details and proof links.';
+        links.innerHTML = '';
+        return;
+    }
+
+    title.textContent = selected.name;
+    body.textContent = selected.blurb || '';
+    links.innerHTML = '';
+
+    (selected.proofs || []).forEach(p => {
+        const a = document.createElement('a');
+        a.className = 'skills-link';
+        a.href = p.url || '#';
+        a.textContent = p.label || 'Proof';
+        if (p.openWindowId) {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.openWindow(p.openWindowId);
+            });
+        } else if ((p.url || '').endsWith('.html') || (p.url || '').startsWith('#') || (p.url || '').includes('index.html')) {
+            // In-site links open in same tab
+        } else {
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+        }
+        links.appendChild(a);
     });
 }
 

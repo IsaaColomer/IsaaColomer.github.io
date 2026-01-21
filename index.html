@@ -74,6 +74,7 @@
                     <a href="#" onclick="openWindow('win-calculator'); closeDropdown();">Calculator</a>
                     <a href="#" onclick="openWindow('win-notepad'); closeDropdown();">Notepad</a>
                     <a href="#" onclick="openWindow('win-music'); closeDropdown();">Music Player</a>
+                    <a href="#" onclick="openWindow('win-skills'); closeDropdown();">Skills Explorer</a>
                     <div class="menu-divider"></div>
                     <a href="#" onclick="openWindow('win-about'); closeDropdown();">About</a>
                     <a href="#" onclick="openWindow('win-experience'); closeDropdown();">Experience</a>
@@ -112,6 +113,10 @@
             <div class="desktop-icon" id="icon-about" ondblclick="openWindow('win-about')">
                 <div class="icon-wrapper"><i class="fa-solid fa-circle-info"></i></div>
                 <span>readme.txt</span>
+            </div>
+            <div class="desktop-icon" id="icon-skills" ondblclick="openWindow('win-skills')">
+                <div class="icon-wrapper"><i class="fa-solid fa-chart-simple"></i></div>
+                <span>skills.exe</span>
             </div>
             <div class="desktop-icon" id="icon-terminal" ondblclick="openWindow('win-terminal')">
                 <div class="icon-wrapper"><i class="fa-solid fa-terminal"></i></div>
@@ -442,6 +447,49 @@
 									</div>
             <div class="win-resize">◢</div>
 						</div>
+
+        <!-- Skills Explorer Window -->
+        <div class="window" id="win-skills" style="display: none; top: 90px; left: 140px; width: 760px; height: 520px;">
+            <div class="window-header">
+                <div class="window-title">[#] skills.exe</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-skills')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-skills')">x</button>
+                </div>
+            </div>
+            <div class="window-content skills-content">
+                <div class="skills-toolbar">
+                    <label class="skills-search">
+                        <span class="skills-search-label">Search:</span>
+                        <input id="skills-search" type="text" autocomplete="off" spellcheck="false" placeholder="python, unity, testing, …" />
+                    </label>
+                </div>
+
+                <div class="skills-layout">
+                    <aside class="skills-filters" aria-label="Skill categories">
+                        <div class="skills-filter-title">Categories</div>
+                        <div class="skills-filter-list" id="skills-categories"></div>
+                    </aside>
+
+                    <section class="skills-list" aria-label="Skills">
+                        <div class="skills-list-header">
+                            <div class="skills-count" id="skills-count">0 skills</div>
+                        </div>
+                        <div class="skills-grid" id="skills-grid"></div>
+                    </section>
+
+                    <aside class="skills-details" aria-label="Skill details">
+                        <div class="skills-details-title" id="skills-details-title">Pick a skill</div>
+                        <div class="skills-details-body" id="skills-details-body">
+                            Select a skill on the left to see details and proof links.
+                        </div>
+                        <div class="skills-details-links" id="skills-details-links"></div>
+                    </aside>
+                </div>
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
 
         <!-- Trash Window -->
         <div class="window" id="win-trash" style="display: none; top: 180px; left: 180px; width: 450px; height: 350px;">
