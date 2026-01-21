@@ -629,6 +629,8 @@ function handleTerminalCommand(raw) {
         termWrite('  about               open About window', 'terminal-line');
         termWrite('  experience          open Experience window', 'terminal-line');
         termWrite('  work | projects      open Work window', 'terminal-line');
+        termWrite('  skills              open Skills Explorer', 'terminal-line');
+        termWrite('  interview           open Interview.exe', 'terminal-line');
         termWrite('  contact             open Contact window', 'terminal-line');
         termWrite('  sounds [on|off]', 'terminal-line');
         termWrite('  animations [on|off]', 'terminal-line');
@@ -648,6 +650,8 @@ function handleTerminalCommand(raw) {
     if (cmd === 'experience') return window.openWindow('win-experience');
     if (cmd === 'work' || cmd === 'projects') return window.openWindow('win-projects');
     if (cmd === 'contact') return window.openWindow('win-contact');
+    if (cmd === 'skills' || cmd === 'skills.exe') return window.openWindow('win-skills');
+    if (cmd === 'interview' || cmd === 'interview.exe') return window.openWindow('win-interview');
 
     if (cmd === 'sounds') {
         const v = (arg || '').trim().toLowerCase();
