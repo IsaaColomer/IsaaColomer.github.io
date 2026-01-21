@@ -1392,6 +1392,115 @@ body.animations-enabled #win-pacman.active {
   }
 }
 
+/* -------------------------
+   Interview.exe (win-interview)
+   ------------------------- */
+.interview-content {
+  padding: 10px;
+  height: 100%;
+}
+
+.interview-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 10px;
+  height: 100%;
+  min-height: 0;
+}
+
+.interview-questions,
+.interview-answer {
+  border: 2px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: inset 1px 1px 0 var(--color-button-highlight), inset -1px -1px 0 var(--color-button-shadow);
+  min-height: 0;
+}
+
+.interview-questions {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.interview-panel-title {
+  font-weight: 700;
+  font-size: 12px;
+  user-select: none;
+}
+
+.interview-q-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.interview-q-btn {
+  width: 100%;
+  text-align: left;
+  padding: 8px 8px;
+  border: 2px solid var(--color-border);
+  background: #ffffff;
+  box-shadow: inset 1px 1px 0 var(--color-button-highlight), inset -1px -1px 0 var(--color-button-shadow);
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.25;
+  user-select: none; /* avoid text highlight */
+}
+
+.interview-q-btn:hover {
+  background: #f7f7f7;
+}
+
+.interview-q-btn.active {
+  outline: 2px dotted #000000;
+  outline-offset: -4px;
+}
+
+.interview-answer {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.interview-answer-body {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-text-primary);
+  overflow: auto;
+  padding-right: 2px;
+  white-space: pre-wrap;
+}
+
+.interview-proofs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  user-select: none;
+}
+
+.interview-proof {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border: 2px solid var(--color-border);
+  background: var(--color-button-face);
+  box-shadow: inset 1px 1px 0 var(--color-button-highlight), inset -1px -1px 0 var(--color-button-shadow);
+  font-size: 11px;
+  text-decoration: none;
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 768px) {
+  .interview-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* --- Error dialog --- */
 .error-content {
   padding: 12px;

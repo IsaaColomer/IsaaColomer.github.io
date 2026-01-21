@@ -75,6 +75,7 @@
                     <a href="#" onclick="openWindow('win-notepad'); closeDropdown();">Notepad</a>
                     <a href="#" onclick="openWindow('win-music'); closeDropdown();">Music Player</a>
                     <a href="#" onclick="openWindow('win-skills'); closeDropdown();">Skills Explorer</a>
+                    <a href="#" onclick="openWindow('win-interview'); closeDropdown();">Interview.exe</a>
                     <div class="menu-divider"></div>
                     <a href="#" onclick="openWindow('win-about'); closeDropdown();">About</a>
                     <a href="#" onclick="openWindow('win-experience'); closeDropdown();">Experience</a>
@@ -117,6 +118,10 @@
             <div class="desktop-icon" id="icon-skills" ondblclick="openWindow('win-skills')">
                 <div class="icon-wrapper"><i class="fa-solid fa-chart-simple"></i></div>
                 <span>skills.exe</span>
+            </div>
+            <div class="desktop-icon" id="icon-interview" ondblclick="openWindow('win-interview')">
+                <div class="icon-wrapper"><i class="fa-solid fa-circle-question"></i></div>
+                <span>Interview.exe</span>
             </div>
             <div class="desktop-icon" id="icon-terminal" ondblclick="openWindow('win-terminal')">
                 <div class="icon-wrapper"><i class="fa-solid fa-terminal"></i></div>
@@ -477,7 +482,7 @@
                             <div class="skills-count" id="skills-count">0 skills</div>
                         </div>
                         <div class="skills-grid" id="skills-grid"></div>
-                    </section>
+								</section>
 
                     <aside class="skills-details" aria-label="Skill details">
                         <div class="skills-details-title" id="skills-details-title">Pick a skill</div>
@@ -487,6 +492,35 @@
                         <div class="skills-details-links" id="skills-details-links"></div>
                     </aside>
                 </div>
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
+
+        <!-- Interview.exe Window -->
+        <div class="window" id="win-interview" style="display: none; top: 110px; left: 180px; width: 760px; height: 520px;">
+            <div class="window-header">
+                <div class="window-title">[#] Interview.exe</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-interview')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-interview')">x</button>
+                </div>
+            </div>
+            <div class="window-content interview-content">
+                <div class="interview-layout">
+                    <aside class="interview-questions" aria-label="Interview questions">
+                        <div class="interview-panel-title">Questions</div>
+                        <div class="interview-q-list" id="interview-questions"></div>
+                    </aside>
+
+                    <section class="interview-answer" aria-label="Answer">
+                        <div class="interview-panel-title" id="interview-title">Select a question</div>
+                        <div class="interview-answer-body" id="interview-answer">
+                            Click a question on the left to see a short, practiced answer and proof links.
+                        </div>
+                        <div class="interview-proofs" id="interview-proofs"></div>
+							</section>
+						</div>
             </div>
             <div class="win-resize">◢</div>
         </div>

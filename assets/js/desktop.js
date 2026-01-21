@@ -33,6 +33,10 @@ let skillsInitialized = false;
 let skillsActiveCategory = 'All';
 let skillsActiveId = null;
 
+// Interview.exe state
+let interviewInitialized = false;
+let interviewActiveId = null;
+
 // Calculator state
 let calcState = {
     display: '0',
@@ -427,6 +431,11 @@ window.openWindow = function(id) {
     // Skills Explorer: lazy init + render
     if (id === 'win-skills') {
         initSkillsExplorerIfNeeded();
+    }
+
+    // Interview.exe: lazy init + render
+    if (id === 'win-interview') {
+        initInterviewIfNeeded();
     }
     
     focusWindow(win);
@@ -1229,6 +1238,150 @@ function renderSkillsExplorer() {
             a.rel = 'noopener noreferrer';
         }
         links.appendChild(a);
+    });
+}
+
+// -------------------------
+// Interview.exe
+// -------------------------
+const INTERVIEW_QA = [
+    {
+        id: 'about_me',
+        q: 'Tell me about yourself.',
+        a: "I'm a videogame designer & programmer currently focused on AI development. I’ve worked on AI-powered internal tools and automation, and I also have experience in software validation/testing and mentoring students in programming and Unity.",
+        proofs: [
+            { label: 'About window', openWindowId: 'win-about' },
+            { label: 'Experience window', openWindowId: 'win-experience' }
+        ]
+    },
+    {
+        id: 'ai_work',
+        q: 'What have you built in AI / automation?',
+        a: "At Mindsight Ventures I’ve been designing and implementing AI-powered features and automation tools across internal products, working with Python, containerized environments, and LLM-driven workflows to improve test automation, data processing, and prototyping.",
+        proofs: [
+            { label: 'Experience window', openWindowId: 'win-experience' }
+        ]
+    },
+    {
+        id: 'testing_approach',
+        q: 'How do you approach testing and validation?',
+        a: "I’ve executed comprehensive software validation to ensure compliance and correct functionality, coordinating with teams and maintaining validation documentation. I like testable changes, clear reproduction steps, and keeping reliability in mind throughout development.",
+        proofs: [
+            { label: 'Experience window', openWindowId: 'win-experience' }
+        ]
+    },
+    {
+        id: 'mentoring',
+        q: 'Have you taught or mentored others?',
+        a: "Yes — I taught programming, Unity development, and game design fundamentals, and mentored students on gameplay systems, level design, and code architecture from concept to prototype.",
+        proofs: [
+            { label: 'Experience window', openWindowId: 'win-experience' }
+        ]
+    },
+    {
+        id: 'bugfixing',
+        q: 'How do you handle debugging under constraints?',
+        a: "In a game jam context (Lights Out) I focused on programming, bug fixing, and playtesting. My approach is to reproduce quickly, isolate the smallest failing case, fix with minimal scope, and then re-test the critical paths.",
+        proofs: [
+            { label: 'Work window', openWindowId: 'win-projects' },
+            { label: 'Lights Out (itch.io)', url: 'https://osvak.itch.io/lights-out' }
+        ]
+    },
+    {
+        id: 'project_proud',
+        q: 'Pick a project you’re proud of and why.',
+        a: "My UE 5.1 final degree project is a great example of shipping a complete experience: it’s a first-person walking simulator focused on environmental narrative. I like projects where the design intent and technical execution reinforce each other.",
+        proofs: [
+            { label: 'Work window', openWindowId: 'win-projects' },
+            { label: 'Final Degree Work (YouTube)', url: 'https://www.youtube.com/watch?v=aa2Q2_MgMjY' }
+        ]
+    },
+    {
+        id: 'constraints_vr',
+        q: 'How do you work with performance constraints?',
+        a: "I worked on a VR project optimized for Quest 2, which forces you to be intentional about performance and constraints. I’m comfortable iterating with profiling/targets and making tradeoffs that keep the experience smooth.",
+        proofs: [
+            { label: 'Work window', openWindowId: 'win-projects' },
+            { label: 'Màscares & Marquesos (GitHub)', url: 'https://github.com/Makinilla-maker/Giravolt2023' }
+        ]
+    },
+    {
+        id: 'role_fit',
+        q: 'What roles are you targeting right now?',
+        a: "I’m currently focusing on AI development, while also bringing a strong game-dev background (Unity/Unreal, design) and testing/validation experience. I’m best used in roles that combine building real features with a careful approach to quality.",
+        proofs: [
+            { label: 'About window', openWindowId: 'win-about' },
+            { label: 'Experience window', openWindowId: 'win-experience' }
+        ]
+    }
+];
+
+function initInterviewIfNeeded() {
+    const win = document.getElementById('win-interview');
+    if (!win) return;
+
+    const list = document.getElementById('interview-questions');
+    const title = document.getElementById('interview-title');
+    const answer = document.getElementById('interview-answer');
+    const proofs = document.getElementById('interview-proofs');
+    if (!list || !title || !answer || !proofs) return;
+
+    if (!interviewInitialized) {
+        interviewInitialized = true;
+        // Default selection
+        interviewActiveId = (INTERVIEW_QA[0] && INTERVIEW_QA[0].id) ? INTERVIEW_QA[0].id : null;
+    }
+
+    renderInterview();
+}
+
+function renderInterview() {
+    const list = document.getElementById('interview-questions');
+    const title = document.getElementById('interview-title');
+    const answer = document.getElementById('interview-answer');
+    const proofs = document.getElementById('interview-proofs');
+    if (!list || !title || !answer || !proofs) return;
+
+    list.innerHTML = '';
+    INTERVIEW_QA.forEach(item => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'interview-q-btn' + (item.id === interviewActiveId ? ' active' : '');
+        btn.textContent = item.q;
+        btn.addEventListener('click', () => {
+            interviewActiveId = item.id;
+            renderInterview();
+        });
+        list.appendChild(btn);
+    });
+
+    const active = INTERVIEW_QA.find(x => x.id === interviewActiveId) || INTERVIEW_QA[0] || null;
+    if (!active) {
+        title.textContent = 'Select a question';
+        answer.textContent = 'Click a question on the left to see a short, practiced answer and proof links.';
+        proofs.innerHTML = '';
+        return;
+    }
+
+    title.textContent = active.q;
+    answer.textContent = active.a || '';
+    proofs.innerHTML = '';
+
+    (active.proofs || []).forEach(p => {
+        const a = document.createElement('a');
+        a.className = 'interview-proof';
+        a.href = p.url || '#';
+        a.textContent = p.label || 'Proof';
+        if (p.openWindowId) {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.openWindow(p.openWindowId);
+            });
+        } else {
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+        }
+        proofs.appendChild(a);
     });
 }
 
