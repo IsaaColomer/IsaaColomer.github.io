@@ -79,6 +79,7 @@
                     <a href="#" onclick="openWindow('win-stackmap'); closeDropdown();">Stack Map</a>
                     <a href="#" onclick="openWindow('win-metrics'); closeDropdown();">System Metrics</a>
                     <a href="#" onclick="openWindow('win-settings'); closeDropdown();">OS Settings</a>
+                    <a href="#" onclick="openWindow('win-achievements'); closeDropdown();">Achievements</a>
                     <div class="menu-divider"></div>
                     <a href="#" onclick="openWindow('win-about'); closeDropdown();">About</a>
                     <a href="#" onclick="openWindow('win-experience'); closeDropdown();">Experience</a>
@@ -137,6 +138,10 @@
             <div class="desktop-icon" id="icon-settings" ondblclick="openWindow('win-settings')">
                 <div class="icon-wrapper"><i class="fa-solid fa-gear"></i></div>
                 <span>settings.sys</span>
+            </div>
+            <div class="desktop-icon" id="icon-achievements" ondblclick="openWindow('win-achievements')">
+                <div class="icon-wrapper"><i class="fa-solid fa-trophy"></i></div>
+                <span>Achievements.unlock</span>
             </div>
             <div class="desktop-icon" id="icon-terminal" ondblclick="openWindow('win-terminal')">
                 <div class="icon-wrapper"><i class="fa-solid fa-terminal"></i></div>
@@ -628,6 +633,27 @@
             </div>
             <div class="win-resize">◢</div>
         </div>
+
+        <!-- Achievements.unlock Window -->
+        <div class="window" id="win-achievements" style="display: none; top: 160px; left: 260px; width: 640px; height: 520px;">
+            <div class="window-header">
+                <div class="window-title">[#] Achievements.unlock</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-achievements')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-achievements')">x</button>
+                </div>
+            </div>
+            <div class="window-content achievements-content">
+                <div class="achievements-hint">Subtle milestones that reward exploration. Stored locally on this device.</div>
+                <div class="achievements-summary" id="achievements-summary">0 / 0 unlocked</div>
+                <div class="achievements-list" id="achievements-list"></div>
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
+
+        <!-- Toasts (subtle notifications) -->
+        <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
         <!-- Trash Window -->
         <div class="window" id="win-trash" style="display: none; top: 180px; left: 180px; width: 450px; height: 350px;">

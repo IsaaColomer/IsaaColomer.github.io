@@ -49,6 +49,208 @@ const PREF_A11Y = 'pref-a11y';
 const PREF_REDUCE_MOTION = 'pref-reduce-motion';
 const PREF_CONTRAST = 'pref-high-contrast';
 
+// Achievements
+const ACH_UNLOCKED_KEY = 'achievements-unlocked';
+const ACH_PROGRESS_KEY = 'achievements-progress';
+let achievementsInitialized = false;
+
+const ACHIEVEMENTS = [
+    {
+        id: 'first_login',
+        title: 'First login',
+        desc: 'Welcome to IsaacOS. You opened the desktop.',
+        check: (p) => !!p.firstLogin
+    },
+    {
+        id: 'terminal_user',
+        title: 'Terminal user',
+        desc: 'Ran your first Terminal command.',
+        check: (p) => (p.terminalCommandsCount || 0) >= 1
+    },
+    {
+        id: 'power_user',
+        title: 'Power user',
+        desc: 'Ran 5 Terminal commands.',
+        check: (p) => (p.terminalCommandsCount || 0) >= 5
+    },
+    {
+        id: 'app_explorer',
+        title: 'App explorer',
+        desc: 'Opened 5 different apps.',
+        check: (p) => (p.openedWindows && Object.keys(p.openedWindows).length >= 5)
+    },
+    {
+        id: 'all_core_apps',
+        title: 'All core apps',
+        desc: 'Opened Skills, Interview, Stack Map, Metrics, and Settings.',
+        check: (p) => {
+            const w = (p.openedWindows || {});
+            return !!(w['win-skills'] && w['win-interview'] && w['win-stackmap'] && w['win-metrics'] && w['win-settings']);
+        }
+    },
+    {
+        id: 'mapper',
+        title: 'Mapper',
+        desc: 'Selected something in Stack Map.',
+        check: (p) => (p.stackMapClicks || 0) >= 1
+    },
+    {
+        id: 'analyst',
+        title: 'Analyst',
+        desc: 'Expanded a “How measured” section in System Metrics.',
+        check: (p) => (p.metricsExpands || 0) >= 1
+    },
+    {
+        id: 'customizer',
+        title: 'Customizer',
+        desc: 'Changed an OS Setting (accessibility, contrast, or reduced motion).',
+        check: (p) => (p.settingsToggles || 0) >= 1
+    },
+    {
+        id: 'gamer',
+        title: 'Gamer',
+        desc: 'Opened Racer or Pacman.',
+        check: (p) => {
+            const w = (p.openedWindows || {});
+            return !!(w['win-racer'] || w['win-pacman']);
+        }
+    }
+];
+
+function loadAchievementProgress() {
+    const raw = localStorage.getItem(ACH_PROGRESS_KEY);
+    const parsed = safeJSONParse(raw || '');
+    return parsed && typeof parsed === 'object' ? parsed : {};
+}
+
+function saveAchievementProgress(p) {
+    localStorage.setItem(ACH_PROGRESS_KEY, JSON.stringify(p || {}));
+}
+
+function loadUnlockedAchievements() {
+    const raw = localStorage.getItem(ACH_UNLOCKED_KEY);
+    const arr = safeJSONParse(raw || '');
+    if (!Array.isArray(arr)) return new Set();
+    return new Set(arr.filter(x => typeof x === 'string'));
+}
+
+function saveUnlockedAchievements(set) {
+    localStorage.setItem(ACH_UNLOCKED_KEY, JSON.stringify(Array.from(set || [])));
+}
+
+function showToast(title, body) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `
+        <div class="toast-title"></div>
+        <div class="toast-body"></div>
+    `;
+    const t = toast.querySelector('.toast-title');
+    const b = toast.querySelector('.toast-body');
+    if (t) t.textContent = title || 'Achievement unlocked';
+    if (b) b.textContent = body || '';
+
+    container.appendChild(toast);
+
+    // Animate in only if reduced motion is off
+    const reduce = document.body.classList.contains('reduce-motion');
+    if (!reduce) {
+        requestAnimationFrame(() => toast.classList.add('show'));
+    } else {
+        toast.classList.add('show');
+    }
+
+    window.setTimeout(() => {
+        toast.classList.remove('show');
+        window.setTimeout(() => {
+            toast.remove();
+        }, reduce ? 0 : 180);
+    }, 2600);
+}
+
+function renderAchievementsWindow() {
+    const list = document.getElementById('achievements-list');
+    const summary = document.getElementById('achievements-summary');
+    if (!list || !summary) return;
+
+    const progress = loadAchievementProgress();
+    const unlocked = loadUnlockedAchievements();
+
+    summary.textContent = `${unlocked.size} / ${ACHIEVEMENTS.length} unlocked`;
+    list.innerHTML = '';
+
+    ACHIEVEMENTS.forEach(a => {
+        const isUnlocked = unlocked.has(a.id);
+        const row = document.createElement('div');
+        row.className = 'achievement-row' + (isUnlocked ? '' : ' locked');
+        row.innerHTML = `
+            <div class="achievement-badge"></div>
+            <div>
+                <div class="achievement-title"></div>
+                <div class="achievement-desc"></div>
+            </div>
+        `;
+        const badge = row.querySelector('.achievement-badge');
+        const title = row.querySelector('.achievement-title');
+        const desc = row.querySelector('.achievement-desc');
+        if (badge) badge.textContent = isUnlocked ? '✓' : '?';
+        if (title) title.textContent = a.title;
+        if (desc) desc.textContent = a.desc;
+        list.appendChild(row);
+    });
+}
+
+function evaluateAchievements() {
+    const progress = loadAchievementProgress();
+    const unlocked = loadUnlockedAchievements();
+
+    let changed = false;
+    ACHIEVEMENTS.forEach(a => {
+        if (unlocked.has(a.id)) return;
+        if (a.check && a.check(progress)) {
+            unlocked.add(a.id);
+            changed = true;
+            showToast('Achievement unlocked', a.title);
+        }
+    });
+
+    if (changed) saveUnlockedAchievements(unlocked);
+    // If window open, refresh view
+    if (document.getElementById('win-achievements') && document.getElementById('win-achievements').style.display !== 'none') {
+        renderAchievementsWindow();
+    }
+}
+
+function trackAchievementEvent(kind, payload) {
+    const p = loadAchievementProgress();
+
+    if (kind === 'first_login') {
+        p.firstLogin = true;
+    }
+    if (kind === 'open_window') {
+        p.openedWindows = p.openedWindows || {};
+        p.openedWindows[payload] = true;
+    }
+    if (kind === 'terminal_command') {
+        p.terminalCommandsCount = (p.terminalCommandsCount || 0) + 1;
+    }
+    if (kind === 'stackmap_click') {
+        p.stackMapClicks = (p.stackMapClicks || 0) + 1;
+    }
+    if (kind === 'metrics_expand') {
+        p.metricsExpands = (p.metricsExpands || 0) + 1;
+    }
+    if (kind === 'settings_toggle') {
+        p.settingsToggles = (p.settingsToggles || 0) + 1;
+    }
+
+    saveAchievementProgress(p);
+    evaluateAchievements();
+}
+
 // Calculator state
 let calcState = {
     display: '0',
@@ -390,6 +592,11 @@ window.openWindow = function(id) {
     const win = document.getElementById(id);
     if (!win) return;
 
+    if (!achievementsInitialized) {
+        achievementsInitialized = true;
+        trackAchievementEvent('first_login');
+    }
+
     resetIdleTimer();
     if (isScreensaverActive) hideScreensaver();
     
@@ -464,6 +671,14 @@ window.openWindow = function(id) {
     if (id === 'win-settings') {
         initSettingsIfNeeded();
     }
+
+    // Achievements.unlock: render
+    if (id === 'win-achievements') {
+        renderAchievementsWindow();
+    }
+
+    // Track window opens (for milestones)
+    trackAchievementEvent('open_window', id);
     
     focusWindow(win);
     beep('open');
@@ -657,6 +872,9 @@ function handleTerminalCommand(raw) {
     const cmd = (parts[0] || '').toLowerCase();
     const arg = parts.slice(1).join(' ');
 
+    // Achievements: track any command usage
+    trackAchievementEvent('terminal_command', cmd);
+
     if (cmd === 'help') {
         termWrite('Commands:', 'terminal-ok');
         termWrite('  help                show this help', 'terminal-line');
@@ -669,6 +887,7 @@ function handleTerminalCommand(raw) {
         termWrite('  stackmap            open Stack Map', 'terminal-line');
         termWrite('  metrics             open System Metrics', 'terminal-line');
         termWrite('  settings            open OS Settings', 'terminal-line');
+        termWrite('  achievements         open Achievements.unlock', 'terminal-line');
         termWrite('  contact             open Contact window', 'terminal-line');
         termWrite('  sounds [on|off]', 'terminal-line');
         termWrite('  animations [on|off]', 'terminal-line');
@@ -693,6 +912,7 @@ function handleTerminalCommand(raw) {
     if (cmd === 'stackmap' || cmd === 'stackmap.exe') return window.openWindow('win-stackmap');
     if (cmd === 'metrics' || cmd === 'metrics.sys') return window.openWindow('win-metrics');
     if (cmd === 'settings' || cmd === 'settings.sys') return window.openWindow('win-settings');
+    if (cmd === 'achievements' || cmd === 'achievements.unlock') return window.openWindow('win-achievements');
 
     if (cmd === 'sounds') {
         const v = (arg || '').trim().toLowerCase();
@@ -1657,6 +1877,7 @@ function renderStackMap() {
                 } else {
                     stackMapActive = { type, id: item.id };
                 }
+                trackAchievementEvent('stackmap_click');
                 renderStackMap();
             });
             container.appendChild(btn);
@@ -1813,6 +2034,9 @@ function renderMetrics() {
         if (toggle) {
             toggle.addEventListener('click', () => {
                 card.classList.toggle('expanded');
+                if (card.classList.contains('expanded')) {
+                    trackAchievementEvent('metrics_expand');
+                }
             });
         }
         grid.appendChild(card);
@@ -1874,14 +2098,17 @@ function initSettingsIfNeeded() {
         a11yBtn.addEventListener('click', () => {
             const next = !(localStorage.getItem(PREF_A11Y) === '1');
             setPref(PREF_A11Y, next);
+            trackAchievementEvent('settings_toggle');
         });
         reduceBtn.addEventListener('click', () => {
             const next = !(localStorage.getItem(PREF_REDUCE_MOTION) === '1');
             setPref(PREF_REDUCE_MOTION, next);
+            trackAchievementEvent('settings_toggle');
         });
         contrastBtn.addEventListener('click', () => {
             const next = !(localStorage.getItem(PREF_CONTRAST) === '1');
             setPref(PREF_CONTRAST, next);
+            trackAchievementEvent('settings_toggle');
         });
     }
 
