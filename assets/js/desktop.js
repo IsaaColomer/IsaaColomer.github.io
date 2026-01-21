@@ -1058,7 +1058,7 @@ const SKILLS_DATA = [
         name: 'Unity',
         category: 'Engines / Dev',
         tags: ['engine', 'game-dev', 'teaching'],
-        blurb: 'Unity development and mentoring: gameplay systems, prototypes, and fundamentals.',
+        blurb: 'Unity development and mentoring: gameplay systems, prototypes, and fundamentals (including VR work).',
         proofs: [
             { label: 'Experience window', url: '#', openWindowId: 'win-experience' }
         ]
@@ -1455,7 +1455,7 @@ const STACKMAP_PROJECTS = [
     {
         id: 'mascares_marquesos',
         name: 'Màscares & Marquesos (VR Quest 2)',
-        blurb: 'VR project optimized for Quest 2 — Generalitat de Catalunya.',
+        blurb: 'VR project built in Unity and optimized for Quest 2 — Generalitat de Catalunya.',
         proofs: [
             { label: 'Work window', openWindowId: 'win-projects' },
             { label: 'GitHub', url: 'https://github.com/Makinilla-maker/Giravolt2023' }
@@ -1519,7 +1519,7 @@ const STACKMAP_LINKS = {
         c: [],
         cpp: [],
         csharp: ['lights_out'],
-        unity: ['lights_out', 'summer_game'],
+        unity: ['lights_out', 'summer_game', 'mascares_marquesos'],
         unreal: ['final_degree_work'],
         vr_quest: ['mascares_marquesos'],
         game_design: ['summer_game', 'dune_fremens_rising'],
