@@ -76,6 +76,9 @@
                     <a href="#" onclick="openWindow('win-music'); closeDropdown();">Music Player</a>
                     <a href="#" onclick="openWindow('win-skills'); closeDropdown();">Skills Explorer</a>
                     <a href="#" onclick="openWindow('win-interview'); closeDropdown();">Interview.exe</a>
+                    <a href="#" onclick="openWindow('win-stackmap'); closeDropdown();">Stack Map</a>
+                    <a href="#" onclick="openWindow('win-metrics'); closeDropdown();">System Metrics</a>
+                    <a href="#" onclick="openWindow('win-settings'); closeDropdown();">OS Settings</a>
                     <div class="menu-divider"></div>
                     <a href="#" onclick="openWindow('win-about'); closeDropdown();">About</a>
                     <a href="#" onclick="openWindow('win-experience'); closeDropdown();">Experience</a>
@@ -122,6 +125,18 @@
             <div class="desktop-icon" id="icon-interview" ondblclick="openWindow('win-interview')">
                 <div class="icon-wrapper"><i class="fa-solid fa-circle-question"></i></div>
                 <span>Interview.exe</span>
+            </div>
+            <div class="desktop-icon" id="icon-stackmap" ondblclick="openWindow('win-stackmap')">
+                <div class="icon-wrapper"><i class="fa-solid fa-diagram-project"></i></div>
+                <span>stackmap.exe</span>
+            </div>
+            <div class="desktop-icon" id="icon-metrics" ondblclick="openWindow('win-metrics')">
+                <div class="icon-wrapper"><i class="fa-solid fa-gauge-high"></i></div>
+                <span>metrics.sys</span>
+            </div>
+            <div class="desktop-icon" id="icon-settings" ondblclick="openWindow('win-settings')">
+                <div class="icon-wrapper"><i class="fa-solid fa-gear"></i></div>
+                <span>settings.sys</span>
             </div>
             <div class="desktop-icon" id="icon-terminal" ondblclick="openWindow('win-terminal')">
                 <div class="icon-wrapper"><i class="fa-solid fa-terminal"></i></div>
@@ -521,6 +536,95 @@
                         <div class="interview-proofs" id="interview-proofs"></div>
 							</section>
 						</div>
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
+
+        <!-- Stack Map Window -->
+        <div class="window" id="win-stackmap" style="display: none; top: 80px; left: 140px; width: 860px; height: 560px;">
+            <div class="window-header">
+                <div class="window-title">[#] stackmap.exe</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-stackmap')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-stackmap')">x</button>
+                </div>
+            </div>
+            <div class="window-content stackmap-content">
+                <div class="stackmap-hint">Click a node to highlight connections · click again to clear</div>
+                <div class="stackmap-layout">
+                    <section class="stackmap-col" aria-label="Skills">
+                        <div class="stackmap-title">Skills</div>
+                        <div class="stackmap-list" id="stackmap-skills"></div>
+                    </section>
+                    <section class="stackmap-col" aria-label="Projects">
+                        <div class="stackmap-title">Projects</div>
+                        <div class="stackmap-list" id="stackmap-projects"></div>
+                    </section>
+                    <section class="stackmap-col" aria-label="Experience">
+                        <div class="stackmap-title">Experience</div>
+                        <div class="stackmap-list" id="stackmap-experience"></div>
+                    </section>
+                    <aside class="stackmap-details" aria-label="Details">
+                        <div class="stackmap-title" id="stackmap-details-title">Details</div>
+                        <div class="stackmap-details-body" id="stackmap-details-body">Select a node to see its description and proof links.</div>
+                        <div class="stackmap-details-links" id="stackmap-details-links"></div>
+                    </aside>
+                </div>
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
+
+        <!-- System Metrics Window -->
+        <div class="window" id="win-metrics" style="display: none; top: 120px; left: 180px; width: 720px; height: 520px;">
+            <div class="window-header">
+                <div class="window-title">[#] metrics.sys</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-metrics')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-metrics')">x</button>
+                </div>
+            </div>
+            <div class="window-content metrics-content">
+                <div class="metrics-hint">These numbers are derived from what’s currently listed in your Work + Experience windows.</div>
+                <div class="metrics-grid" id="metrics-grid"></div>
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
+
+        <!-- OS Settings Window -->
+        <div class="window" id="win-settings" style="display: none; top: 140px; left: 220px; width: 560px; height: 420px;">
+            <div class="window-header">
+                <div class="window-title">[#] settings.sys</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-settings')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-settings')">x</button>
+                </div>
+            </div>
+            <div class="window-content settings-content">
+                <div class="settings-section">
+                    <div class="settings-title">Accessibility</div>
+                    <div class="settings-row">
+                        <button class="np-btn" id="toggle-a11y">Toggle</button>
+                        <div class="settings-desc">Increase focus outlines and keyboard clarity.</div>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <div class="settings-title">Reduced Motion</div>
+                    <div class="settings-row">
+                        <button class="np-btn" id="toggle-reduce-motion">Toggle</button>
+                        <div class="settings-desc">Disable non-essential animations.</div>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <div class="settings-title">High Contrast</div>
+                    <div class="settings-row">
+                        <button class="np-btn" id="toggle-contrast">Toggle</button>
+                        <div class="settings-desc">Boost UI contrast for readability.</div>
+                    </div>
+                </div>
+                <div class="settings-footer">Settings persist on this device.</div>
             </div>
             <div class="win-resize">◢</div>
         </div>

@@ -37,6 +37,18 @@ let skillsActiveId = null;
 let interviewInitialized = false;
 let interviewActiveId = null;
 
+// Stack Map state
+let stackMapInitialized = false;
+let stackMapActive = null; // { type: 'skill'|'project'|'experience', id: string } | null
+
+// Metrics + Settings state
+let metricsInitialized = false;
+let settingsInitialized = false;
+
+const PREF_A11Y = 'pref-a11y';
+const PREF_REDUCE_MOTION = 'pref-reduce-motion';
+const PREF_CONTRAST = 'pref-high-contrast';
+
 // Calculator state
 let calcState = {
     display: '0',
@@ -437,6 +449,21 @@ window.openWindow = function(id) {
     if (id === 'win-interview') {
         initInterviewIfNeeded();
     }
+
+    // Stack Map: lazy init + render
+    if (id === 'win-stackmap') {
+        initStackMapIfNeeded();
+    }
+
+    // System Metrics: lazy init + render
+    if (id === 'win-metrics') {
+        initMetricsIfNeeded();
+    }
+
+    // OS Settings: lazy init
+    if (id === 'win-settings') {
+        initSettingsIfNeeded();
+    }
     
     focusWindow(win);
     beep('open');
@@ -527,6 +554,14 @@ window.closeDropdown = function() {
 
 // Animation Toggle Logic
 window.toggleAnimations = function() {
+    // If reduced-motion is enabled, don’t allow enabling animations.
+    if (document.body.classList.contains('reduce-motion')) {
+        document.body.classList.remove('animations-enabled');
+        localStorage.setItem('animations-enabled', false);
+        updateAnimToggleUI(false);
+        termInfo('Reduced motion is enabled. Animations are disabled.');
+        return;
+    }
     const isEnabled = document.body.classList.toggle('animations-enabled');
     localStorage.setItem('animations-enabled', isEnabled);
     updateAnimToggleUI(isEnabled);
@@ -631,6 +666,9 @@ function handleTerminalCommand(raw) {
         termWrite('  work | projects      open Work window', 'terminal-line');
         termWrite('  skills              open Skills Explorer', 'terminal-line');
         termWrite('  interview           open Interview.exe', 'terminal-line');
+        termWrite('  stackmap            open Stack Map', 'terminal-line');
+        termWrite('  metrics             open System Metrics', 'terminal-line');
+        termWrite('  settings            open OS Settings', 'terminal-line');
         termWrite('  contact             open Contact window', 'terminal-line');
         termWrite('  sounds [on|off]', 'terminal-line');
         termWrite('  animations [on|off]', 'terminal-line');
@@ -652,6 +690,9 @@ function handleTerminalCommand(raw) {
     if (cmd === 'contact') return window.openWindow('win-contact');
     if (cmd === 'skills' || cmd === 'skills.exe') return window.openWindow('win-skills');
     if (cmd === 'interview' || cmd === 'interview.exe') return window.openWindow('win-interview');
+    if (cmd === 'stackmap' || cmd === 'stackmap.exe') return window.openWindow('win-stackmap');
+    if (cmd === 'metrics' || cmd === 'metrics.sys') return window.openWindow('win-metrics');
+    if (cmd === 'settings' || cmd === 'settings.sys') return window.openWindow('win-settings');
 
     if (cmd === 'sounds') {
         const v = (arg || '').trim().toLowerCase();
@@ -1387,6 +1428,465 @@ function renderInterview() {
         }
         proofs.appendChild(a);
     });
+}
+
+// -------------------------
+// Stack Map
+// -------------------------
+const STACKMAP_PROJECTS = [
+    {
+        id: 'lights_out',
+        name: 'Lights Out',
+        blurb: 'Indie Dev Game Jam — programming, bug fixing, play testing.',
+        proofs: [
+            { label: 'Work window', openWindowId: 'win-projects' },
+            { label: 'itch.io', url: 'https://osvak.itch.io/lights-out' }
+        ]
+    },
+    {
+        id: 'final_degree_work',
+        name: 'Final Degree Work (UE 5.1)',
+        blurb: 'First-person walking simulator in Unreal Engine 5.1.',
+        proofs: [
+            { label: 'Work window', openWindowId: 'win-projects' },
+            { label: 'YouTube', url: 'https://www.youtube.com/watch?v=aa2Q2_MgMjY' }
+        ]
+    },
+    {
+        id: 'mascares_marquesos',
+        name: 'Màscares & Marquesos (VR Quest 2)',
+        blurb: 'VR project optimized for Quest 2 — Generalitat de Catalunya.',
+        proofs: [
+            { label: 'Work window', openWindowId: 'win-projects' },
+            { label: 'GitHub', url: 'https://github.com/Makinilla-maker/Giravolt2023' }
+        ]
+    },
+    {
+        id: 'dune_fremens_rising',
+        name: "Dune Fremen's Rising",
+        blurb: 'Level design & creative direction (student-made engine).',
+        proofs: [
+            { label: 'Work window', openWindowId: 'win-projects' },
+            { label: 'Info', url: 'https://shorturl.at/hqtAC' }
+        ]
+    },
+    {
+        id: 'summer_game',
+        name: 'Summer Game',
+        blurb: 'Atmospheric experience design — small week-long project.',
+        proofs: [
+            { label: 'Work window', openWindowId: 'win-projects' },
+            { label: 'itch.io', url: 'https://isaacolomer.itch.io/summer-game' }
+        ]
+    }
+];
+
+const STACKMAP_EXPERIENCE = [
+    {
+        id: 'mindsight_junior_ai',
+        name: 'Junior AI Developer — Mindsight Ventures',
+        blurb: 'AI-powered features + automation tools (Python, containers, LLM workflows).',
+        proofs: [{ label: 'Experience window', openWindowId: 'win-experience' }]
+    },
+    {
+        id: 'mindsight_intern_ai',
+        name: 'AI Development Intern — Mindsight Ventures',
+        blurb: 'AI research/prototyping support, internal tools, data handling scripts, test environments.',
+        proofs: [{ label: 'Experience window', openWindowId: 'win-experience' }]
+    },
+    {
+        id: 'gli_test_engineer',
+        name: 'Test Engineer — GLI',
+        blurb: 'Software validation, documentation, process improvements, reliability.',
+        proofs: [{ label: 'Experience window', openWindowId: 'win-experience' }]
+    },
+    {
+        id: 'inn_teacher_mentor',
+        name: 'Teacher & Mentor — Innvideogames',
+        blurb: 'Taught programming, Unity, game design; mentored systems/level design/code architecture.',
+        proofs: [{ label: 'Experience window', openWindowId: 'win-experience' }]
+    }
+];
+
+// Connections are derived from existing descriptions (skills ↔ projects/experience)
+const STACKMAP_LINKS = {
+    skillsToProjects: {
+        python: ['mascares_marquesos'], // closest explicit tech-adjacent project; keep minimal
+        llm_workflows: [],
+        containerized_envs: [],
+        test_automation: ['lights_out'],
+        qa_validation: [],
+        c: [],
+        cpp: [],
+        csharp: ['lights_out'],
+        unity: ['lights_out', 'summer_game'],
+        unreal: ['final_degree_work'],
+        vr_quest: ['mascares_marquesos'],
+        game_design: ['summer_game', 'dune_fremens_rising'],
+        level_design: ['dune_fremens_rising'],
+        bugfixing_playtest: ['lights_out'],
+        custom_engine_collab: ['dune_fremens_rising'],
+        html_css_js: [],
+        ui_state: []
+    },
+    skillsToExperience: {
+        python: ['mindsight_junior_ai', 'mindsight_intern_ai'],
+        llm_workflows: ['mindsight_junior_ai', 'mindsight_intern_ai'],
+        containerized_envs: ['mindsight_junior_ai', 'mindsight_intern_ai'],
+        test_automation: ['mindsight_junior_ai', 'mindsight_intern_ai'],
+        qa_validation: ['gli_test_engineer'],
+        c: [],
+        cpp: [],
+        csharp: ['inn_teacher_mentor'],
+        unity: ['inn_teacher_mentor'],
+        unreal: [],
+        vr_quest: [],
+        game_design: ['inn_teacher_mentor'],
+        level_design: ['inn_teacher_mentor'],
+        bugfixing_playtest: [],
+        custom_engine_collab: [],
+        html_css_js: [],
+        ui_state: []
+    },
+    projectsToExperience: {
+        lights_out: [],
+        final_degree_work: [],
+        mascares_marquesos: [],
+        dune_fremens_rising: ['inn_teacher_mentor'],
+        summer_game: []
+    }
+};
+
+function initStackMapIfNeeded() {
+    const win = document.getElementById('win-stackmap');
+    if (!win) return;
+
+    const skillsEl = document.getElementById('stackmap-skills');
+    const projEl = document.getElementById('stackmap-projects');
+    const expEl = document.getElementById('stackmap-experience');
+    const dTitle = document.getElementById('stackmap-details-title');
+    const dBody = document.getElementById('stackmap-details-body');
+    const dLinks = document.getElementById('stackmap-details-links');
+    if (!skillsEl || !projEl || !expEl || !dTitle || !dBody || !dLinks) return;
+
+    if (!stackMapInitialized) {
+        stackMapInitialized = true;
+        stackMapActive = null;
+        renderStackMap();
+        return;
+    }
+
+    renderStackMap();
+}
+
+function renderStackMap() {
+    const skillsEl = document.getElementById('stackmap-skills');
+    const projEl = document.getElementById('stackmap-projects');
+    const expEl = document.getElementById('stackmap-experience');
+    const dTitle = document.getElementById('stackmap-details-title');
+    const dBody = document.getElementById('stackmap-details-body');
+    const dLinks = document.getElementById('stackmap-details-links');
+    if (!skillsEl || !projEl || !expEl || !dTitle || !dBody || !dLinks) return;
+
+    const skills = SKILLS_DATA.map(s => ({
+        id: s.id,
+        name: s.name,
+        blurb: s.blurb,
+        proofs: s.proofs
+    })).sort((a, b) => a.name.localeCompare(b.name));
+
+    const projects = STACKMAP_PROJECTS.slice();
+    const experience = STACKMAP_EXPERIENCE.slice();
+
+    const active = stackMapActive; // {type,id}|null
+    const activeSkill = active && active.type === 'skill' ? active.id : null;
+    const activeProject = active && active.type === 'project' ? active.id : null;
+    const activeExp = active && active.type === 'experience' ? active.id : null;
+
+    const relatedProjects = new Set();
+    const relatedExperience = new Set();
+    const relatedSkills = new Set();
+
+    if (activeSkill) {
+        (STACKMAP_LINKS.skillsToProjects[activeSkill] || []).forEach(id => relatedProjects.add(id));
+        (STACKMAP_LINKS.skillsToExperience[activeSkill] || []).forEach(id => relatedExperience.add(id));
+        relatedSkills.add(activeSkill);
+    }
+    if (activeProject) {
+        relatedProjects.add(activeProject);
+        (STACKMAP_LINKS.projectsToExperience[activeProject] || []).forEach(id => relatedExperience.add(id));
+        // invert skillsToProjects for highlighting
+        Object.keys(STACKMAP_LINKS.skillsToProjects).forEach(sid => {
+            if ((STACKMAP_LINKS.skillsToProjects[sid] || []).includes(activeProject)) relatedSkills.add(sid);
+        });
+    }
+    if (activeExp) {
+        relatedExperience.add(activeExp);
+        Object.keys(STACKMAP_LINKS.skillsToExperience).forEach(sid => {
+            if ((STACKMAP_LINKS.skillsToExperience[sid] || []).includes(activeExp)) relatedSkills.add(sid);
+        });
+        Object.keys(STACKMAP_LINKS.projectsToExperience).forEach(pid => {
+            if ((STACKMAP_LINKS.projectsToExperience[pid] || []).includes(activeExp)) relatedProjects.add(pid);
+        });
+    }
+
+    const renderNode = (container, list, type) => {
+        container.innerHTML = '';
+        list.forEach(item => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'stackmap-node';
+            btn.textContent = item.name;
+
+            const isActive = !!active && active.type === type && active.id === item.id;
+            if (isActive) btn.classList.add('active');
+
+            if (active) {
+                const isRelated =
+                    (type === 'skill' && relatedSkills.has(item.id)) ||
+                    (type === 'project' && relatedProjects.has(item.id)) ||
+                    (type === 'experience' && relatedExperience.has(item.id));
+
+                if (!isRelated) btn.classList.add('dim');
+                else btn.classList.add('match');
+            }
+
+            btn.addEventListener('click', () => {
+                if (stackMapActive && stackMapActive.type === type && stackMapActive.id === item.id) {
+                    stackMapActive = null; // toggle off
+                } else {
+                    stackMapActive = { type, id: item.id };
+                }
+                renderStackMap();
+            });
+            container.appendChild(btn);
+        });
+    };
+
+    renderNode(skillsEl, skills, 'skill');
+    renderNode(projEl, projects, 'project');
+    renderNode(expEl, experience, 'experience');
+
+    // Details panel
+    if (!active) {
+        dTitle.textContent = 'Details';
+        dBody.textContent = 'Select a node to see its description and proof links.';
+        dLinks.innerHTML = '';
+        return;
+    }
+
+    const findBy = (type, id) => {
+        if (type === 'skill') return skills.find(x => x.id === id);
+        if (type === 'project') return projects.find(x => x.id === id);
+        if (type === 'experience') return experience.find(x => x.id === id);
+        return null;
+    };
+
+    const obj = findBy(active.type, active.id);
+    dTitle.textContent = obj ? obj.name : 'Details';
+    dBody.textContent = (obj && obj.blurb) ? obj.blurb : '';
+    dLinks.innerHTML = '';
+    (obj && obj.proofs ? obj.proofs : []).forEach(p => {
+        const a = document.createElement('a');
+        a.className = 'stackmap-link';
+        a.href = p.url || '#';
+        a.textContent = p.label || 'Proof';
+        if (p.openWindowId) {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.openWindow(p.openWindowId);
+            });
+        } else {
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+        }
+        dLinks.appendChild(a);
+    });
+}
+
+// -------------------------
+// System Metrics
+// -------------------------
+function computeMetrics() {
+    // Derive only from existing on-site lists we control:
+    // - Work window in index.html lists 5 projects
+    // - Experience window lists 4 roles
+    const projectsCount = STACKMAP_PROJECTS.length;
+    const experienceCount = STACKMAP_EXPERIENCE.length;
+
+    // Derived subset counts from project names/descriptions
+    const has = (id) => STACKMAP_PROJECTS.some(p => p.id === id);
+    const vrProjects = has('mascares_marquesos') ? 1 : 0;
+    const unrealProjects = has('final_degree_work') ? 1 : 0;
+    const gameJamProjects = has('lights_out') ? 1 : 0;
+
+    // We do NOT know “AI tools built” count from current copy → show “—”
+    return [
+        {
+            id: 'projects',
+            name: 'Projects listed',
+            value: String(projectsCount),
+            desc: 'Counted from Work window items.',
+            how: 'Measured by counting the projects shown in the Work window (projects.zip).\nSource: Lights Out, Final Degree Work, Màscares & Marquesos, Dune Fremen’s Rising, Summer Game.'
+        },
+        {
+            id: 'experience_roles',
+            name: 'Experience roles',
+            value: String(experienceCount),
+            desc: 'Counted from Experience window items.',
+            how: 'Measured by counting the roles shown in the Experience window (experience.txt).\nSource: Junior AI Developer, AI Development Intern, Test Engineer, Teacher & Mentor.'
+        },
+        {
+            id: 'vr',
+            name: 'VR projects (Quest 2)',
+            value: String(vrProjects),
+            desc: 'Projects explicitly labeled VR/Quest 2.',
+            how: "Measured by counting projects whose description explicitly says VR optimized for Quest 2.\nSource: Màscares & Marquesos."
+        },
+        {
+            id: 'unreal',
+            name: 'Unreal Engine projects',
+            value: String(unrealProjects),
+            desc: 'Projects explicitly labeled UE 5.1.',
+            how: 'Measured by counting projects explicitly described as Unreal Engine 5.1.\nSource: Final Degree Work.'
+        },
+        {
+            id: 'gamejams',
+            name: 'Game jam entries',
+            value: String(gameJamProjects),
+            desc: 'Projects explicitly labeled Game Jam.',
+            how: 'Measured by counting projects described as a game jam entry.\nSource: Lights Out.'
+        },
+        {
+            id: 'ai_tools',
+            name: 'AI tools built',
+            value: '—',
+            desc: 'Not explicitly quantified on-site yet.',
+            how: "Not measurable from current public copy (you describe the work but don’t state a number).\nIf you later add a number in Experience/About, this can be updated to reflect it."
+        }
+    ];
+}
+
+function initMetricsIfNeeded() {
+    const win = document.getElementById('win-metrics');
+    if (!win) return;
+    const grid = document.getElementById('metrics-grid');
+    if (!grid) return;
+
+    if (!metricsInitialized) {
+        metricsInitialized = true;
+    }
+    renderMetrics();
+}
+
+function renderMetrics() {
+    const grid = document.getElementById('metrics-grid');
+    if (!grid) return;
+    const metrics = computeMetrics();
+    grid.innerHTML = '';
+
+    metrics.forEach(m => {
+        const card = document.createElement('div');
+        card.className = 'metric-card';
+        card.innerHTML = `
+            <div class="metric-top">
+                <div class="metric-name"></div>
+                <div class="metric-value"></div>
+            </div>
+            <div class="metric-desc"></div>
+            <div class="metric-more">
+                <button type="button" class="metric-toggle">How measured</button>
+                <div class="metric-how"></div>
+            </div>
+        `;
+        const name = card.querySelector('.metric-name');
+        const value = card.querySelector('.metric-value');
+        const desc = card.querySelector('.metric-desc');
+        const how = card.querySelector('.metric-how');
+        const toggle = card.querySelector('.metric-toggle');
+
+        if (name) name.textContent = m.name;
+        if (value) value.textContent = m.value;
+        if (desc) desc.textContent = m.desc;
+        if (how) how.textContent = m.how;
+
+        if (toggle) {
+            toggle.addEventListener('click', () => {
+                card.classList.toggle('expanded');
+            });
+        }
+        grid.appendChild(card);
+    });
+}
+
+// -------------------------
+// OS Settings (Live demo toggles)
+// -------------------------
+function applyPrefsToBody() {
+    const a11y = localStorage.getItem(PREF_A11Y) === '1';
+    const reduce = localStorage.getItem(PREF_REDUCE_MOTION) === '1';
+    const contrast = localStorage.getItem(PREF_CONTRAST) === '1';
+
+    document.body.classList.toggle('a11y-mode', a11y);
+    document.body.classList.toggle('reduce-motion', reduce);
+    document.body.classList.toggle('high-contrast', contrast);
+
+    // If reduce-motion is enabled, also disable the existing animations toggle behavior visually
+    if (reduce) {
+        document.body.classList.remove('animations-enabled');
+        const animToggle = document.getElementById('anim-toggle');
+        if (animToggle) animToggle.textContent = 'Animations';
+    }
+}
+
+function setPref(key, enabled) {
+    localStorage.setItem(key, enabled ? '1' : '0');
+    applyPrefsToBody();
+    updateSettingsButtons();
+}
+
+function updateSettingsButtons() {
+    const a11yBtn = document.getElementById('toggle-a11y');
+    const reduceBtn = document.getElementById('toggle-reduce-motion');
+    const contrastBtn = document.getElementById('toggle-contrast');
+    if (!a11yBtn || !reduceBtn || !contrastBtn) return;
+
+    const a11y = localStorage.getItem(PREF_A11Y) === '1';
+    const reduce = localStorage.getItem(PREF_REDUCE_MOTION) === '1';
+    const contrast = localStorage.getItem(PREF_CONTRAST) === '1';
+
+    a11yBtn.textContent = a11y ? 'On' : 'Off';
+    reduceBtn.textContent = reduce ? 'On' : 'Off';
+    contrastBtn.textContent = contrast ? 'On' : 'Off';
+}
+
+function initSettingsIfNeeded() {
+    const win = document.getElementById('win-settings');
+    if (!win) return;
+    const a11yBtn = document.getElementById('toggle-a11y');
+    const reduceBtn = document.getElementById('toggle-reduce-motion');
+    const contrastBtn = document.getElementById('toggle-contrast');
+    if (!a11yBtn || !reduceBtn || !contrastBtn) return;
+
+    if (!settingsInitialized) {
+        settingsInitialized = true;
+
+        a11yBtn.addEventListener('click', () => {
+            const next = !(localStorage.getItem(PREF_A11Y) === '1');
+            setPref(PREF_A11Y, next);
+        });
+        reduceBtn.addEventListener('click', () => {
+            const next = !(localStorage.getItem(PREF_REDUCE_MOTION) === '1');
+            setPref(PREF_REDUCE_MOTION, next);
+        });
+        contrastBtn.addEventListener('click', () => {
+            const next = !(localStorage.getItem(PREF_CONTRAST) === '1');
+            setPref(PREF_CONTRAST, next);
+        });
+    }
+
+    applyPrefsToBody();
+    updateSettingsButtons();
 }
 
 window.notepadSave = function() {
