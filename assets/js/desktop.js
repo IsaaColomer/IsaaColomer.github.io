@@ -628,6 +628,14 @@ window.openWindow = function(id) {
         }
     }
 
+    // Special handling for React Bits app
+    if (id === 'win-reactbits') {
+        const iframe = win.querySelector('iframe');
+        if (iframe && (!iframe.src || iframe.src === 'about:blank' || iframe.src === window.location.href)) {
+            iframe.src = './reactbits-desktop-app/dist/index.html';
+        }
+    }
+
     // Terminal: focus input
     if (id === 'win-terminal') {
         initTerminalIfNeeded();
@@ -735,6 +743,14 @@ function cleanupWindow(id, win) {
 
     // Special handling for Pacman game: clear iframe to stop audio
     if (id === 'win-pacman') {
+        const iframe = win.querySelector('iframe');
+        if (iframe) {
+            iframe.src = 'about:blank';
+        }
+    }
+
+    // React Bits app: clear iframe to release WebGL resources when closed
+    if (id === 'win-reactbits') {
         const iframe = win.querySelector('iframe');
         if (iframe) {
             iframe.src = 'about:blank';
@@ -888,6 +904,7 @@ function handleTerminalCommand(raw) {
         termWrite('  metrics             open System Metrics', 'terminal-line');
         termWrite('  settings            open OS Settings', 'terminal-line');
         termWrite('  achievements         open Achievements.unlock', 'terminal-line');
+        termWrite('  reactbits            open React Bits Lab', 'terminal-line');
         termWrite('  contact             open Contact window', 'terminal-line');
         termWrite('  sounds [on|off]', 'terminal-line');
         termWrite('  animations [on|off]', 'terminal-line');
@@ -913,6 +930,7 @@ function handleTerminalCommand(raw) {
     if (cmd === 'metrics' || cmd === 'metrics.sys') return window.openWindow('win-metrics');
     if (cmd === 'settings' || cmd === 'settings.sys') return window.openWindow('win-settings');
     if (cmd === 'achievements' || cmd === 'achievements.unlock') return window.openWindow('win-achievements');
+    if (cmd === 'reactbits' || cmd === 'reactbits_lab.exe') return window.openWindow('win-reactbits');
 
     if (cmd === 'sounds') {
         const v = (arg || '').trim().toLowerCase();

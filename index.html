@@ -5,6 +5,7 @@
 		<meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Interactive desktop portfolio of Isaac Colomer Casas, videogame designer and programmer" />
+    <link rel="icon" type="image/png" href="./images/beele.png" />
     <link rel="stylesheet" href="./styles.css?v=1.4" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -87,6 +88,7 @@
                     <a href="#" onclick="openWindow('win-contact'); closeDropdown();">Contact</a>
                     <a href="#" onclick="openWindow('win-racer'); closeDropdown();">Play Racer</a>
                     <a href="#" onclick="openWindow('win-pacman'); closeDropdown();">Play Pacman</a>
+                    <a href="#" onclick="openWindow('win-reactbits'); closeDropdown();">React Bits Lab</a>
                     <div class="menu-divider"></div>
                     <a href="#" id="anim-toggle" onclick="toggleAnimations(); event.preventDefault();">Animations</a>
                     <a href="#" id="sounds-toggle" onclick="toggleSounds(); event.preventDefault();">System Sounds</a>
@@ -174,6 +176,10 @@
             <div class="desktop-icon" id="icon-pacman" ondblclick="openWindow('win-pacman')">
                 <div class="icon-wrapper"><i class="fa-solid fa-gamepad"></i></div>
                 <span>Pacman.exe</span>
+            </div>
+            <div class="desktop-icon" id="icon-reactbits" ondblclick="openWindow('win-reactbits')">
+                <div class="icon-wrapper"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                <span>reactbits_lab.exe</span>
             </div>
         </div>
 
@@ -764,6 +770,26 @@
                 <div style="padding: 4px 8px; background: var(--color-button-face); border-top: 1px solid var(--color-button-shadow); font-size: 10px; color: var(--color-text-secondary); display: flex; justify-content: space-between; align-items: center; user-select: none;">
                     <span>Retro Pacman JS</span>
                     <span>Credits: Rishabh Devbanshi</span>
+                </div>
+            </div>
+            <div class="win-resize">◢</div>
+        </div>
+
+        <!-- React Bits Lab Window -->
+        <div class="window" id="win-reactbits" style="display: none; top: 70px; left: 90px; width: 980px; height: 680px;">
+            <div class="window-header">
+                <div class="window-title">[#] reactbits_lab.exe</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize" onclick="closeWindow('win-reactbits')">-</button>
+                    <button class="win-btn maximize">^</button>
+                    <button class="win-btn close" onclick="closeWindow('win-reactbits')">x</button>
+                </div>
+            </div>
+            <div class="window-content" style="padding: 0; overflow: hidden; background: #04060a; display: flex; flex-direction: column;">
+                <iframe src="./reactbits-desktop-app/dist/index.html" style="width: 100%; flex: 1; border: none;"></iframe>
+                <div style="padding: 4px 8px; background: var(--color-button-face); border-top: 1px solid var(--color-button-shadow); font-size: 10px; color: var(--color-text-secondary); display: flex; justify-content: space-between; align-items: center; user-select: none;">
+                    <span>React Bits Lab</span>
+                    <span>ASCII + Color Bends + Antigravity + Ballpit</span>
                 </div>
             </div>
             <div class="win-resize">◢</div>
