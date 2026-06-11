@@ -187,11 +187,12 @@
 
   /* ----------------------------------------------------------
      Per-section interactive backgrounds
-     One canvas per section (data-fx), only animated while in view.
-     Palette: signal red / runner orange / portal blue on hairline gray.
+     Same constellation family as the hero field — drifting linked
+     particles reacting to the cursor — varied per section by accent
+     colour and interaction (data-accent / data-mode). In view only.
   ---------------------------------------------------------- */
   (function sectionFX() {
-    const RED = "255,31,61", ORANGE = "255,122,24", BLUE = "43,180,255", LINE = "150,158,170";
+    const COLORS = { red: "255,31,61", orange: "255,122,24", blue: "43,180,255" };
     const canvases = [...document.querySelectorAll("canvas.sfx")];
     if (!canvases.length) return;
 
@@ -200,134 +201,87 @@
     addEventListener("mousemove", (e) => { ptr.x = e.clientX; ptr.y = e.clientY; }, { passive: true });
     addEventListener("mouseout", (e) => { if (!e.relatedTarget) { ptr.x = -9999; ptr.y = -9999; } });
 
-    /* ---- effects: each is { init(state), frame(state, p) } ---- */
-    const FX = {
-      // ABOUT — clean architectural beams converging on a cursor-led vanishing point
-      beams: {
-        init(s) { s.d = { n: 16 }; },
-        frame(s, p) {
-          const { ctx, w, h } = s; ctx.clearRect(0, 0, w, h);
-          const tx = p.on ? p.x : w * 0.5, ty = p.on ? p.y : h * 0.45;
-          const vx = w * 0.5 + (tx - w * 0.5) * 0.14;
-          const vy = h * 0.42 + (ty - h * 0.45) * 0.14;
-          for (let i = 0; i <= s.d.n; i++) {
-            const accent = i % 8 === 0;
-            ctx.beginPath();
-            ctx.moveTo((i / s.d.n) * w, h);
-            ctx.lineTo(vx, vy);
-            ctx.strokeStyle = accent ? `rgba(${RED},0.16)` : `rgba(${LINE},0.40)`;
-            ctx.lineWidth = accent ? 1.4 : 0.6;
-            ctx.stroke();
-          }
-          const g = ctx.createRadialGradient(vx, vy, 0, vx, vy, 170);
-          g.addColorStop(0, `rgba(${RED},0.10)`); g.addColorStop(1, `rgba(${RED},0)`);
-          ctx.fillStyle = g; ctx.fillRect(vx - 170, vy - 170, 340, 340);
-        }
-      },
-      // SKILLS — equalizer bars; bars near the cursor spike and turn accent
-      bars: {
-        init(s) { const count = Math.max(20, Math.floor(s.w / 32)); s.d = { count, ph: Array.from({ length: count }, (_, i) => i * 0.6) }; },
-        frame(s, p) {
-          const { ctx, w, h } = s; ctx.clearRect(0, 0, w, h);
-          const { count, ph } = s.d, bw = w / count, t = s.t * 0.002;
-          for (let i = 0; i < count; i++) {
-            const x = i * bw;
-            let height = (Math.sin(t + ph[i]) * 0.5 + 0.5) * h * 0.16 + 6;
-            let col = `rgba(${LINE},0.5)`;
-            if (p.on) {
-              const infl = Math.max(0, 1 - Math.abs((x + bw / 2) - p.x) / 170);
-              height += infl * h * 0.34;
-              if (infl > 0.12) col = `rgba(${RED},${0.25 + infl * 0.55})`;
-            }
-            ctx.fillStyle = col;
-            ctx.fillRect(x + bw * 0.22, h - height, bw * 0.56, height);
-          }
-        }
-      },
-      // WORK — portal dot-grid with a blue spotlight that follows the cursor
-      grid: {
-        init(s) { s.d = { gap: 38 }; },
-        frame(s, p) {
-          const { ctx, w, h } = s; ctx.clearRect(0, 0, w, h);
-          const gap = s.d.gap;
-          for (let y = gap / 2; y < h; y += gap) {
-            for (let x = gap / 2; x < w; x += gap) {
-              let r = 1.1, a = 0.45, col = LINE;
-              if (p.on) {
-                const infl = Math.max(0, 1 - Math.hypot(x - p.x, y - p.y) / 190);
-                r += infl * 2.4; a = 0.4 + infl * 0.6;
-                if (infl > 0.1) col = BLUE;
-              }
-              ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
-              ctx.fillStyle = `rgba(${col},${a})`; ctx.fill();
-            }
-          }
-          if (p.on) {
-            const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 210);
-            g.addColorStop(0, `rgba(${BLUE},0.10)`); g.addColorStop(1, `rgba(${BLUE},0)`);
-            ctx.fillStyle = g; ctx.fillRect(p.x - 210, p.y - 210, 420, 420);
-          }
-        }
-      },
-      // PATH — vertical "runner" speed streaks; the cursor bends nearby streaks
-      streaks: {
-        init(s) {
-          const n = Math.max(28, Math.floor(s.w / 24));
-          s.d = { items: Array.from({ length: n }, () => ({ x: Math.random() * s.w, y: Math.random() * s.h, len: 18 + Math.random() * 64, sp: 1.4 + Math.random() * 3 })) };
-        },
-        frame(s, p) {
-          const { ctx, w, h } = s; ctx.clearRect(0, 0, w, h);
-          for (const it of s.d.items) {
-            it.y += it.sp;
-            if (p.on) { const infl = Math.max(0, 1 - Math.abs(it.x - p.x) / 200); it.x += infl * (it.x < p.x ? -0.9 : 0.9); }
-            if (it.y - it.len > h) { it.y = -it.len; it.x = Math.random() * w; }
-            const fast = it.sp > 3.2;
-            ctx.strokeStyle = fast ? `rgba(${ORANGE},0.5)` : `rgba(${LINE},0.45)`;
-            ctx.lineWidth = fast ? 1.4 : 0.8;
-            ctx.beginPath(); ctx.moveTo(it.x, it.y - it.len); ctx.lineTo(it.x, it.y); ctx.stroke();
-          }
-        }
-      },
-      // CONTACT — portal ripples emanating from the cursor (+ an ambient pulse)
-      ripples: {
-        init(s) { s.d = { rings: [], lastSpawn: -9999, lastP: { x: 0, y: 0 } }; },
-        frame(s, p) {
-          const { ctx, w, h } = s; ctx.clearRect(0, 0, w, h);
-          const d = s.d;
-          if (p.on && Math.hypot(p.x - d.lastP.x, p.y - d.lastP.y) > 42 && s.t - d.lastSpawn > 130) {
-            d.rings.push({ x: p.x, y: p.y, r: 4, max: 120 + Math.random() * 90, c: Math.random() < 0.5 ? BLUE : ORANGE });
-            d.lastSpawn = s.t; d.lastP = { x: p.x, y: p.y };
-          }
-          if (s.t - (d.lastAmbient || 0) > 1700) { d.rings.push({ x: w * 0.5, y: h * 0.5, r: 4, max: 240, c: BLUE }); d.lastAmbient = s.t; }
-          d.rings = d.rings.filter((r) => r.r < r.max);
-          for (const r of d.rings) {
-            r.r += 1.7;
-            ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
-            ctx.strokeStyle = `rgba(${r.c},${(1 - r.r / r.max) * 0.5})`; ctx.lineWidth = 1.2; ctx.stroke();
-          }
-          if (p.on) { ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI * 2); ctx.fillStyle = `rgba(${BLUE},0.85)`; ctx.fill(); }
-        }
-      }
-    };
-
     const items = canvases.map((canvas) => {
       const ctx = canvas.getContext("2d");
-      const s = { canvas, ctx, w: 0, h: 0, t: 0, active: false, def: FX[canvas.dataset.fx], d: null };
+      const s = {
+        canvas, ctx, w: 0, h: 0, active: false, particles: [],
+        accent: COLORS[canvas.dataset.accent] || COLORS.red,
+        mode: canvas.dataset.mode || "repel",   // repel | attract | connect
+      };
       s.resize = function () {
         const dpr = Math.min(devicePixelRatio || 1, 2);
         s.w = canvas.clientWidth; s.h = canvas.clientHeight;
         canvas.width = s.w * dpr; canvas.height = s.h * dpr;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        if (s.def) s.def.init(s);
+        const count = Math.max(22, Math.min(90, Math.floor((s.w * s.h) / 15000)));
+        s.particles = Array.from({ length: count }, () => ({
+          x: Math.random() * s.w, y: Math.random() * s.h,
+          vx: (Math.random() - 0.5) * 0.35, vy: (Math.random() - 0.5) * 0.35,
+          r: Math.random() * 1.6 + 0.6,
+        }));
       };
       return s;
-    }).filter((s) => s.def);
+    });
 
     function localPointer(s) {
       if (ptr.x < -9000) return { x: -9999, y: -9999, on: false };
       const r = s.canvas.getBoundingClientRect();
       const on = ptr.x >= r.left && ptr.x <= r.right && ptr.y >= r.top && ptr.y <= r.bottom;
       return { x: ptr.x - r.left, y: ptr.y - r.top, on };
+    }
+
+    function frame(s, p) {
+      const { ctx, w, h, accent, particles } = s;
+      ctx.clearRect(0, 0, w, h);
+
+      // particles drift, bounce, and react to the cursor
+      for (const pt of particles) {
+        pt.x += pt.vx; pt.y += pt.vy;
+        if (pt.x < 0 || pt.x > w) pt.vx *= -1;
+        if (pt.y < 0 || pt.y > h) pt.vy *= -1;
+        if (p.on) {
+          const dx = pt.x - p.x, dy = pt.y - p.y, d2 = dx * dx + dy * dy;
+          if (s.mode === "repel" && d2 < 14000) {
+            const d = Math.sqrt(d2) || 1, f = (1 - d / 118) * 1.6;
+            pt.x += (dx / d) * f; pt.y += (dy / d) * f;
+          } else if (s.mode === "attract" && d2 < 40000 && d2 > 200) {
+            const d = Math.sqrt(d2) || 1, f = (1 - d / 200) * 0.8;
+            pt.x -= (dx / d) * f; pt.y -= (dy / d) * f;
+          }
+        }
+        ctx.beginPath(); ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${accent},0.5)`; ctx.fill();
+      }
+
+      // links between nearby particles (the constellation)
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const a = particles[i], b = particles[j];
+          const dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
+          if (d2 < 11000) {
+            ctx.strokeStyle = `rgba(${accent},${(1 - d2 / 11000) * 0.3})`;
+            ctx.lineWidth = 0.6;
+            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          }
+        }
+      }
+
+      if (p.on) {
+        // connect mode: the network reaches toward the cursor
+        if (s.mode === "connect") {
+          for (const pt of particles) {
+            const dx = pt.x - p.x, dy = pt.y - p.y, d2 = dx * dx + dy * dy;
+            if (d2 < 22000) {
+              ctx.strokeStyle = `rgba(${accent},${(1 - d2 / 22000) * 0.55})`;
+              ctx.lineWidth = 0.8;
+              ctx.beginPath(); ctx.moveTo(pt.x, pt.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+            }
+          }
+        }
+        // pointer halo
+        ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${accent},0.9)`; ctx.fill();
+      }
     }
 
     items.forEach((s) => s.resize());
@@ -342,15 +296,13 @@
     items.forEach((s) => io.observe(s.canvas));
 
     if (reduceMotion) {
-      items.forEach((s) => s.def.frame(s, { x: -9999, y: -9999, on: false }));
+      items.forEach((s) => frame(s, { x: -9999, y: -9999, on: false }));
       return;
     }
-    let last = performance.now();
-    (function loop(now) {
-      const dt = Math.min(40, now - last); last = now;
-      for (const s of items) { if (!s.active) continue; s.t += dt; s.def.frame(s, localPointer(s)); }
+    (function loop() {
+      for (const s of items) { if (s.active) frame(s, localPointer(s)); }
       requestAnimationFrame(loop);
-    })(last);
+    })();
   })();
 
   /* ----------------------------------------------------------
