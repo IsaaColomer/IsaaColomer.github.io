@@ -209,13 +209,16 @@
         mode: canvas.dataset.mode || "repel",   // repel | attract | connect
       };
       s.resize = function () {
+        const cw = canvas.clientWidth, ch = canvas.clientHeight;
+        if (!cw || !ch) return;
+        if (cw === s.w && ch === s.h && s.particles.length) return; // no real change
         const dpr = Math.min(devicePixelRatio || 1, 2);
-        s.w = canvas.clientWidth; s.h = canvas.clientHeight;
-        canvas.width = s.w * dpr; canvas.height = s.h * dpr;
+        s.w = cw; s.h = ch;
+        canvas.width = Math.round(cw * dpr); canvas.height = Math.round(ch * dpr);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        const count = Math.max(22, Math.min(90, Math.floor((s.w * s.h) / 15000)));
+        const count = Math.max(36, Math.min(140, Math.floor((cw * ch) / 11000)));
         s.particles = Array.from({ length: count }, () => ({
-          x: Math.random() * s.w, y: Math.random() * s.h,
+          x: Math.random() * cw, y: Math.random() * ch,
           vx: (Math.random() - 0.5) * 0.35, vy: (Math.random() - 0.5) * 0.35,
           r: Math.random() * 1.6 + 0.6,
         }));
@@ -284,8 +287,15 @@
       }
     }
 
-    items.forEach((s) => s.resize());
-    addEventListener("resize", () => items.forEach((s) => s.resize()));
+    // ResizeObserver keeps each canvas buffer exactly matched to its rendered
+    // size (handles font reflow, content changes, window resize) — no stretching.
+    const ro = new ResizeObserver((entries) => {
+      for (const e of entries) {
+        const s = items.find((it) => it.canvas === e.target);
+        if (s) s.resize();
+      }
+    });
+    items.forEach((s) => { s.resize(); ro.observe(s.canvas); });
 
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => {

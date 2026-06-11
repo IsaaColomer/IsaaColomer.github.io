@@ -300,10 +300,10 @@ kbd {
 .sfx {
   position: absolute;
   top: 0;
+  bottom: 0;          /* stretch to the section's real height (% height won't resolve here) */
   left: 50%;
   transform: translateX(-50%);
   width: 100vw;       /* full-bleed behind the centered column */
-  height: 100%;
   z-index: 0;
   pointer-events: none; /* effects read the global pointer; never block clicks */
 }
