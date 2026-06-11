@@ -24,15 +24,6 @@
     </div>
   </div>
 
-  <!-- Liquid-glass refraction filter: a radial lens displacement map (built by
-       JS into the feImage href) warps the backdrop at the rim. No blur. -->
-  <svg class="glass-defs" aria-hidden="true" width="0" height="0">
-    <filter id="liquid-glass" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
-      <feImage id="glass-map" x="0" y="0" width="46" height="46" preserveAspectRatio="none" result="map" />
-      <feDisplacementMap in="SourceGraphic" in2="map" scale="28" xChannelSelector="R" yChannelSelector="G" />
-    </filter>
-  </svg>
-
   <!-- Custom cursor -->
   <div class="cursor" id="cursorDot" aria-hidden="true"></div>
   <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
