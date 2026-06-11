@@ -105,31 +105,32 @@ kbd {
   z-index: 152;                 /* always above the ring so the dot stays crisp */
 }
 .cursor-ring {
-  width: 40px; height: 40px;
+  /* fixed size: the backdrop region must match the displacement map (46px) */
+  width: 46px; height: 46px;
   transform: translate(-50%, -50%);
-  /* liquid glass: refract the backdrop through an SVG displacement filter
-     (a lens, not a blur) + a faint specular sheen for the glass body */
+  /* liquid glass: refract the backdrop through the rim lens (a lens, not a blur) */
   background: radial-gradient(circle at 32% 28%,
-    rgba(255, 255, 255, 0.22),
-    rgba(255, 255, 255, 0.05) 55%,
+    rgba(255, 255, 255, 0.18),
+    rgba(255, 255, 255, 0.04) 58%,
     rgba(255, 255, 255, 0.02) 100%);
   border: 1.5px solid var(--accent);   /* the red circle */
-  backdrop-filter: url(#liquid-glass) saturate(1.35);
-  -webkit-backdrop-filter: saturate(1.35);
+  backdrop-filter: url(#liquid-glass) saturate(1.3);
+  -webkit-backdrop-filter: saturate(1.3);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.65),   /* top inner highlight (specular) */
-    inset 0 -3px 6px rgba(20, 23, 28, 0.06),     /* soft bottom shading */
-    inset 0 0 8px rgba(255, 255, 255, 0.25),     /* inner glass glow */
+    inset 0 1px 1px rgba(255, 255, 255, 0.7),    /* top inner highlight (specular) */
+    inset 0 -3px 7px rgba(20, 23, 28, 0.07),     /* soft bottom shading */
+    inset 0 0 10px rgba(255, 255, 255, 0.3),     /* inner glass glow */
     0 4px 14px rgba(20, 23, 28, 0.10);           /* soft drop */
-  transition: width 0.22s var(--ease), height 0.22s var(--ease), border-color 0.22s, box-shadow 0.22s;
+  transition: border-color 0.22s, box-shadow 0.22s;
 }
 .cursor-ring.is-hover {
-  width: 60px; height: 60px;
+  border-color: var(--accent);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.7),
-    inset 0 -3px 8px rgba(20, 23, 28, 0.07),
-    inset 0 0 10px rgba(255, 255, 255, 0.3),
-    0 6px 20px rgba(255, 31, 61, 0.18);          /* faint accent glow on hover */
+    inset 0 1px 1px rgba(255, 255, 255, 0.75),
+    inset 0 -3px 9px rgba(20, 23, 28, 0.08),
+    inset 0 0 12px rgba(255, 255, 255, 0.35),
+    0 0 0 5px rgba(255, 31, 61, 0.08),           /* soft accent halo on hover */
+    0 6px 22px rgba(255, 31, 61, 0.20);
 }
 
 /* ============================================================
