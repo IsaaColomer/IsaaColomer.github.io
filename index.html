@@ -16,9 +16,9 @@
   <!-- Boot / loader -->
   <div class="boot" id="boot" aria-hidden="true">
     <div class="boot__inner">
-      <span class="boot__line" data-boot>initializing runtime…</span>
-      <span class="boot__line" data-boot>loading engines…</span>
-      <span class="boot__line" data-boot>compiling personality.exe…</span>
+      <span class="boot__line" data-boot>loading…</span>
+      <span class="boot__line" data-boot>preparing content…</span>
+      <span class="boot__line" data-boot>almost ready…</span>
       <div class="boot__bar"><i id="bootBar"></i></div>
       <span class="boot__pct" id="bootPct">0%</span>
     </div>
@@ -59,19 +59,19 @@
       <div class="hero__content">
         <p class="eyebrow"><span class="dot-live"></span> open to roles &amp; collaborations</p>
         <h1 class="hero__title" data-scramble>
-          <span class="line">Games, tools,</span>
-          <span class="line accent">and AI that</span>
-          <span class="line">actually ships.</span>
+          <span class="line">Software engineer</span>
+          <span class="line accent">&amp; game developer,</span>
+          <span class="line">now building AI.</span>
         </h1>
         <p class="hero__sub">
-          Videogame designer &amp; programmer now focused on AI development — moving fluently
-          between gameplay code, Unity &amp; Unreal, test automation, and LLM-driven tooling.
+          Videogame designer and programmer now focused on AI development — working across
+          gameplay code, Unity and Unreal, test automation, and LLM-driven tooling.
         </p>
         <div class="hero__cta">
-          <a href="#work" class="btn btn--primary magnetic" data-magnetic>See the work</a>
+          <a href="#work" class="btn btn--primary magnetic" data-magnetic>View work</a>
           <a href="#contact" class="btn btn--ghost magnetic" data-magnetic>Get in touch</a>
         </div>
-        <p class="hero__hint">scroll &nbsp;·&nbsp; or press <kbd>↓</kbd> &nbsp;·&nbsp; move your cursor over the field</p>
+        <p class="hero__hint">Scroll to explore &nbsp;·&nbsp; or press <kbd>↓</kbd></p>
       </div>
     </section>
 
@@ -79,7 +79,7 @@
     <section class="section about" id="about">
       <div class="section__head reveal">
         <span class="section__index">01</span>
-        <h2 class="section__title">Who&apos;s behind the cursor</h2>
+        <h2 class="section__title">About me</h2>
       </div>
       <div class="about__grid">
         <div class="about__lead reveal">
@@ -114,8 +114,8 @@
     <section class="section skills" id="skills">
       <div class="section__head reveal">
         <span class="section__index">02</span>
-        <h2 class="section__title">Toolbelt</h2>
-        <p class="section__note">Hover a domain to weight it. These are ranges, not religion.</p>
+        <h2 class="section__title">Skills</h2>
+        <p class="section__note">Hover to focus a domain. Levels are indicative.</p>
       </div>
       <div class="skills__grid" id="skillsGrid">
         <!-- injected by JS -->
@@ -127,7 +127,7 @@
       <div class="section__head reveal">
         <span class="section__index">03</span>
         <h2 class="section__title">Selected work</h2>
-        <p class="section__note">A spread on purpose — games are here, but so is everything else.</p>
+        <p class="section__note">A mix of professional and personal projects.</p>
       </div>
       <div class="work__grid" id="workGrid">
         <!-- injected by JS -->
@@ -138,7 +138,7 @@
     <section class="section path" id="path">
       <div class="section__head reveal">
         <span class="section__index">04</span>
-        <h2 class="section__title">The path so far</h2>
+        <h2 class="section__title">Experience</h2>
       </div>
       <ol class="timeline" id="timeline">
         <!-- injected by JS -->
@@ -149,7 +149,7 @@
     <section class="section contact" id="contact">
       <div class="contact__inner reveal">
         <span class="section__index">05</span>
-        <h2 class="contact__title">Let&apos;s make something<br/>that doesn&apos;t exist yet.</h2>
+        <h2 class="contact__title">Let&apos;s work<br/>together.</h2>
         <a href="mailto:isaacolomer@gmail.com" class="contact__mail magnetic" data-magnetic>isaacolomer@gmail.com</a>
         <div class="contact__links">
           <a href="https://github.com/IsaaColomer" target="_blank" rel="noopener" class="magnetic" data-magnetic>GitHub</a>
@@ -160,7 +160,7 @@
       </div>
       <footer class="footer">
         <span>© <span id="year"></span> Isaac Colomer Casas</span>
-        <span class="footer__egg">psst — try the <kbd>↑ ↑ ↓ ↓ ← → ← → B A</kbd></span>
+        <span class="footer__egg">Built from scratch · HTML, CSS &amp; vanilla JS</span>
       </footer>
     </section>
   </main>
@@ -174,18 +174,14 @@
         <li><kbd>↑</kbd> <kbd>↓</kbd><span>Jump between sections</span></li>
         <li><kbd>1</kbd>–<kbd>6</kbd><span>Go to a section directly</span></li>
         <li><kbd>?</kbd><span>Toggle this panel</span></li>
-        <li><kbd>G</kbd><span>Toggle grid overlay</span></li>
+        <li><kbd>G</kbd><span>Toggle layout grid</span></li>
         <li><kbd>Esc</kbd><span>Close panels</span></li>
       </ul>
-      <p class="modal__foot">There&apos;s a hidden mini-game too. Keep poking around.</p>
     </div>
   </div>
 
   <!-- Grid overlay -->
   <div class="grid-overlay" id="gridOverlay" aria-hidden="true"></div>
-
-  <!-- Easter-egg canvas -->
-  <canvas id="confetti" class="confetti" aria-hidden="true"></canvas>
 
   <script src="main.js"></script>
 </body>

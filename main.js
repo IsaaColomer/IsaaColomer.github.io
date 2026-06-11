@@ -137,7 +137,7 @@
     });
     canvas.addEventListener("mouseleave", () => { pointer.x = -9999; pointer.y = -9999; });
 
-    const accent = "214,255,67";
+    const accent = "255,31,61";
     function frame() {
       ctx.clearRect(0, 0, w, h);
       for (const p of particles) {
@@ -367,53 +367,6 @@
   document.getElementById("helpBtn").addEventListener("click", toggleHelp);
   document.getElementById("helpClose").addEventListener("click", () => (helpModal.hidden = true));
   helpModal.addEventListener("click", (e) => { if (e.target === helpModal) helpModal.hidden = true; });
-
-  /* ----------------------------------------------------------
-     Konami easter egg → confetti / pixel rain
-  ---------------------------------------------------------- */
-  const KONAMI = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
-  let kPos = 0;
-  addEventListener("keydown", (e) => {
-    const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
-    kPos = key === KONAMI[kPos] ? kPos + 1 : (key === KONAMI[0] ? 1 : 0);
-    if (kPos === KONAMI.length) { kPos = 0; partyTime(); }
-  });
-
-  function partyTime() {
-    const canvas = document.getElementById("confetti");
-    const ctx = canvas.getContext("2d");
-    const dpr = Math.min(devicePixelRatio || 1, 2);
-    canvas.width = innerWidth * dpr; canvas.height = innerHeight * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const colors = ["#d6ff43", "#ff6a45", "#f4f4ef"];
-    const bits = Array.from({ length: 160 }, () => ({
-      x: Math.random() * innerWidth, y: -20 - Math.random() * innerHeight,
-      s: Math.random() * 8 + 4, vy: Math.random() * 3 + 2, vx: (Math.random() - 0.5) * 2,
-      rot: Math.random() * Math.PI, vr: (Math.random() - 0.5) * 0.3,
-      c: colors[Math.floor(Math.random() * colors.length)],
-    }));
-    let life = 0;
-    (function run() {
-      ctx.clearRect(0, 0, innerWidth, innerHeight);
-      bits.forEach((b) => {
-        b.x += b.vx; b.y += b.vy; b.rot += b.vr;
-        ctx.save();
-        ctx.translate(b.x, b.y); ctx.rotate(b.rot);
-        ctx.fillStyle = b.c;
-        ctx.fillRect(-b.s / 2, -b.s / 2, b.s, b.s);
-        ctx.restore();
-      });
-      life++;
-      if (life < 260) requestAnimationFrame(run);
-      else ctx.clearRect(0, 0, innerWidth, innerHeight);
-    })();
-    // little toast
-    const note = document.createElement("div");
-    note.textContent = "↑↑↓↓ achievement unlocked ✦ thanks for exploring";
-    note.style.cssText = "position:fixed;left:50%;top:24px;transform:translateX(-50%);background:#d6ff43;color:#0a0a0b;font-family:'Space Mono',monospace;font-size:0.8rem;padding:10px 18px;border-radius:99px;z-index:195;font-weight:700;";
-    document.body.appendChild(note);
-    setTimeout(() => note.remove(), 3500);
-  }
 
   /* ----------------------------------------------------------
      Misc
