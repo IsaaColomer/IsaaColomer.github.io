@@ -104,14 +104,29 @@ kbd {
   transform: translate(-50%, -50%);
 }
 .cursor-ring {
-  width: 38px; height: 38px;
-  border: 1.5px solid var(--accent);
+  width: 40px; height: 40px;
   transform: translate(-50%, -50%);
-  transition: width 0.2s, height 0.2s, background 0.2s, border-color 0.2s;
+  /* soft "liquid glass": frosted refraction + gentle top-left sheen */
+  background: radial-gradient(circle at 32% 28%,
+    rgba(255, 255, 255, 0.30),
+    rgba(255, 255, 255, 0.06) 55%,
+    rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(3px) saturate(1.4);
+  -webkit-backdrop-filter: blur(3px) saturate(1.4);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.6),   /* top inner highlight */
+    inset 0 -2px 5px rgba(20, 23, 28, 0.05),    /* soft bottom shading */
+    0 4px 14px rgba(20, 23, 28, 0.08);          /* soft drop */
+  transition: width 0.22s var(--ease), height 0.22s var(--ease), border-color 0.22s, box-shadow 0.22s;
 }
 .cursor-ring.is-hover {
-  width: 58px; height: 58px;
-  background: rgba(255, 31, 61, 0.10);
+  width: 60px; height: 60px;
+  border-color: rgba(255, 31, 61, 0.5);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.65),
+    inset 0 -2px 7px rgba(20, 23, 28, 0.06),
+    0 6px 20px rgba(255, 31, 61, 0.14);          /* faint accent glow on hover */
 }
 
 /* ============================================================
