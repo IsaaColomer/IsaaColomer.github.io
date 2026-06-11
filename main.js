@@ -422,16 +422,10 @@
   ---------------------------------------------------------- */
   const progress = document.getElementById("scrollProgress");
   const sections = [...document.querySelectorAll("section[id]")];
-  const dots = [...document.querySelectorAll(".dots__dot")];
   addEventListener("scroll", () => {
     const st = document.documentElement.scrollTop;
     const sh = document.documentElement.scrollHeight - innerHeight;
     progress.style.width = (st / sh) * 100 + "%";
-    let active = sections[0].id;
-    for (const s of sections) {
-      if (st >= s.offsetTop - innerHeight * 0.4) active = s.id;
-    }
-    dots.forEach((d) => d.classList.toggle("is-active", d.getAttribute("href") === "#" + active));
   }, { passive: true });
 
   /* ----------------------------------------------------------
