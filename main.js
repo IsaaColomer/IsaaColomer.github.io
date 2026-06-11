@@ -106,45 +106,46 @@
       el.addEventListener("mouseenter", () => ring.classList.add("is-hover"));
       el.addEventListener("mouseleave", () => ring.classList.remove("is-hover"));
     });
-
-    // Build the liquid-glass displacement map: a radial lens where displacement
-    // is ~0 at the centre and ramps up sharply toward the rim (R=X shift, G=Y).
-    (function buildGlassLens() {
-      const feImage = document.getElementById("glass-map");
-      if (!feImage) return;
-      const SIZE = 92, R = SIZE / 2;
-      const cv = document.createElement("canvas");
-      cv.width = cv.height = SIZE;
-      const c = cv.getContext("2d");
-      const img = c.createImageData(SIZE, SIZE);
-      const d = img.data;
-      const smoother = (e0, e1, x) => {
-        const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
-        return t * t * t * (t * (t * 6 - 15) + 10);
-      };
-      for (let py = 0; py < SIZE; py++) {
-        for (let px = 0; px < SIZE; px++) {
-          const dx = px - R + 0.5, dy = py - R + 0.5;
-          const dist = Math.hypot(dx, dy);
-          const r = dist / R;                 // 0 centre … 1 rim
-          let rr = 128, gg = 128;
-          if (r < 1) {
-            const m = smoother(0.18, 1.0, r); // concentrate refraction at the rim
-            const ux = dist > 0 ? dx / dist : 0;
-            const uy = dist > 0 ? dy / dist : 0;
-            rr = 128 + ux * m * 127;
-            gg = 128 + uy * m * 127;
-          }
-          const i = (py * SIZE + px) * 4;
-          d[i] = rr; d[i + 1] = gg; d[i + 2] = 128; d[i + 3] = 255;
-        }
-      }
-      c.putImageData(img, 0, 0);
-      const url = cv.toDataURL();
-      feImage.setAttribute("href", url);
-      feImage.setAttributeNS("http://www.w3.org/1999/xlink", "href", url);
-    })();
   }
+
+  // Build the liquid-glass displacement map: a radial lens where displacement
+  // is ~0 at the centre and ramps up sharply toward the rim (R=X shift, G=Y).
+  // Runs unconditionally so the filter is always populated.
+  (function buildGlassLens() {
+    const feImage = document.getElementById("glass-map");
+    if (!feImage) return;
+    const SIZE = 92, R = SIZE / 2;
+    const cv = document.createElement("canvas");
+    cv.width = cv.height = SIZE;
+    const c = cv.getContext("2d");
+    const img = c.createImageData(SIZE, SIZE);
+    const d = img.data;
+    const smoother = (e0, e1, x) => {
+      const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
+      return t * t * t * (t * (t * 6 - 15) + 10);
+    };
+    for (let py = 0; py < SIZE; py++) {
+      for (let px = 0; px < SIZE; px++) {
+        const dx = px - R + 0.5, dy = py - R + 0.5;
+        const dist = Math.hypot(dx, dy);
+        const r = dist / R;                 // 0 centre … 1 rim
+        let rr = 128, gg = 128;
+        if (r < 1) {
+          const m = smoother(0.18, 1.0, r); // concentrate refraction at the rim
+          const ux = dist > 0 ? dx / dist : 0;
+          const uy = dist > 0 ? dy / dist : 0;
+          rr = 128 + ux * m * 127;
+          gg = 128 + uy * m * 127;
+        }
+        const i = (py * SIZE + px) * 4;
+        d[i] = rr; d[i + 1] = gg; d[i + 2] = 128; d[i + 3] = 255;
+      }
+    }
+    c.putImageData(img, 0, 0);
+    const url = cv.toDataURL();
+    feImage.setAttribute("href", url);
+    feImage.setAttributeNS("http://www.w3.org/1999/xlink", "href", url);
+  })();
 
   /* ----------------------------------------------------------
      Hero particle field (constellation reacting to cursor)

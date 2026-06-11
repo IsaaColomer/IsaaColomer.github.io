@@ -108,28 +108,27 @@ kbd {
   /* fixed size: the backdrop region must match the displacement map (46px) */
   width: 46px; height: 46px;
   transform: translate(-50%, -50%);
-  /* liquid glass: refract the backdrop through the rim lens (a lens, not a blur) */
-  background: radial-gradient(circle at 32% 28%,
-    rgba(255, 255, 255, 0.18),
-    rgba(255, 255, 255, 0.04) 58%,
-    rgba(255, 255, 255, 0.02) 100%);
   border: 1.5px solid var(--accent);   /* the red circle */
-  backdrop-filter: url(#liquid-glass) saturate(1.3);
-  -webkit-backdrop-filter: saturate(1.3);
+  /* liquid glass: refract the backdrop through the rim lens (a lens, not a blur) */
+  backdrop-filter: url(#liquid-glass) saturate(1.6) brightness(1.04);
+  -webkit-backdrop-filter: saturate(1.6) brightness(1.04);
+  /* glass body — a small bright specular highlight (top-left) + a shaded lower
+     rim so it reads as a glass bead on ANY background; centre stays clear so the
+     refraction shows over content. No blur. */
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0) 38%),
+    radial-gradient(circle at 72% 80%, rgba(20, 23, 28, 0.10), rgba(20, 23, 28, 0) 46%);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.7),    /* top inner highlight (specular) */
-    inset 0 -3px 7px rgba(20, 23, 28, 0.07),     /* soft bottom shading */
-    inset 0 0 10px rgba(255, 255, 255, 0.3),     /* inner glass glow */
-    0 4px 14px rgba(20, 23, 28, 0.10);           /* soft drop */
+    inset 1px 1px 2px rgba(255, 255, 255, 0.85),   /* bright top-left edge (specular) */
+    inset -1px -2px 4px rgba(20, 23, 28, 0.10),    /* shaded bottom edge */
+    0 4px 12px rgba(20, 23, 28, 0.14);             /* soft drop */
   transition: border-color 0.22s, box-shadow 0.22s;
 }
 .cursor-ring.is-hover {
-  border-color: var(--accent);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.75),
-    inset 0 -3px 9px rgba(20, 23, 28, 0.08),
-    inset 0 0 12px rgba(255, 255, 255, 0.35),
-    0 0 0 5px rgba(255, 31, 61, 0.08),           /* soft accent halo on hover */
+    inset 1px 1px 2px rgba(255, 255, 255, 0.9),
+    inset -1px -2px 5px rgba(20, 23, 28, 0.12),
+    0 0 0 5px rgba(255, 31, 61, 0.08),             /* soft accent halo on hover */
     0 6px 22px rgba(255, 31, 61, 0.20);
 }
 
