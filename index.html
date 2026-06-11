@@ -1,476 +1,192 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-    <title>Isaac Colomer Casas — Portfolio OS</title>
-		<meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Interactive desktop portfolio of Isaac Colomer Casas, videogame designer and programmer" />
-    <link rel="icon" type="image/png" href="./images/beele.png" />
-    <link rel="stylesheet" href="./styles.css?v=1.4" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- Font Awesome for standard icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-	</head>
-<body class="desktop-os">
-    <!-- Boot / Loading screen -->
-    <div id="boot-screen" aria-hidden="true">
-        <div class="boot-window" role="dialog" aria-label="Starting IsaacOS">
-            <div class="boot-header">
-                <div class="boot-caption">Starting IsaacOS</div>
-            </div>
-            <div class="boot-body">
-                <div class="boot-row">
-                    <div class="boot-mark">
-                        <img class="os-logo os-logo--boot" src="images/belle.jpeg" alt="IsaacOS logo">
-                    </div>
-                    <div class="boot-text">
-                        <div class="boot-title">IsaacOS</div>
-                        <div class="boot-subtitle">Loading desktop environment…</div>
-                    </div>
-                </div>
-                <div class="boot-bar" aria-hidden="true"><div class="boot-bar-fill"></div></div>
-                <div class="boot-hint">Tip: double click icons to open · drag windows · resize from ◢</div>
-            </div>
-        </div>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Isaac Colomer Casas — Game Developer & AI Engineer</title>
+  <meta name="description" content="Interactive CV of Isaac Colomer Casas — videogame designer and programmer now focused on AI development." />
+  <meta name="theme-color" content="#0a0a0b" />
+  <link rel="icon" type="image/png" href="./images/beele.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Boot / loader -->
+  <div class="boot" id="boot" aria-hidden="true">
+    <div class="boot__inner">
+      <span class="boot__line" data-boot>initializing runtime…</span>
+      <span class="boot__line" data-boot>loading engines…</span>
+      <span class="boot__line" data-boot>compiling personality.exe…</span>
+      <div class="boot__bar"><i id="bootBar"></i></div>
+      <span class="boot__pct" id="bootPct">0%</span>
     </div>
+  </div>
 
-    <div class="grain-overlay"></div>
-    <div class="crt-overlay"></div>
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
 
-    <!-- Top Bar -->
-    <nav class="top-bar">
-        <div class="top-bar-left">
-            <div class="system-dropdown">
-                <span class="system-name" id="system-trigger" onclick="toggleDropdown()">
-                    <span class="os-logo-wrap os-logo-wrap--topbar" aria-hidden="true">
-                        <img class="os-logo os-logo--topbar" src="images/belle.jpeg" alt="">
-                    </span>
-                    <span>IsaacOS</span>
-                </span>
-                <div class="dropdown-content" id="system-menu">
-                    <a href="#" onclick="openWindow('win-terminal'); closeDropdown();">Terminal</a>
-                    <a href="#" onclick="openWindow('win-skills'); closeDropdown();">Skills Explorer</a>
-                    <a href="#" onclick="openWindow('win-interview'); closeDropdown();">Interview.exe</a>
-                    <a href="#" onclick="openWindow('win-stackmap'); closeDropdown();">Stack Map</a>
-                    <a href="#" onclick="openWindow('win-metrics'); closeDropdown();">System Metrics</a>
-                    <a href="#" onclick="openWindow('win-settings'); closeDropdown();">OS Settings</a>
-                    <div class="menu-divider"></div>
-                    <a href="#" onclick="openWindow('win-about'); closeDropdown();">About</a>
-                    <a href="#" onclick="openWindow('win-experience'); closeDropdown();">Experience</a>
-                    <a href="#" onclick="openWindow('win-projects'); closeDropdown();">Work</a>
-                    <a href="#" onclick="openWindow('win-contact'); closeDropdown();">Contact</a>
-                    <a href="#" onclick="openWindow('win-racer'); closeDropdown();">Play Racer</a>
-                    <div class="menu-divider"></div>
-                    <a href="#" id="anim-toggle" onclick="toggleAnimations(); event.preventDefault();">Animations</a>
-                    <a href="#" id="sounds-toggle" onclick="toggleSounds(); event.preventDefault();">System Sounds</a>
-                </div>
-            </div>
+  <!-- Scroll progress -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <!-- Side nav dots -->
+  <nav class="dots" aria-label="Section navigation">
+    <a href="#home" class="dots__dot is-active" data-label="Home"><span></span></a>
+    <a href="#about" class="dots__dot" data-label="About"><span></span></a>
+    <a href="#skills" class="dots__dot" data-label="Skills"><span></span></a>
+    <a href="#work" class="dots__dot" data-label="Work"><span></span></a>
+    <a href="#path" class="dots__dot" data-label="Path"><span></span></a>
+    <a href="#contact" class="dots__dot" data-label="Contact"><span></span></a>
+  </nav>
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <a href="#home" class="brand">
+      <span class="brand__mark">IC</span>
+      <span class="brand__name">isaac_colomer</span>
+    </a>
+    <button class="help-btn" id="helpBtn" aria-haspopup="dialog">
+      <kbd>?</kbd> shortcuts
+    </button>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <canvas id="field" class="hero__canvas" aria-hidden="true"></canvas>
+      <div class="hero__content">
+        <p class="eyebrow"><span class="dot-live"></span> open to roles &amp; collaborations</p>
+        <h1 class="hero__title" data-scramble>
+          <span class="line">Games, tools,</span>
+          <span class="line accent">and AI that</span>
+          <span class="line">actually ships.</span>
+        </h1>
+        <p class="hero__sub">
+          Videogame designer &amp; programmer now focused on AI development — moving fluently
+          between gameplay code, Unity &amp; Unreal, test automation, and LLM-driven tooling.
+        </p>
+        <div class="hero__cta">
+          <a href="#work" class="btn btn--primary magnetic" data-magnetic>See the work</a>
+          <a href="#contact" class="btn btn--ghost magnetic" data-magnetic>Get in touch</a>
         </div>
-        <div class="top-bar-right">
-            <span id="clock">12:00 PM</span>
+        <p class="hero__hint">scroll &nbsp;·&nbsp; or press <kbd>↓</kbd> &nbsp;·&nbsp; move your cursor over the field</p>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="section about" id="about">
+      <div class="section__head reveal">
+        <span class="section__index">01</span>
+        <h2 class="section__title">Who&apos;s behind the cursor</h2>
+      </div>
+      <div class="about__grid">
+        <div class="about__lead reveal">
+          <p>
+            I&apos;m a <strong>videogame designer and programmer</strong> with deep roots in
+            C, C++, C# and engines like Unity and Unreal Engine. These days my focus is
+            <strong>AI development</strong> at Mindsight Ventures, where I build AI-powered
+            features and automation tooling.
+          </p>
+          <p>
+            Games taught me to ship things that <em>feel</em> good and run fast; testing and
+            validation taught me to make them reliable. I&apos;m easy to work with, tidy,
+            responsible, and punctual — and happiest owning a feature from prototype to polish.
+          </p>
         </div>
-					</nav>
-
-    <!-- Desktop Area -->
-    <main id="desktop">
-        <div class="desktop-grid">
-            <div class="desktop-icon" id="icon-experience" ondblclick="openWindow('win-experience')">
-                <div class="icon-wrapper"><i class="fa-solid fa-file-lines"></i></div>
-                <span>experience.mdx</span>
-            </div>
-            <div class="desktop-icon" id="icon-projects" ondblclick="openWindow('win-projects')">
-                <div class="icon-wrapper"><i class="fa-solid fa-folder-open"></i></div>
-                <span>projects.zip</span>
-            </div>
-            <div class="desktop-icon" id="icon-contact" ondblclick="openWindow('win-contact')">
-                <div class="icon-wrapper"><i class="fa-solid fa-address-book"></i></div>
-                <span>contact.txt</span>
-            </div>
-            <div class="desktop-icon" id="icon-about" ondblclick="openWindow('win-about')">
-                <div class="icon-wrapper"><i class="fa-solid fa-circle-info"></i></div>
-                <span>readme.txt</span>
-            </div>
-            <div class="desktop-icon" id="icon-skills" ondblclick="openWindow('win-skills')">
-                <div class="icon-wrapper"><i class="fa-solid fa-chart-simple"></i></div>
-                <span>skills.exe</span>
-            </div>
-            <div class="desktop-icon" id="icon-interview" ondblclick="openWindow('win-interview')">
-                <div class="icon-wrapper"><i class="fa-solid fa-circle-question"></i></div>
-                <span>Interview.exe</span>
-            </div>
-            <div class="desktop-icon" id="icon-stackmap" ondblclick="openWindow('win-stackmap')">
-                <div class="icon-wrapper"><i class="fa-solid fa-diagram-project"></i></div>
-                <span>stackmap.exe</span>
-            </div>
-            <div class="desktop-icon" id="icon-metrics" ondblclick="openWindow('win-metrics')">
-                <div class="icon-wrapper"><i class="fa-solid fa-gauge-high"></i></div>
-                <span>metrics.sys</span>
-            </div>
-            <div class="desktop-icon" id="icon-settings" ondblclick="openWindow('win-settings')">
-                <div class="icon-wrapper"><i class="fa-solid fa-gear"></i></div>
-                <span>settings.sys</span>
-            </div>
-            <div class="desktop-icon" id="icon-terminal" ondblclick="openWindow('win-terminal')">
-                <div class="icon-wrapper"><i class="fa-solid fa-terminal"></i></div>
-                <span>terminal.exe</span>
-            </div>
-            <div class="desktop-icon" id="icon-racer" ondblclick="openWindow('win-racer')">
-                <div class="icon-wrapper"><i class="fa-solid fa-gamepad"></i></div>
-                <span>Racer.exe</span>
-            </div>
+        <ul class="about__facts">
+          <li class="reveal"><span class="stat" data-count="6">0</span><small>projects shipped</small></li>
+          <li class="reveal"><span class="stat" data-count="6">0</span><small>languages &amp; engines</small></li>
+          <li class="reveal"><span class="stat" data-count="4">0</span><small>professional roles</small></li>
+          <li class="reveal"><span class="stat" data-count="60" data-suffix="fps">0</span><small>budget I design for</small></li>
+        </ul>
+      </div>
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee__track">
+          <span>ai development</span><span>·</span><span>gameplay engineering</span><span>·</span><span>unity &amp; unreal</span><span>·</span><span>test automation</span><span>·</span><span>vr / quest 2</span><span>·</span><span>llm tooling</span><span>·</span>
+          <span>ai development</span><span>·</span><span>gameplay engineering</span><span>·</span><span>unity &amp; unreal</span><span>·</span><span>test automation</span><span>·</span><span>vr / quest 2</span><span>·</span><span>llm tooling</span><span>·</span>
         </div>
+      </div>
+    </section>
 
-        <!-- Window Templates -->
+    <!-- SKILLS -->
+    <section class="section skills" id="skills">
+      <div class="section__head reveal">
+        <span class="section__index">02</span>
+        <h2 class="section__title">Toolbelt</h2>
+        <p class="section__note">Hover a domain to weight it. These are ranges, not religion.</p>
+      </div>
+      <div class="skills__grid" id="skillsGrid">
+        <!-- injected by JS -->
+      </div>
+    </section>
 
-        <!-- Terminal Window -->
-        <div class="window" id="win-terminal" style="display: none; top: 70px; left: 70px; width: 640px; height: 420px;">
-            <div class="window-header">
-                <div class="window-title">[#] Terminal</div>
-                <div class="window-controls">
-                    <button class="win-btn minimize" onclick="closeWindow('win-terminal')">-</button>
-                    <button class="win-btn maximize">^</button>
-                    <button class="win-btn close" onclick="closeWindow('win-terminal')">x</button>
-                </div>
-            </div>
-            <div class="window-content terminal-content">
-                <div class="terminal-output" id="terminal-output" aria-live="polite"></div>
-                <div class="terminal-input-row">
-                    <span class="terminal-prompt">isaac@os:~$</span>
-                    <input id="terminal-input" class="terminal-input" type="text" autocomplete="off" spellcheck="false" placeholder="type 'help' and press Enter" />
-                </div>
-            </div>
-            <div class="win-resize">◢</div>
+    <!-- WORK -->
+    <section class="section work" id="work">
+      <div class="section__head reveal">
+        <span class="section__index">03</span>
+        <h2 class="section__title">Selected work</h2>
+        <p class="section__note">A spread on purpose — games are here, but so is everything else.</p>
+      </div>
+      <div class="work__grid" id="workGrid">
+        <!-- injected by JS -->
+      </div>
+    </section>
+
+    <!-- PATH / TIMELINE -->
+    <section class="section path" id="path">
+      <div class="section__head reveal">
+        <span class="section__index">04</span>
+        <h2 class="section__title">The path so far</h2>
+      </div>
+      <ol class="timeline" id="timeline">
+        <!-- injected by JS -->
+      </ol>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section contact" id="contact">
+      <div class="contact__inner reveal">
+        <span class="section__index">05</span>
+        <h2 class="contact__title">Let&apos;s make something<br/>that doesn&apos;t exist yet.</h2>
+        <a href="mailto:isaacolomer@gmail.com" class="contact__mail magnetic" data-magnetic>isaacolomer@gmail.com</a>
+        <div class="contact__links">
+          <a href="https://github.com/IsaaColomer" target="_blank" rel="noopener" class="magnetic" data-magnetic>GitHub</a>
+          <a href="https://isaacolomer.itch.io" target="_blank" rel="noopener" class="magnetic" data-magnetic>itch.io</a>
+          <a href="https://www.linkedin.com/in/isaac-colomer-casas-4a8a41206/" target="_blank" rel="noopener" class="magnetic" data-magnetic>LinkedIn</a>
+          <a href="https://twitter.com/IsaacColomerC1" target="_blank" rel="noopener" class="magnetic" data-magnetic>Twitter ↗</a>
         </div>
+      </div>
+      <footer class="footer">
+        <span>© <span id="year"></span> Isaac Colomer Casas</span>
+        <span class="footer__egg">psst — try the <kbd>↑ ↑ ↓ ↓ ← → ← → B A</kbd></span>
+      </footer>
+    </section>
+  </main>
 
-        <!-- Experience Window -->
-        <div class="window" id="win-experience" style="display: none; top: 60px; left: 60px; width: 600px; height: 500px;">
-            <div class="window-header">
-                <div class="window-title">[#] experience.txt</div>
-                <div class="window-controls">
-                    <button class="win-btn minimize" onclick="closeWindow('win-experience')">-</button>
-                    <button class="win-btn maximize">^</button>
-                    <button class="win-btn close" onclick="closeWindow('win-experience')">x</button>
-                </div>
-            </div>
-            <div class="window-content">
-                <section class="experience-section">
-                    <div class="timeline">
-                        <div class="timeline-item">
-                            <div class="timeline-date">2025 — Present</div>
-                            <div class="timeline-content">
-                                <h3>Junior AI Developer · Mindsight Ventures</h3>
-                                <p>Designing and implementing AI-powered features and automation tools across internal products. Working with Python, containerized environments, and LLM-driven workflows to enhance test automation, data processing, and product prototyping. Collaborating with cross-functional teams to integrate AI systems into production pipelines.</p>
-                            </div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-date">Aug 2025 — Oct 2025</div>
-                            <div class="timeline-content">
-                                <h3>AI Development Intern · Mindsight Ventures</h3>
-                                <p>Supported AI research and prototyping efforts, assisting in building internal tools and improving automation workflows. Contributed to early-stage models, data handling scripts, and test environments while learning production-level AI engineering practices.</p>
-                            </div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-date">2023 — 2024</div>
-                            <div class="timeline-content">
-                                <h3>Test Engineer · GLI</h3>
-                                <p>Executed comprehensive software validation to ensure regulatory compliance and correct functionality. Coordinated with global teams to accredit software performance, maintained validation documentation, and optimized testing processes to improve reliability and throughput.</p>
-                            </div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-date">2021</div>
-                            <div class="timeline-content">
-                                <h3>Teacher & Mentor · Innvideogames</h3>
-                                <p>Taught programming, Unity development, and game design fundamentals. Mentored students on gameplay systems, level design, and code architecture, guiding them through full project pipelines from concept to polished prototypes.</p>
-                            </div>
-							</div>
-						</div>
-					</section>
-            </div>
-            <div class="win-resize">◢</div>
-        </div>
+  <!-- Shortcuts dialog -->
+  <div class="modal" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle" hidden>
+    <div class="modal__card">
+      <button class="modal__close" id="helpClose" aria-label="Close">×</button>
+      <h3 id="helpTitle">Keyboard shortcuts</h3>
+      <ul class="modal__list">
+        <li><kbd>↑</kbd> <kbd>↓</kbd><span>Jump between sections</span></li>
+        <li><kbd>1</kbd>–<kbd>6</kbd><span>Go to a section directly</span></li>
+        <li><kbd>?</kbd><span>Toggle this panel</span></li>
+        <li><kbd>G</kbd><span>Toggle grid overlay</span></li>
+        <li><kbd>Esc</kbd><span>Close panels</span></li>
+      </ul>
+      <p class="modal__foot">There&apos;s a hidden mini-game too. Keep poking around.</p>
+    </div>
+  </div>
 
-        <!-- Projects Window -->
-        <div class="window" id="win-projects" style="display: none; top: 100px; left: 100px; width: 550px; height: 500px;">
-            <div class="window-header">
-                <div class="window-title">[#] projects.zip</div>
-                <div class="window-controls">
-                    <button class="win-btn minimize" onclick="closeWindow('win-projects')">-</button>
-                    <button class="win-btn maximize">^</button>
-                    <button class="win-btn close" onclick="closeWindow('win-projects')">x</button>
-                </div>
-            </div>
-            <div class="window-content">
-                <div class="projects-container">
-                    <h3>Programming</h3>
-                    <div class="projects-list">
-                        <div class="project-mini">
-                            <strong>Lights Out</strong>
-                            <p>Indie Dev Game Jam - Programming & Bug Fixing.</p>
-                            <a href="https://osvak.itch.io/lights-out" target="_blank">View →</a>
-                        </div>
-                        <div class="project-mini">
-                            <strong>Final Degree Work</strong>
-                            <p>UE 5.1 First Person Walking Simulator.</p>
-                            <a href="https://www.youtube.com/watch?v=aa2Q2_MgMjY" target="_blank">Watch →</a>
-                        </div>
-                        <div class="project-mini">
-                            <strong>Màscares & Marquesos</strong>
-                            <p>VR optimized for Quest 2 - Generalitat de Catalunya.</p>
-                            <a href="https://github.com/Makinilla-maker/Giravolt2023" target="_blank">GitHub →</a>
-                        </div>
-                    </div>
-                    <hr>
-                    <h3>Design</h3>
-                    <div class="projects-list">
-                        <div class="project-mini">
-                            <strong>Dune Fremen's Rising</strong>
-                            <p>Level design & creative direction.</p>
-                            <a href="https://shorturl.at/hqtAC" target="_blank">Info →</a>
-                        </div>
-                        <div class="project-mini">
-                            <strong>Summer Game</strong>
-                            <p>Atmospheric experience design.</p>
-                            <a href="https://isaacolomer.itch.io/summer-game" target="_blank">Play →</a>
-                        </div>
-                    </div>
-                </div>
-							</div>
-            <div class="win-resize">◢</div>
-					</div>
+  <!-- Grid overlay -->
+  <div class="grid-overlay" id="gridOverlay" aria-hidden="true"></div>
 
-        <!-- Contact Window -->
-        <div class="window" id="win-contact" style="display: none; top: 140px; left: 140px; width: 400px; height: 400px;">
-            <div class="window-header">
-                <div class="window-title">[#] contact.txt</div>
-                <div class="window-controls">
-                    <button class="win-btn minimize" onclick="closeWindow('win-contact')">-</button>
-                    <button class="win-btn maximize">^</button>
-                    <button class="win-btn close" onclick="closeWindow('win-contact')">x</button>
-                </div>
-            </div>
-            <div class="window-content">
-                <div class="contact-win-body">
-                    <h2>Get in touch</h2>
-                    <p>I'm always down to chat about projects or opportunities.</p>
-                    <div class="contact-links">
-                        <a href="mailto:isaacolomer@gmail.com" class="win-cta">Email Me</a>
-                        <div class="social-grid">
-                            <a href="https://www.linkedin.com/in/isaac-colomer-casas-4a8a41206/" target="_blank">LinkedIn</a>
-                            <a href="https://github.com/IsaaColomer" target="_blank">GitHub</a>
-                            <a href="https://twitter.com/IsaacColomerC1" target="_blank">Twitter</a>
-										</div>
-										</div>
-										</div>
-									</div>
-            <div class="win-resize">◢</div>
-        </div>
+  <!-- Easter-egg canvas -->
+  <canvas id="confetti" class="confetti" aria-hidden="true"></canvas>
 
-        <!-- About Window -->
-        <div class="window" id="win-about" style="display: none; top: 40px; left: 40px; width: 450px; height: 320px;">
-            <div class="window-header">
-                <div class="window-title">[#] readme.txt</div>
-                <div class="window-controls">
-                    <button class="win-btn minimize" onclick="closeWindow('win-about')">-</button>
-                    <button class="win-btn maximize">^</button>
-                    <button class="win-btn close" onclick="closeWindow('win-about')">x</button>
-                </div>
-									</div>
-            <div class="window-content">
-                <div class="about-win-body">
-                    <h1>Isaac Colomer Casas</h1>
-                    <p class="subtitle">Videogame Designer & Programmer</p>
-                    <p>I have a wide knowledge in languages like C, C++, C# and engines like Unity and Unreal Engine. I'm characterized by being easy to work with, tidy, responsible, and punctual.</p>
-                    <p>Currently focusing on AI Development at Mindsight Ventures.</p>
-									</div>
-									</div>
-            <div class="win-resize">◢</div>
-						</div>
-
-        <!-- Skills Explorer Window -->
-        <div class="window" id="win-skills" style="display: none; top: 90px; left: 140px; width: 760px; height: 520px;">
-            <div class="window-header">
-                <div class="window-title">[#] skills.exe</div>
-                <div class="window-controls">
-                    <button class="win-btn minimize" onclick="closeWindow('win-skills')">-</button>
-                    <button class="win-btn maximize">^</button>
-                    <button class="win-btn close" onclick="closeWindow('win-skills')">x</button>
-                </div>
-            </div>
-            <div class="window-content skills-content">
-                <div class="skills-toolbar">
-                    <label class="skills-search">
-                        <span class="skills-search-label">Search:</span>
-                        <input id="skills-search" type="text" autocomplete="off" spellcheck="false" placeholder="python, unity, testing, …" />
-                    </label>
-                </div>
-
-                <div class="skills-layout">
-                    <aside class="skills-filters" aria-label="Skill categories">
-                        <div class="skills-filter-title">Categories</div>
-                        <div class="skills-filter-list" id="skills-categories"></div>
-                    </aside>
-
-                    <section class="skills-list" aria-label="Skills">
-                        <div class="skills-list-header">
-                            <div class="skills-count" id="skills-count">0 skills</div>
-                        </div>
-                        <div class="skills-grid" id="skills-grid"></div>
-								</section>
-
-                    <aside class="skills-details" aria-label="Skill details">
-                        <div class="skills-details-title" id="skills-details-title">Pick a skill</div>
-                        <div class="skills-details-body" id="skills-details-body">
-                            Select a skill on the left to see details and proof links.
-                        </div>
-                        <div class="skills-details-links" id="skills-details-links"></div>
-                    </aside>
-                </div>
-            </div>
-            <div class="win-resize">◢</div>
-        </div>
-
-        <!-- Interview.exe Window -->
-        <div class="window" id="win-interview" style="display: none; top: 110px; left: 180px; width: 760px; height: 520px;">
-            <div class="window-header">
-                <div class="window-title">[#] Interview.exe</div>
-                <div class="window-controls">
-                    <button class="win-btn minimize" onclick="closeWindow('win-interview')">-</button>
-                    <button class="win-btn maximize">^</button>
-                    <button class="win-btn close" onclick="closeWindow('win-interview')">x</button>
-                </div>
-            </div>
-            <div class="window-content interview-content">
-                <div class="interview-layout">
-                    <aside class="interview-questions" aria-label="Interview questions">
-                        <div class="interview-panel-title">Questions</div>
-                        <div class="interview-q-list" id="interview-questions"></div>
-                    </aside>
-
-                    <section class="interview-answer" aria-label="Answer">
-                        <div class="interview-panel-title" id="interview-title">Select a question</div>
-                        <div class="interview-answer-body" id="interview-answer">
-                            Click a question on the left to see a short, practiced answer and proof links.
-                        </div>
-                        <div class="interview-proofs" id="interview-proofs"></div>
-							</section>
-						</div>
-            </div>
-            <div class="win-resize">◢</div>
-        </div>
-
-        <!-- Stack Map Window -->
-        <div class="window" id="win-stackmap" style="display: none; top: 80px; left: 140px; width: 860px; height: 560px;">
-            <div class="window-header">
-                <div class="window-title">[#] stackmap.exe</div>
-                <div class="window-controls">
-                    <button class="win-btn minimize" onclick="closeWindow('win-stackmap')">-</button>
-                    <button class="win-btn maximize">^</button>
-                    <button class="win-btn close" onclick="closeWindow('win-stackmap')">x</button>
-                </div>
-            </div>
-            <div class="window-content stackmap-content">
-                <div class="stackmap-hint">Click a node to highlight connections · click again to clear</div>
-                <div class="stackmap-layout">
-                    <section class="stackmap-col" aria-label="Skills">
-                        <div class="stackmap-title">Skills</div>
-                        <div class="stackmap-list" id="stackmap-skills"></div>
-                    </section>
-                    <section class="stackmap-col" aria-label="Projects">
-                        <div class="stackmap-title">Projects</div>
-                        <div class="stackmap-list" id="stackmap-projects"></div>
-                    </section>
-                    <section class="stackmap-col" aria-label="Experience">
-                        <div class="stackmap-title">Experience</div>
-                        <div class="stackmap-list" id="stackmap-experience"></div>
-                    </section>
-                    <aside class="stackmap-details" aria-label="Details">
-                        <div class="stackmap-title" id="stackmap-details-title">Details</div>
-                        <div class="stackmap-details-body" id="stackmap-details-body">Select a node to see its description and proof links.</div>
-                        <div class="stackmap-details-links" id="stackmap-details-links"></div>
-                    </aside>
-                </div>
-            </div>
-            <div class="win-resize">◢</div>
-        </div>
-
-        <!-- System Metrics Window -->
-        <div class="window" id="win-metrics" style="display: none; top: 120px; left: 180px; width: 720px; height: 520px;">
-            <div class="window-header">
-                <div class="window-title">[#] metrics.sys</div>
-                <div class="window-controls">
-                    <button class="win-btn minimize" onclick="closeWindow('win-metrics')">-</button>
-                    <button class="win-btn maximize">^</button>
-                    <button class="win-btn close" onclick="closeWindow('win-metrics')">x</button>
-                </div>
-            </div>
-            <div class="window-content metrics-content">
-                <div class="metrics-hint">These numbers are derived from what’s currently listed in your Work + Experience windows.</div>
-                <div class="metrics-grid" id="metrics-grid"></div>
-            </div>
-            <div class="win-resize">◢</div>
-        </div>
-
-        <!-- OS Settings Window -->
-        <div class="window" id="win-settings" style="display: none; top: 140px; left: 220px; width: 560px; height: 420px;">
-            <div class="window-header">
-                <div class="window-title">[#] settings.sys</div>
-                <div class="window-controls">
-                    <button class="win-btn minimize" onclick="closeWindow('win-settings')">-</button>
-                    <button class="win-btn maximize">^</button>
-                    <button class="win-btn close" onclick="closeWindow('win-settings')">x</button>
-                </div>
-            </div>
-            <div class="window-content settings-content">
-                <div class="settings-section">
-                    <div class="settings-title">Accessibility</div>
-                    <div class="settings-row">
-                        <button class="np-btn" id="toggle-a11y">Toggle</button>
-                        <div class="settings-desc">Increase focus outlines and keyboard clarity.</div>
-                    </div>
-                </div>
-                <div class="settings-section">
-                    <div class="settings-title">Reduced Motion</div>
-                    <div class="settings-row">
-                        <button class="np-btn" id="toggle-reduce-motion">Toggle</button>
-                        <div class="settings-desc">Disable non-essential animations.</div>
-                    </div>
-                </div>
-                <div class="settings-section">
-                    <div class="settings-title">High Contrast</div>
-                    <div class="settings-row">
-                        <button class="np-btn" id="toggle-contrast">Toggle</button>
-                        <div class="settings-desc">Boost UI contrast for readability.</div>
-                    </div>
-                </div>
-                <div class="settings-footer">Settings persist on this device.</div>
-            </div>
-            <div class="win-resize">◢</div>
-        </div>
-
-        <!-- Racer Game Window -->
-        <div class="window" id="win-racer" style="display: none; top: 80px; left: 80px; width: 540px; height: 500px;">
-            <div class="window-header">
-                <div class="window-title">[#] Racer.exe</div>
-                <div class="window-controls">
-                    <button class="win-btn minimize" onclick="closeWindow('win-racer')">-</button>
-                    <button class="win-btn maximize">^</button>
-                    <button class="win-btn close" onclick="closeWindow('win-racer')">x</button>
-                </div>
-            </div>
-            <div class="window-content" style="padding: 0; overflow: hidden; background: #000; display: flex; flex-direction: column;">
-                <iframe src="./racer/index.html" style="width: 100%; flex: 1; border: none;"></iframe>
-                <div style="padding: 4px 8px; background: var(--color-button-face); border-top: 1px solid var(--color-button-shadow); font-size: 10px; color: var(--color-text-secondary); display: flex; justify-content: space-between; align-items: center; user-select: none;">
-                    <span>Open Source Retro Racer</span>
-                    <span>Credits: Keith Clark (js13k)</span>
-                </div>
-            </div>
-            <div class="win-resize">◢</div>
-        </div>
-
-    </main>
-
-    <script src="assets/js/desktop.js"></script>
-	</body>
+  <script src="main.js"></script>
+</body>
 </html>
