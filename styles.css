@@ -239,9 +239,10 @@ kbd {
   font-weight: 700;
   letter-spacing: -0.03em;
 }
-.hero__title .line { display: block; }
-/* applied by JS only while the intro scramble runs, so transient wide glyphs can't rewrap and shift layout */
-.hero__title.is-scrambling .line { white-space: nowrap; }
+/* Each phrase keeps its own single row at all times. The scramble runs with
+   nowrap, so locking it here too means the title never reflows (3 wide lines →
+   5 wrapped lines) when the intro settles. */
+.hero__title .line { display: block; white-space: nowrap; }
 .hero__title .accent { color: var(--accent); }
 .hero__sub {
   margin-top: 26px;
@@ -598,6 +599,9 @@ kbd {
 @media (max-width: 560px) {
   .footer { flex-direction: column; }
   .footer__egg { display: none; }
+  /* On narrow screens the wide single-line phrases would overflow and get
+     clipped by the hero's overflow:hidden, so let them wrap here. */
+  .hero__title .line { white-space: normal; }
 }
 
 /* motion / accessibility */
