@@ -157,41 +157,6 @@ kbd {
 }
 .help-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-/* side dots */
-.dots {
-  position: fixed;
-  right: clamp(14px, 3vw, 34px);
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  z-index: 110;
-}
-.dots__dot { position: relative; display: block; padding: 4px; }
-.dots__dot span {
-  display: block;
-  width: 9px; height: 9px;
-  border: 1px solid var(--muted);
-  border-radius: 50%;
-  transition: all 0.3s var(--ease);
-}
-.dots__dot.is-active span { background: var(--accent); border-color: var(--accent); transform: scale(1.25); }
-.dots__dot::after {
-  content: attr(data-label);
-  position: absolute;
-  right: 24px; top: 50%;
-  transform: translateY(-50%) translateX(6px);
-  font-family: "Space Mono", monospace;
-  font-size: 0.7rem;
-  color: var(--muted);
-  opacity: 0;
-  white-space: nowrap;
-  transition: all 0.25s var(--ease);
-  pointer-events: none;
-}
-.dots__dot:hover::after { opacity: 1; transform: translateY(-50%); }
-
 /* ============================================================
    Hero
    ============================================================ */
