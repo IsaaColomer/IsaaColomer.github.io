@@ -234,6 +234,10 @@
     }
 
     function frame(s, p) {
+      // keep the pixel buffer matched to the rendered size every frame — the
+      // section grows after its content is injected, so any earlier buffer
+      // would otherwise be stretched (the distortion). resize() is guarded.
+      if (s.canvas.clientWidth !== s.w || s.canvas.clientHeight !== s.h) s.resize();
       const { ctx, w, h, accent, particles } = s;
       ctx.clearRect(0, 0, w, h);
 
