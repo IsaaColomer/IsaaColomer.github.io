@@ -7,9 +7,6 @@ let draggedIcon = null;
 // Preferences / OS state
 let soundsEnabled = false;
 let audioCtx = null;
-let idleTimer = null;
-let isScreensaverActive = false;
-let screensaverActivatedAt = 0;
 
 // Desktop icon layout: enforce non-overlapping slots
 let iconGrid = null; // { stepX, stepY, cols, rows }
@@ -48,225 +45,6 @@ let settingsInitialized = false;
 const PREF_A11Y = 'pref-a11y';
 const PREF_REDUCE_MOTION = 'pref-reduce-motion';
 const PREF_CONTRAST = 'pref-high-contrast';
-
-// Achievements
-const ACH_UNLOCKED_KEY = 'achievements-unlocked';
-const ACH_PROGRESS_KEY = 'achievements-progress';
-let achievementsInitialized = false;
-
-const ACHIEVEMENTS = [
-    {
-        id: 'first_login',
-        title: 'First login',
-        desc: 'Welcome to IsaacOS. You opened the desktop.',
-        check: (p) => !!p.firstLogin
-    },
-    {
-        id: 'terminal_user',
-        title: 'Terminal user',
-        desc: 'Ran your first Terminal command.',
-        check: (p) => (p.terminalCommandsCount || 0) >= 1
-    },
-    {
-        id: 'power_user',
-        title: 'Power user',
-        desc: 'Ran 5 Terminal commands.',
-        check: (p) => (p.terminalCommandsCount || 0) >= 5
-    },
-    {
-        id: 'app_explorer',
-        title: 'App explorer',
-        desc: 'Opened 5 different apps.',
-        check: (p) => (p.openedWindows && Object.keys(p.openedWindows).length >= 5)
-    },
-    {
-        id: 'all_core_apps',
-        title: 'All core apps',
-        desc: 'Opened Skills, Interview, Stack Map, Metrics, and Settings.',
-        check: (p) => {
-            const w = (p.openedWindows || {});
-            return !!(w['win-skills'] && w['win-interview'] && w['win-stackmap'] && w['win-metrics'] && w['win-settings']);
-        }
-    },
-    {
-        id: 'mapper',
-        title: 'Mapper',
-        desc: 'Selected something in Stack Map.',
-        check: (p) => (p.stackMapClicks || 0) >= 1
-    },
-    {
-        id: 'analyst',
-        title: 'Analyst',
-        desc: 'Expanded a “How measured” section in System Metrics.',
-        check: (p) => (p.metricsExpands || 0) >= 1
-    },
-    {
-        id: 'customizer',
-        title: 'Customizer',
-        desc: 'Changed an OS Setting (accessibility, contrast, or reduced motion).',
-        check: (p) => (p.settingsToggles || 0) >= 1
-    },
-    {
-        id: 'gamer',
-        title: 'Gamer',
-        desc: 'Opened Racer or Pacman.',
-        check: (p) => {
-            const w = (p.openedWindows || {});
-            return !!(w['win-racer'] || w['win-pacman']);
-        }
-    }
-];
-
-function loadAchievementProgress() {
-    const raw = localStorage.getItem(ACH_PROGRESS_KEY);
-    const parsed = safeJSONParse(raw || '');
-    return parsed && typeof parsed === 'object' ? parsed : {};
-}
-
-function saveAchievementProgress(p) {
-    localStorage.setItem(ACH_PROGRESS_KEY, JSON.stringify(p || {}));
-}
-
-function loadUnlockedAchievements() {
-    const raw = localStorage.getItem(ACH_UNLOCKED_KEY);
-    const arr = safeJSONParse(raw || '');
-    if (!Array.isArray(arr)) return new Set();
-    return new Set(arr.filter(x => typeof x === 'string'));
-}
-
-function saveUnlockedAchievements(set) {
-    localStorage.setItem(ACH_UNLOCKED_KEY, JSON.stringify(Array.from(set || [])));
-}
-
-function showToast(title, body) {
-    const container = document.getElementById('toast-container');
-    if (!container) return;
-
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerHTML = `
-        <div class="toast-title"></div>
-        <div class="toast-body"></div>
-    `;
-    const t = toast.querySelector('.toast-title');
-    const b = toast.querySelector('.toast-body');
-    if (t) t.textContent = title || 'Achievement unlocked';
-    if (b) b.textContent = body || '';
-
-    container.appendChild(toast);
-
-    // Animate in only if reduced motion is off
-    const reduce = document.body.classList.contains('reduce-motion');
-    if (!reduce) {
-        requestAnimationFrame(() => toast.classList.add('show'));
-    } else {
-        toast.classList.add('show');
-    }
-
-    window.setTimeout(() => {
-        toast.classList.remove('show');
-        window.setTimeout(() => {
-            toast.remove();
-        }, reduce ? 0 : 180);
-    }, 2600);
-}
-
-function renderAchievementsWindow() {
-    const list = document.getElementById('achievements-list');
-    const summary = document.getElementById('achievements-summary');
-    if (!list || !summary) return;
-
-    const progress = loadAchievementProgress();
-    const unlocked = loadUnlockedAchievements();
-
-    summary.textContent = `${unlocked.size} / ${ACHIEVEMENTS.length} unlocked`;
-    list.innerHTML = '';
-
-    ACHIEVEMENTS.forEach(a => {
-        const isUnlocked = unlocked.has(a.id);
-        const row = document.createElement('div');
-        row.className = 'achievement-row' + (isUnlocked ? '' : ' locked');
-        row.innerHTML = `
-            <div class="achievement-badge"></div>
-            <div>
-                <div class="achievement-title"></div>
-                <div class="achievement-desc"></div>
-            </div>
-        `;
-        const badge = row.querySelector('.achievement-badge');
-        const title = row.querySelector('.achievement-title');
-        const desc = row.querySelector('.achievement-desc');
-        if (badge) badge.textContent = isUnlocked ? '✓' : '?';
-        if (title) title.textContent = a.title;
-        if (desc) desc.textContent = a.desc;
-        list.appendChild(row);
-    });
-}
-
-function evaluateAchievements() {
-    const progress = loadAchievementProgress();
-    const unlocked = loadUnlockedAchievements();
-
-    let changed = false;
-    ACHIEVEMENTS.forEach(a => {
-        if (unlocked.has(a.id)) return;
-        if (a.check && a.check(progress)) {
-            unlocked.add(a.id);
-            changed = true;
-            showToast('Achievement unlocked', a.title);
-        }
-    });
-
-    if (changed) saveUnlockedAchievements(unlocked);
-    // If window open, refresh view
-    if (document.getElementById('win-achievements') && document.getElementById('win-achievements').style.display !== 'none') {
-        renderAchievementsWindow();
-    }
-}
-
-function trackAchievementEvent(kind, payload) {
-    const p = loadAchievementProgress();
-
-    if (kind === 'first_login') {
-        p.firstLogin = true;
-    }
-    if (kind === 'open_window') {
-        p.openedWindows = p.openedWindows || {};
-        p.openedWindows[payload] = true;
-    }
-    if (kind === 'terminal_command') {
-        p.terminalCommandsCount = (p.terminalCommandsCount || 0) + 1;
-    }
-    if (kind === 'stackmap_click') {
-        p.stackMapClicks = (p.stackMapClicks || 0) + 1;
-    }
-    if (kind === 'metrics_expand') {
-        p.metricsExpands = (p.metricsExpands || 0) + 1;
-    }
-    if (kind === 'settings_toggle') {
-        p.settingsToggles = (p.settingsToggles || 0) + 1;
-    }
-
-    saveAchievementProgress(p);
-    evaluateAchievements();
-}
-
-// Calculator state
-let calcState = {
-    display: '0',
-    prev: null,
-    op: null,
-    resetNext: false
-};
-
-// Music player (UI-only) state
-let musicState = {
-    tracks: ['CRT Dreams', 'Blue Screen Serenade', 'Teal Desktop Anthem', 'Kernel Panic (LoFi)'],
-    index: 0,
-    playing: false,
-    progress: 0,
-    interval: null
-};
 
 // Update Clock
 function updateClock() {
@@ -533,73 +311,11 @@ function updateSoundsToggleUI(isEnabled) {
     btn.classList.add(isEnabled ? 'toggle-active' : 'toggle-inactive');
 }
 
-// -------------------------
-// Screensaver
-// -------------------------
-function showScreensaver() {
-    const el = document.getElementById('screensaver');
-    if (!el) return;
-    isScreensaverActive = true;
-    screensaverActivatedAt = Date.now();
-    el.classList.add('active');
-}
-
-function hideScreensaver() {
-    const el = document.getElementById('screensaver');
-    if (!el) return;
-    isScreensaverActive = false;
-    el.classList.remove('active');
-}
-
-function resetIdleTimer() {
-    if (idleTimer) clearTimeout(idleTimer);
-    // 90s idle
-    idleTimer = setTimeout(() => {
-        showScreensaver();
-    }, 90000);
-}
-
-window.startScreensaver = function() {
-    showScreensaver();
-};
-
-// -------------------------
-// Error Dialog (Easter Eggs)
-// -------------------------
-function showError(title, body) {
-    const t = document.getElementById('error-title');
-    const b = document.getElementById('error-body');
-    if (t) t.textContent = title || 'System Error';
-    if (b) b.textContent = body || 'An unknown process has attempted to be extremely productive.';
-    beep('error');
-    window.openWindow('win-error');
-}
-
-window.triggerEasterEggError = function(filename) {
-    const errs = [
-        ['File not found', `Cannot locate '${filename}'. It might be in /dev/null.`],
-        ['Access denied', `Permission denied: '${filename}'. Try turning it off and on again.`],
-        ['Unexpected success', `Operation completed successfully. This is suspicious.`],
-        ['Kernel Panic', `The system encountered a vibe mismatch while reading '${filename}'.`],
-        ['Todo.exe crashed', `A wild TODO appeared. It was not handled.`]
-    ];
-    const pick = errs[Math.floor(Math.random() * errs.length)];
-    showError(pick[0], pick[1]);
-};
-
 // Window Functions
 window.openWindow = function(id) {
     const win = document.getElementById(id);
     if (!win) return;
 
-    if (!achievementsInitialized) {
-        achievementsInitialized = true;
-        trackAchievementEvent('first_login');
-    }
-
-    resetIdleTimer();
-    if (isScreensaverActive) hideScreensaver();
-    
     // Clear selections when opening a window
     document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
     
@@ -620,39 +336,11 @@ window.openWindow = function(id) {
         }
     }
 
-    // Special handling for Pacman game
-    if (id === 'win-pacman') {
-        const iframe = win.querySelector('iframe');
-        if (iframe && (!iframe.src || iframe.src === 'about:blank' || iframe.src === window.location.href)) {
-            iframe.src = './Pacman/index.html';
-        }
-    }
-
-    // Special handling for React Bits app
-    if (id === 'win-reactbits') {
-        const iframe = win.querySelector('iframe');
-        if (iframe && (!iframe.src || iframe.src === 'about:blank' || iframe.src === window.location.href)) {
-            iframe.src = './reactbits-desktop-app/dist/index.html';
-        }
-    }
-
     // Terminal: focus input
     if (id === 'win-terminal') {
         initTerminalIfNeeded();
         const input = document.getElementById('terminal-input');
         if (input) setTimeout(() => input.focus(), 0);
-    }
-
-    // Notepad: load and focus
-    if (id === 'win-notepad') {
-        initNotepadIfNeeded();
-        const ta = document.getElementById('notepad-text');
-        if (ta) setTimeout(() => ta.focus(), 0);
-    }
-
-    // Music: refresh UI
-    if (id === 'win-music') {
-        musicRender();
     }
 
     // Skills Explorer: lazy init + render
@@ -680,14 +368,6 @@ window.openWindow = function(id) {
         initSettingsIfNeeded();
     }
 
-    // Achievements.unlock: render
-    if (id === 'win-achievements') {
-        renderAchievementsWindow();
-    }
-
-    // Track window opens (for milestones)
-    trackAchievementEvent('open_window', id);
-    
     focusWindow(win);
     beep('open');
 };
@@ -696,19 +376,8 @@ window.closeWindow = function(id) {
     const win = document.getElementById(id);
     if (!win) return;
 
-    resetIdleTimer();
     // Persist window state before hiding
     saveWindowState(win);
-
-    // Notepad autosave on close
-    if (id === 'win-notepad') {
-        notepadSave();
-    }
-
-    // Music: stop UI animation
-    if (id === 'win-music') {
-        musicStop();
-    }
 
     // Handle animations if enabled
     if (document.body.classList.contains('animations-enabled')) {
@@ -735,22 +404,6 @@ window.closeWindow = function(id) {
 function cleanupWindow(id, win) {
     // Special handling for Racer game: clear iframe to stop audio
     if (id === 'win-racer') {
-        const iframe = win.querySelector('iframe');
-        if (iframe) {
-            iframe.src = 'about:blank';
-        }
-    }
-
-    // Special handling for Pacman game: clear iframe to stop audio
-    if (id === 'win-pacman') {
-        const iframe = win.querySelector('iframe');
-        if (iframe) {
-            iframe.src = 'about:blank';
-        }
-    }
-
-    // React Bits app: clear iframe to release WebGL resources when closed
-    if (id === 'win-reactbits') {
         const iframe = win.querySelector('iframe');
         if (iframe) {
             iframe.src = 'about:blank';
@@ -878,7 +531,6 @@ function initTerminalIfNeeded() {
 function handleTerminalCommand(raw) {
     const cmdLine = raw.trim();
     termWrite(`isaac@os:~$ ${cmdLine}`, 'terminal-line');
-    resetIdleTimer();
 
     if (!cmdLine) return;
     termHistory.push(cmdLine);
@@ -887,9 +539,6 @@ function handleTerminalCommand(raw) {
     const parts = cmdLine.split(' ').filter(Boolean);
     const cmd = (parts[0] || '').toLowerCase();
     const arg = parts.slice(1).join(' ');
-
-    // Achievements: track any command usage
-    trackAchievementEvent('terminal_command', cmd);
 
     if (cmd === 'help') {
         termWrite('Commands:', 'terminal-ok');
@@ -903,12 +552,9 @@ function handleTerminalCommand(raw) {
         termWrite('  stackmap            open Stack Map', 'terminal-line');
         termWrite('  metrics             open System Metrics', 'terminal-line');
         termWrite('  settings            open OS Settings', 'terminal-line');
-        termWrite('  achievements         open Achievements.unlock', 'terminal-line');
-        termWrite('  reactbits            open React Bits Lab', 'terminal-line');
         termWrite('  contact             open Contact window', 'terminal-line');
         termWrite('  sounds [on|off]', 'terminal-line');
         termWrite('  animations [on|off]', 'terminal-line');
-        termWrite('  screensaver         start screensaver', 'terminal-line');
         termWrite('  date                print current date', 'terminal-line');
         termWrite('  echo <text>', 'terminal-line');
         return;
@@ -929,8 +575,6 @@ function handleTerminalCommand(raw) {
     if (cmd === 'stackmap' || cmd === 'stackmap.exe') return window.openWindow('win-stackmap');
     if (cmd === 'metrics' || cmd === 'metrics.sys') return window.openWindow('win-metrics');
     if (cmd === 'settings' || cmd === 'settings.sys') return window.openWindow('win-settings');
-    if (cmd === 'achievements' || cmd === 'achievements.unlock') return window.openWindow('win-achievements');
-    if (cmd === 'reactbits' || cmd === 'reactbits_lab.exe') return window.openWindow('win-reactbits');
 
     if (cmd === 'sounds') {
         const v = (arg || '').trim().toLowerCase();
@@ -966,12 +610,6 @@ function handleTerminalCommand(raw) {
         return;
     }
 
-    if (cmd === 'screensaver') {
-        window.startScreensaver();
-        termWrite('Screensaver started.', 'terminal-ok');
-        return;
-    }
-
     if (cmd === 'date') {
         termWrite(new Date().toString(), 'terminal-line');
         return;
@@ -982,25 +620,18 @@ function handleTerminalCommand(raw) {
         return;
     }
 
-    if (cmd === 'rm' || cmd === 'sudo') {
-        showError('Nice try', 'This OS runs on pure vibes. No sudo today.');
-        return;
-    }
-
     termWrite(`Command not found: ${cmd}`, 'terminal-err');
     termWrite("Type 'help' for commands.", 'terminal-line');
 }
 
 // Global Mouse Down Handler
 document.addEventListener('mousedown', function(e) {
-    resetIdleTimer();
     handleStart(e.clientX, e.clientY, e.target);
 });
 
 // Touch Support
 document.addEventListener('touchstart', function(e) {
     const touch = e.touches[0];
-    resetIdleTimer();
     handleStart(touch.clientX, touch.clientY, e.target);
 }, { passive: false });
 
@@ -1088,13 +719,11 @@ function handleStart(clientX, clientY, target) {
 
 // Global Mouse Move Handler
 document.addEventListener('mousemove', function(e) {
-    resetIdleTimer();
     handleMove(e.clientX, e.clientY);
 });
 
 document.addEventListener('touchmove', function(e) {
     const touch = e.touches[0];
-    resetIdleTimer();
     handleMove(touch.clientX, touch.clientY);
 }, { passive: false });
 
@@ -1181,30 +810,6 @@ function handleEnd() {
         }
         draggedIcon = null;
     }
-}
-
-// -------------------------
-// Notepad
-// -------------------------
-function initNotepadIfNeeded() {
-    const ta = document.getElementById('notepad-text');
-    if (!ta) return;
-    if (ta.dataset.bound === '1') return;
-    ta.dataset.bound = '1';
-
-    const saved = localStorage.getItem('notepad-text') || '';
-    ta.value = saved;
-
-    let saveT = null;
-    ta.addEventListener('input', () => {
-        const status = document.getElementById('notepad-status');
-        if (status) status.textContent = 'typing…';
-        if (saveT) clearTimeout(saveT);
-        saveT = setTimeout(() => {
-            localStorage.setItem('notepad-text', ta.value || '');
-            if (status) status.textContent = 'saved';
-        }, 450);
-    });
 }
 
 // -------------------------
@@ -1330,8 +935,7 @@ const SKILLS_DATA = [
         tags: ['design', 'systems', 'player-experience'],
         blurb: 'Design focused on player experience, systems, and iterative improvements.',
         proofs: [
-            { label: 'Work window', url: '#', openWindowId: 'win-projects' },
-            { label: 'Design projects page', url: 'generic.html' }
+            { label: 'Work window', url: '#', openWindowId: 'win-projects' }
         ]
     },
     {
@@ -1895,7 +1499,6 @@ function renderStackMap() {
                 } else {
                     stackMapActive = { type, id: item.id };
                 }
-                trackAchievementEvent('stackmap_click');
                 renderStackMap();
             });
             container.appendChild(btn);
@@ -2052,9 +1655,6 @@ function renderMetrics() {
         if (toggle) {
             toggle.addEventListener('click', () => {
                 card.classList.toggle('expanded');
-                if (card.classList.contains('expanded')) {
-                    trackAchievementEvent('metrics_expand');
-                }
             });
         }
         grid.appendChild(card);
@@ -2116,233 +1716,20 @@ function initSettingsIfNeeded() {
         a11yBtn.addEventListener('click', () => {
             const next = !(localStorage.getItem(PREF_A11Y) === '1');
             setPref(PREF_A11Y, next);
-            trackAchievementEvent('settings_toggle');
         });
         reduceBtn.addEventListener('click', () => {
             const next = !(localStorage.getItem(PREF_REDUCE_MOTION) === '1');
             setPref(PREF_REDUCE_MOTION, next);
-            trackAchievementEvent('settings_toggle');
         });
         contrastBtn.addEventListener('click', () => {
             const next = !(localStorage.getItem(PREF_CONTRAST) === '1');
             setPref(PREF_CONTRAST, next);
-            trackAchievementEvent('settings_toggle');
         });
     }
 
     applyPrefsToBody();
     updateSettingsButtons();
 }
-
-window.notepadSave = function() {
-    const ta = document.getElementById('notepad-text');
-    const status = document.getElementById('notepad-status');
-    if (!ta) return;
-    localStorage.setItem('notepad-text', ta.value || '');
-    if (status) status.textContent = 'saved';
-    beep('ok');
-};
-
-window.notepadClear = function() {
-    const ta = document.getElementById('notepad-text');
-    const status = document.getElementById('notepad-status');
-    if (!ta) return;
-    ta.value = '';
-    localStorage.setItem('notepad-text', '');
-    if (status) status.textContent = 'cleared';
-    beep('click');
-};
-
-// -------------------------
-// Calculator
-// -------------------------
-function calcSetDisplay(val) {
-    const el = document.getElementById('calc-display');
-    if (el) el.textContent = val;
-}
-
-function calcFormat(n) {
-    const s = String(n);
-    if (s.length > 12) return Number(n).toPrecision(8);
-    return s;
-}
-
-function calcCompute(a, b, op) {
-    const x = Number(a);
-    const y = Number(b);
-    if (Number.isNaN(x) || Number.isNaN(y)) return 'NaN';
-    if (op === '+') return x + y;
-    if (op === '-') return x - y;
-    if (op === '*') return x * y;
-    if (op === '/') return y === 0 ? '∞' : (x / y);
-    return y;
-}
-
-window.calcPress = function(key) {
-    resetIdleTimer();
-    beep('click');
-
-    const d = calcState.display;
-
-    if (key === 'C') {
-        calcState = { display: '0', prev: null, op: null, resetNext: false };
-        calcSetDisplay(calcState.display);
-        return;
-    }
-
-    if (key === '±') {
-        if (d === '0') return;
-        calcState.display = d.startsWith('-') ? d.slice(1) : '-' + d;
-        calcSetDisplay(calcState.display);
-        return;
-    }
-
-    if (key === '%') {
-        const v = Number(d);
-        if (Number.isNaN(v)) return;
-        calcState.display = calcFormat(v / 100);
-        calcSetDisplay(calcState.display);
-        return;
-    }
-
-    if (key === '.') {
-        if (calcState.resetNext) {
-            calcState.display = '0.';
-            calcState.resetNext = false;
-            calcSetDisplay(calcState.display);
-            return;
-        }
-        if (!d.includes('.')) {
-            calcState.display = d + '.';
-            calcSetDisplay(calcState.display);
-        }
-        return;
-    }
-
-    const isDigit = /^[0-9]$/.test(key);
-    if (isDigit) {
-        if (calcState.resetNext || d === '0') {
-            calcState.display = key;
-            calcState.resetNext = false;
-        } else {
-            calcState.display = d + key;
-        }
-        calcSetDisplay(calcState.display);
-        return;
-    }
-
-    const isOp = ['+', '-', '*', '/'].includes(key);
-    if (isOp) {
-        if (calcState.prev !== null && calcState.op && !calcState.resetNext) {
-            const res = calcCompute(calcState.prev, calcState.display, calcState.op);
-            calcState.prev = String(res);
-            calcState.display = calcFormat(res);
-            calcSetDisplay(calcState.display);
-        } else {
-            calcState.prev = calcState.display;
-        }
-        calcState.op = key;
-        calcState.resetNext = true;
-        return;
-    }
-
-    if (key === '=') {
-        if (calcState.prev === null || !calcState.op) return;
-        const res = calcCompute(calcState.prev, calcState.display, calcState.op);
-        calcState.display = calcFormat(res);
-        calcState.prev = null;
-        calcState.op = null;
-        calcState.resetNext = true;
-        calcSetDisplay(calcState.display);
-        beep('ok');
-        return;
-    }
-};
-
-// -------------------------
-// Music Player (UI-only)
-// -------------------------
-function musicEls() {
-    return {
-        title: document.getElementById('music-title'),
-        play: document.getElementById('music-play'),
-        progress: document.getElementById('music-progress'),
-        list: document.getElementById('music-list'),
-        eq: document.querySelectorAll('.music-eq .eq-col')
-    };
-}
-
-function musicRender() {
-    const els = musicEls();
-    if (els.title) els.title.textContent = `${String(musicState.index + 1).padStart(2, '0')} · ${musicState.tracks[musicState.index]}`;
-    if (els.play) els.play.textContent = musicState.playing ? '⏸' : '▶';
-    if (els.progress) els.progress.style.width = `${musicState.progress}%`;
-    if (els.list) {
-        Array.from(els.list.querySelectorAll('.music-track')).forEach((btn, idx) => {
-            btn.classList.toggle('active', idx === musicState.index);
-        });
-    }
-}
-
-function musicTick() {
-    musicState.progress += 1.2;
-    if (musicState.progress >= 100) {
-        musicState.progress = 0;
-        musicNext();
-        return;
-    }
-    const els = musicEls();
-    if (els.progress) els.progress.style.width = `${musicState.progress}%`;
-    if (els.eq && els.eq.length) {
-        els.eq.forEach(col => {
-            col.style.height = `${20 + Math.floor(Math.random() * 75)}%`;
-        });
-    }
-}
-
-function musicStart() {
-    if (musicState.interval) clearInterval(musicState.interval);
-    musicState.interval = setInterval(musicTick, 180);
-}
-
-function musicStop() {
-    if (musicState.interval) clearInterval(musicState.interval);
-    musicState.interval = null;
-    musicState.playing = false;
-    musicRender();
-}
-
-window.musicLoad = function(idx) {
-    musicState.index = clamp(idx, 0, musicState.tracks.length - 1);
-    musicState.progress = 0;
-    beep('click');
-    musicRender();
-    if (musicState.playing) musicStart();
-};
-
-window.musicToggle = function() {
-    musicState.playing = !musicState.playing;
-    beep(musicState.playing ? 'ok' : 'click');
-    musicRender();
-    if (musicState.playing) musicStart();
-    else musicStop();
-};
-
-window.musicNext = function() {
-    musicState.index = (musicState.index + 1) % musicState.tracks.length;
-    musicState.progress = 0;
-    beep('click');
-    musicRender();
-    if (musicState.playing) musicStart();
-};
-
-window.musicPrev = function() {
-    musicState.index = (musicState.index - 1 + musicState.tracks.length) % musicState.tracks.length;
-    musicState.progress = 0;
-    beep('click');
-    musicRender();
-    if (musicState.playing) musicStart();
-};
 
 // Initialize
 window.onload = () => {
@@ -2356,13 +1743,6 @@ window.onload = () => {
     // Initialize Sounds (default OFF)
     soundsEnabled = localStorage.getItem('sounds-enabled') === 'true';
     updateSoundsToggleUI(soundsEnabled);
-
-    // Initialize idle timer / screensaver
-    resetIdleTimer();
-    document.addEventListener('keydown', resetIdleTimer);
-    document.addEventListener('wheel', resetIdleTimer, { passive: true });
-    document.addEventListener('mousemove', resetIdleTimer, { passive: true });
-    document.addEventListener('touchstart', resetIdleTimer, { passive: true });
 
     window.openWindow('win-about');
     
@@ -2455,26 +1835,12 @@ document.addEventListener('mousedown', function(e) {
     }
 });
 
-// Dismiss screensaver on interaction
-function tryDismissScreensaver() {
-    if (!isScreensaverActive) return;
-    // Grace period to avoid immediate self-dismiss due to event noise right after activation
-    if (Date.now() - screensaverActivatedAt < 250) return;
-    hideScreensaver();
-}
-
-document.addEventListener('mousedown', tryDismissScreensaver);
-document.addEventListener('touchstart', tryDismissScreensaver, { passive: true });
-document.addEventListener('keydown', tryDismissScreensaver);
-document.addEventListener('mousemove', tryDismissScreensaver, { passive: true });
-document.addEventListener('wheel', tryDismissScreensaver, { passive: true });
-
 // UI click sounds (lightweight): only for obvious controls
 document.addEventListener('click', (e) => {
     if (!soundsEnabled) return;
     const t = e.target;
     if (!t) return;
-    if (t.closest('.win-btn') || t.closest('.dropdown-content a') || t.closest('.calc-btn') || t.closest('.np-btn') || t.closest('.mp-btn') || t.closest('.music-track')) {
+    if (t.closest('.win-btn') || t.closest('.dropdown-content a') || t.closest('.np-btn')) {
         beep('click');
     }
 }, { passive: true });
