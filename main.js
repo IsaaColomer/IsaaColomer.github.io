@@ -520,7 +520,7 @@
   ---------------------------------------------------------- */
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  // smooth anchor for dots/brand without hash jump artifacts
+  // smooth anchor for in-page links without hash jump artifacts
   document.querySelectorAll('a[href^="#"]').forEach((a) => {
     a.addEventListener("click", (e) => {
       const id = a.getAttribute("href");
