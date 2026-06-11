@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Isaac Colomer Casas — Game Developer & AI Engineer</title>
-  <meta name="description" content="Interactive CV of Isaac Colomer Casas — videogame designer and programmer now focused on AI development." />
+  <title>Isaac Colomer Casas — Software Generalist & Game Developer</title>
+  <meta name="description" content="Interactive CV of Isaac Colomer Casas — videogame designer and programmer now focused on computer vision and developer tooling." />
   <meta name="theme-color" content="#0a0a0b" />
   <link rel="icon" type="image/png" href="./images/beele.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -59,13 +59,13 @@
       <div class="hero__content">
         <p class="eyebrow"><span class="dot-live"></span> open to roles &amp; collaborations</p>
         <h1 class="hero__title" data-scramble>
-          <span class="line">Software engineer</span>
+          <span class="line">Software generalist</span>
           <span class="line accent">&amp; game developer,</span>
-          <span class="line">now building AI.</span>
+          <span class="line">now building vision tools.</span>
         </h1>
         <p class="hero__sub">
-          Videogame designer and programmer now focused on AI development — working across
-          gameplay code, Unity and Unreal, test automation, and LLM-driven tooling.
+          Videogame designer and programmer now focused on computer vision and developer
+          tooling — working across gameplay code, Unity and Unreal, test automation, and Python.
         </p>
         <div class="hero__cta">
           <a href="#work" class="btn btn--primary magnetic" data-magnetic>View work</a>
@@ -77,6 +77,7 @@
 
     <!-- ABOUT -->
     <section class="section about" id="about">
+      <canvas class="sfx" data-fx="beams" aria-hidden="true"></canvas>
       <div class="section__head reveal">
         <span class="section__index">01</span>
         <h2 class="section__title">About me</h2>
@@ -84,10 +85,10 @@
       <div class="about__grid">
         <div class="about__lead reveal">
           <p>
-            I&apos;m a <strong>videogame designer and programmer</strong> with deep roots in
-            C, C++, C# and engines like Unity and Unreal Engine. These days my focus is
-            <strong>AI development</strong> at Mindsight Ventures, where I build AI-powered
-            features and automation tooling.
+            I&apos;m a <strong>software generalist and videogame developer</strong> with deep
+            roots in C, C++, C# and engines like Unity and Unreal Engine. These days my focus is
+            <strong>computer vision and automation</strong> at Mindsight Ventures, where I
+            build data-driven features and developer tooling.
           </p>
           <p>
             Games taught me to ship things that <em>feel</em> good and run fast; testing and
@@ -99,19 +100,19 @@
           <li class="reveal"><span class="stat" data-count="6">0</span><small>projects shipped</small></li>
           <li class="reveal"><span class="stat" data-count="6">0</span><small>languages &amp; engines</small></li>
           <li class="reveal"><span class="stat" data-count="4">0</span><small>professional roles</small></li>
-          <li class="reveal"><span class="stat" data-count="60" data-suffix="fps">0</span><small>budget I design for</small></li>
         </ul>
       </div>
       <div class="marquee" aria-hidden="true">
         <div class="marquee__track">
-          <span>ai development</span><span>·</span><span>gameplay engineering</span><span>·</span><span>unity &amp; unreal</span><span>·</span><span>test automation</span><span>·</span><span>vr / quest 2</span><span>·</span><span>llm tooling</span><span>·</span>
-          <span>ai development</span><span>·</span><span>gameplay engineering</span><span>·</span><span>unity &amp; unreal</span><span>·</span><span>test automation</span><span>·</span><span>vr / quest 2</span><span>·</span><span>llm tooling</span><span>·</span>
+          <span>computer vision</span><span>·</span><span>gameplay engineering</span><span>·</span><span>unity &amp; unreal</span><span>·</span><span>test automation</span><span>·</span><span>vr / quest 2</span><span>·</span><span>developer tooling</span><span>·</span>
+          <span>computer vision</span><span>·</span><span>gameplay engineering</span><span>·</span><span>unity &amp; unreal</span><span>·</span><span>test automation</span><span>·</span><span>vr / quest 2</span><span>·</span><span>developer tooling</span><span>·</span>
         </div>
       </div>
     </section>
 
     <!-- SKILLS -->
     <section class="section skills" id="skills">
+      <canvas class="sfx" data-fx="bars" aria-hidden="true"></canvas>
       <div class="section__head reveal">
         <span class="section__index">02</span>
         <h2 class="section__title">Skills</h2>
@@ -124,6 +125,7 @@
 
     <!-- WORK -->
     <section class="section work" id="work">
+      <canvas class="sfx" data-fx="grid" aria-hidden="true"></canvas>
       <div class="section__head reveal">
         <span class="section__index">03</span>
         <h2 class="section__title">Selected work</h2>
@@ -136,6 +138,7 @@
 
     <!-- PATH / TIMELINE -->
     <section class="section path" id="path">
+      <canvas class="sfx" data-fx="streaks" aria-hidden="true"></canvas>
       <div class="section__head reveal">
         <span class="section__index">04</span>
         <h2 class="section__title">Experience</h2>
@@ -147,6 +150,7 @@
 
     <!-- CONTACT -->
     <section class="section contact" id="contact">
+      <canvas class="sfx" data-fx="ripples" aria-hidden="true"></canvas>
       <div class="contact__inner reveal">
         <span class="section__index">05</span>
         <h2 class="contact__title">Let&apos;s work<br/>together.</h2>
@@ -182,6 +186,9 @@
 
   <!-- Grid overlay -->
   <div class="grid-overlay" id="gridOverlay" aria-hidden="true"></div>
+
+  <!-- Film grain (the "dirty" texture layer) -->
+  <div class="grain" aria-hidden="true"></div>
 
   <script src="main.js"></script>
 </body>

@@ -236,9 +236,10 @@ kbd {
   line-height: 0.98;
   font-weight: 700;
   letter-spacing: -0.03em;
-  text-wrap: balance;
 }
 .hero__title .line { display: block; }
+/* applied by JS only while the intro scramble runs, so transient wide glyphs can't rewrap and shift layout */
+.hero__title.is-scrambling .line { white-space: nowrap; }
 .hero__title .accent { color: var(--accent); }
 .hero__sub {
   margin-top: 26px;
@@ -292,6 +293,44 @@ kbd {
   text-wrap: balance;
 }
 .section__note { margin-top: 14px; color: var(--muted); max-width: 460px; }
+
+/* ============================================================
+   Section background effects (interactive canvases)
+   ============================================================ */
+.sfx {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;       /* full-bleed behind the centered column */
+  height: 100%;
+  z-index: 0;
+  pointer-events: none; /* effects read the global pointer; never block clicks */
+}
+.section > *:not(.sfx) { position: relative; z-index: 1; }
+
+/* ============================================================
+   Film grain — the "dirty" texture layer over everything
+   ============================================================ */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  pointer-events: none;
+  opacity: 0.055;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  animation: grainShift 1.1s steps(5) infinite;
+}
+@keyframes grainShift {
+  0%   { background-position: 0 0; }
+  20%  { background-position: -30px 20px; }
+  40%  { background-position: 25px -25px; }
+  60%  { background-position: -20px -30px; }
+  80%  { background-position: 30px 25px; }
+  100% { background-position: 0 0; }
+}
 
 /* reveal */
 .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
