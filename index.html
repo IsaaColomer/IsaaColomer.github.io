@@ -24,6 +24,15 @@
     </div>
   </div>
 
+  <!-- Liquid-glass refraction filter (warps the backdrop, no blur) -->
+  <svg class="glass-defs" aria-hidden="true" width="0" height="0">
+    <filter id="liquid-glass" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.014 0.014" numOctaves="2" seed="7" result="noise" />
+      <feGaussianBlur in="noise" stdDeviation="1.1" result="softNoise" />
+      <feDisplacementMap in="SourceGraphic" in2="softNoise" scale="16" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
+
   <!-- Custom cursor -->
   <div class="cursor" id="cursorDot" aria-hidden="true"></div>
   <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
