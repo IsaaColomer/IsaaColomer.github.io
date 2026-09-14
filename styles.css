@@ -576,16 +576,44 @@ kbd {
 }
 
 
-/* --- topbar: room for both the valley link and the shortcuts button ------- */
-.topbar__actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+/* --- "Play the curriculum": the one thing on the page that should be
+       impossible to miss, so it gets the accent fill, a little more weight
+       and a slow breathing glow rather than another outlined pill. ------- */
+.btn--play {
+  background: var(--accent);
+  color: #fff;
+  gap: 10px;
+  padding: 15px 30px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow: 0 0 0 0 rgba(255, 31, 61, 0.55);
+  animation: playPulse 2.8s var(--ease) infinite;
 }
-.topbar__actions .help-btn {
-  text-decoration: none;
+.btn--play:hover {
+  transform: translateY(-2px) scale(1.02);
+  animation-play-state: paused;
+  box-shadow: 0 10px 30px -8px rgba(255, 31, 61, 0.7);
 }
-@media (max-width: 560px) {
-  .topbar__actions #playBtn span,
-  .topbar__actions #helpBtn { display: none; }
+.btn--play .btn__icon {
+  font-size: 0.8em;
+  line-height: 1;
+  transform: translateY(0.5px);
+}
+
+@keyframes playPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(255, 31, 61, 0.5); }
+  60%  { box-shadow: 0 0 0 16px rgba(255, 31, 61, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 31, 61, 0); }
+}
+
+.hero__play-note {
+  margin: 14px 0 0;
+  max-width: 46ch;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--muted, #8d7669);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn--play { animation: none; }
 }
