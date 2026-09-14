@@ -574,3 +574,18 @@ kbd {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; }
 }
+
+
+/* --- topbar: room for both the valley link and the shortcuts button ------- */
+.topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.topbar__actions .help-btn {
+  text-decoration: none;
+}
+@media (max-width: 560px) {
+  .topbar__actions #playBtn span,
+  .topbar__actions #helpBtn { display: none; }
+}

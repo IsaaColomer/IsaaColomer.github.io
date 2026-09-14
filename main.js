@@ -25,7 +25,7 @@
       kind: "Game", game: true, title: "A walk through a CV",
       desc: "This CV, as a valley you walk through instead of a page you scroll. A first-person exploration piece in Unity: the terrain, trees, buildings, sky and every sound are generated at load rather than shipped, under hand-written URP shaders for the flat-shaded, low-sun look. 8 MB in the browser.",
       stack: ["Unity 6", "URP", "HLSL", "Procedural", "WebGL"],
-      link: { url: "./valley/", label: "Play in browser ↗" },
+      link: { url: "./", label: "Play in browser ↗" },
     },
     {
       kind: "Computer Vision", title: "Mindsight — Medical Ultrasound Platform",
